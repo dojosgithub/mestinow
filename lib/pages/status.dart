@@ -6,7 +6,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:lit_relative_date_time/lit_relative_date_time.dart';
 import '../theme/colors.dart';
-
+import '../pages/settings.dart';
 class StatusPage extends StatefulWidget {
   const StatusPage({super.key});
 
@@ -15,8 +15,9 @@ class StatusPage extends StatefulWidget {
 }
 
 class _StatusPageState extends State<StatusPage> {
-  static const int totalSeconds = 3 * 60 * 60;
+  late int totalSeconds = 3 * 60 * 60;
   static const String _timestampKey = 'last_button_press_time';
+  static const String _intervalKey = 'mestinon_interval_hours';
   late int remainingSeconds;
   late int? lastButtonPressTime;
   Timer? timer;
@@ -119,11 +120,12 @@ class _StatusPageState extends State<StatusPage> {
 
     final prefs = await SharedPreferences.getInstance();
 
+    totalSeconds = ((prefs.getDouble(_intervalKey) ?? 3) * 60 * 60).ceil();
+
     lastButtonPressTime =
         prefs.getInt(_timestampKey) ??
         DateTime.parse('2025-03-25 15:45:00').millisecondsSinceEpoch;
-    lastButtonPressTime =
-        DateTime.parse('2025-03-25 18:10:00').millisecondsSinceEpoch;
+
     final currentTime = DateTime.now().millisecondsSinceEpoch;
     final elapsedSeconds = (currentTime - lastButtonPressTime!) ~/ 1000;
 
@@ -193,6 +195,58 @@ class _StatusPageState extends State<StatusPage> {
 
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              icon: const Icon(Icons.menu),
+              color: AppColors.darkPrimary,
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+            );
+          },
+        ),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+              ),
+              child: const Text(
+                'MestiNow',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.home),
+              title: const Text('Home'),
+              onTap: () {
+                Navigator.pop(context); // Close the drawer
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.settings),
+              title: const Text('Settings'),
+              onTap: () {
+                Navigator.pop(context); // Close the drawer
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SettingsPage()),
+                ).then((_) => _loadSavedTime()); // Reload settings when returning
+              },
+            ),
+          ],
+        ),
+      ),
       body: Column(
         children: [
           _buildHeader(),
@@ -235,7 +289,9 @@ class _StatusPageState extends State<StatusPage> {
   }
 
   Widget _buildHeader() {
-    return const Row(children: [Text('Status')]);
+    return const Row(children: [
+      
+    ]);
   }
 
   Widget _buildCircularPercentIndicator(leftColor, relativeNextDose) {

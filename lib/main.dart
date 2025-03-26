@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import './pages/status.dart';
+// import './pages/settings.dart';
+import './theme/colors.dart';
 
 void main() {
   tz.initializeTimeZones();
@@ -33,10 +35,11 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
+        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primary),
         useMaterial3: true,
       ),
       home: StatusPage(),
+      // home: SettingsPage(),
     );
   }
 }
