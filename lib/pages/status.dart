@@ -7,6 +7,8 @@ import 'package:timezone/timezone.dart' as tz;
 import 'package:lit_relative_date_time/lit_relative_date_time.dart';
 import '../theme/colors.dart';
 import '../pages/settings.dart';
+import '../widgets/symptom_button.dart';
+
 class StatusPage extends StatefulWidget {
   const StatusPage({super.key});
 
@@ -24,6 +26,19 @@ class _StatusPageState extends State<StatusPage> {
 
   final FlutterLocalNotificationsPlugin notificationsPlugin =
       FlutterLocalNotificationsPlugin();
+
+  // Add state for tracking active symptoms
+  final Set<String> _activeSymptoms = {};
+
+  // Add symptom data
+  final List<Map<String, String>> symptoms = [
+    {'icon': 'assets/icons/ptosis.png', 'label': 'Ptosis'},
+    {'icon': 'assets/icons/vision.png', 'label': 'Vision'},
+    {'icon': 'assets/icons/weakness.png', 'label': 'Weakness'},
+    {'icon': 'assets/icons/neck.png', 'label': 'Neck'},
+    {'icon': 'assets/icons/breathing.png', 'label': 'Breathing'},
+    {'icon': 'assets/icons/walking.png', 'label': 'Walking'},
+  ];
 
   @override
   void initState() {
@@ -175,6 +190,43 @@ class _StatusPageState extends State<StatusPage> {
     // minutes > 0 ? Color(0xff5CBE9D) : AppColors.error,// Color(0xff5CBE9D),
   }
 
+  // Add this widget to your build method, before the CircularPercentIndicator
+  Widget _buildSymptomGrid() {
+    // return Padding(
+    //   padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      // child: 
+      return GridView.builder(
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          crossAxisSpacing: 16,
+          mainAxisSpacing: 16,
+          childAspectRatio: 1.5,
+        ),
+        itemCount: symptoms.length,
+        itemBuilder: (context, index) {
+          final symptom = symptoms[index];
+          return SymptomButton(
+            iconPath: symptom['icon']!,
+            label: symptom['label']!,
+            isActive: _activeSymptoms.contains(symptom['label']),
+            onPressed: () {
+              setState(() {
+                final label = symptom['label']!;
+                if (_activeSymptoms.contains(label)) {
+                  _activeSymptoms.remove(label);
+                } else {
+                  _activeSymptoms.add(label);
+                }
+              });
+            },
+          );
+        },
+      // ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     RelativeDateFormat relativeDateFormat = RelativeDateFormat(
@@ -249,7 +301,7 @@ class _StatusPageState extends State<StatusPage> {
       ),
       body: Column(
         children: [
-          _buildHeader(),
+          _buildSymptomGrid(),
           Spacer(),
           Container(
             // lower panel
@@ -288,11 +340,6 @@ class _StatusPageState extends State<StatusPage> {
     );
   }
 
-  Widget _buildHeader() {
-    return const Row(children: [
-      
-    ]);
-  }
 
   Widget _buildCircularPercentIndicator(leftColor, relativeNextDose) {
     return CircularPercentIndicator(
