@@ -163,6 +163,11 @@ class _StatusPageState extends State<StatusPage> {
     final prefs = await SharedPreferences.getInstance();
     lastButtonPressTime = DateTime.now().millisecondsSinceEpoch;
     await prefs.setInt(_timestampKey, lastButtonPressTime!);
+
+    final scheduledTime = DateTime.fromMillisecondsSinceEpoch(
+      lastButtonPressTime! + (totalSeconds * 1000),
+    );
+    scheduleNextDoseNotification(scheduledTime);
   }
 
   @override
