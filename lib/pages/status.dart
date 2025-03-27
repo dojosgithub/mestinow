@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -210,21 +211,21 @@ class _StatusPageState extends State<StatusPage> {
       itemBuilder: (context, index) {
         final symptom = symptoms[index];
         return SymptomButton(
-            iconPath: symptom['icon']!,
-            label: symptom['label']!,
-            // isActive: _activeSymptoms.contains(symptom['label']),
-            onPressed: () {
-              setState(() {
-                final label = symptom['label']!;
-                if (_activeSymptoms.contains(label)) {
-                  _activeSymptoms.remove(label);
-                } else {
-                  _activeSymptoms.add(label);
-                }
-              });
-            },
-          );
-        },
+          iconPath: symptom['icon']!,
+          label: symptom['label']!,
+          // isActive: _activeSymptoms.contains(symptom['label']),
+          onPressed: () {
+            setState(() {
+              final label = symptom['label']!;
+              if (_activeSymptoms.contains(label)) {
+                _activeSymptoms.remove(label);
+              } else {
+                _activeSymptoms.add(label);
+              }
+            });
+          },
+        );
+      },
       // ),
     );
   }
@@ -252,17 +253,32 @@ class _StatusPageState extends State<StatusPage> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        leading: Builder(
-          builder: (BuildContext context) {
-            return IconButton(
-              icon: const Icon(Icons.menu),
+        leading: Container(
+          alignment: Alignment.centerLeft,
+          padding: EdgeInsets.only(left: 16),
+          child: Text(
+            'MestiNow',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
               color: AppColors.darkPrimary,
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-            );
-          },
+            ),
+          ),
         ),
+        leadingWidth: 180,
+        actions: [
+          Builder(
+            builder: (BuildContext context) {
+              return IconButton(
+                icon: const Icon(Icons.menu),
+                color: AppColors.darkPrimary,
+                onPressed: () {
+                  Scaffold.of(context).openDrawer();
+                },
+              );
+            },
+          ),
+        ],
       ),
       drawer: Drawer(
         child: ListView(
@@ -356,7 +372,7 @@ class _StatusPageState extends State<StatusPage> {
       radius: 120.0,
       lineWidth: 13.0,
       circularStrokeCap: CircularStrokeCap.round,
-      percent: remainingSeconds <= 0 ? 0.0 : remainingSeconds / totalSeconds,
+      percent: remainingSeconds <= 0 ? 0.0 : min(remainingSeconds,totalSeconds) / totalSeconds,
       center: Text(
         "Next dose\n$relativeNextDose",
         textAlign: TextAlign.center,
