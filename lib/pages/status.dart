@@ -194,23 +194,25 @@ class _StatusPageState extends State<StatusPage> {
   Widget _buildSymptomGrid() {
     // return Padding(
     //   padding: const EdgeInsets.symmetric(horizontal: 24.0),
-      // child: 
-      return GridView.builder(
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          crossAxisSpacing: 16,
-          mainAxisSpacing: 16,
-          childAspectRatio: 1.5,
-        ),
-        itemCount: symptoms.length,
-        itemBuilder: (context, index) {
-          final symptom = symptoms[index];
-          return SymptomButton(
+    // child:
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        crossAxisSpacing: 16,
+        mainAxisExtent: 85.0,
+        // mainAxisSpacing: 8,
+        // childAspectRatio: 1.5,
+      ),
+      itemCount: symptoms.length,
+      itemBuilder: (context, index) {
+        final symptom = symptoms[index];
+        return SymptomButton(
             iconPath: symptom['icon']!,
             label: symptom['label']!,
-            isActive: _activeSymptoms.contains(symptom['label']),
+            // isActive: _activeSymptoms.contains(symptom['label']),
             onPressed: () {
               setState(() {
                 final label = symptom['label']!;
@@ -267,15 +269,10 @@ class _StatusPageState extends State<StatusPage> {
           padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
-              decoration: BoxDecoration(
-                color: AppColors.primary,
-              ),
+              decoration: BoxDecoration(color: AppColors.primary),
               child: const Text(
                 'MestiNow',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
+                style: TextStyle(color: Colors.white, fontSize: 24),
               ),
             ),
             ListTile(
@@ -293,7 +290,9 @@ class _StatusPageState extends State<StatusPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const SettingsPage()),
-                ).then((_) => _loadSavedTime()); // Reload settings when returning
+                ).then(
+                  (_) => _loadSavedTime(),
+                ); // Reload settings when returning
               },
             ),
           ],
@@ -305,7 +304,7 @@ class _StatusPageState extends State<StatusPage> {
           Spacer(),
           Container(
             // lower panel
-            height: 534,
+            height: 350,
             width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
               color: backColor,
@@ -328,10 +327,22 @@ class _StatusPageState extends State<StatusPage> {
                     ),
                   ),
                 ),
-                SizedBox(height: 60),
-                _buildCircularPercentIndicator(frontColor, relativeNextDose),
-                SizedBox(height: 50),
-                _buildTakeMestinonButton(),
+                SizedBox(height: 20),
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    _buildCircularPercentIndicator(
+                      frontColor,
+                      relativeNextDose,
+                    ),
+                    // SizedBox(height: 50),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: _buildTakeMestinonButton(),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
@@ -339,7 +350,6 @@ class _StatusPageState extends State<StatusPage> {
       ),
     );
   }
-
 
   Widget _buildCircularPercentIndicator(leftColor, relativeNextDose) {
     return CircularPercentIndicator(
@@ -363,10 +373,10 @@ class _StatusPageState extends State<StatusPage> {
 
   Widget _buildTakeMestinonButton() {
     return Container(
-      height: 58,
+      height: 40,
       decoration: BoxDecoration(
         color: AppColors.darkPrimary,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(30),
       ),
       child: TextButton(
         // backgroundColor: Color(0xff016367),
@@ -377,11 +387,11 @@ class _StatusPageState extends State<StatusPage> {
           });
         },
         child: Text(
-          'Take early',
+          '+ Log Dose Now',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontFamily: 'Roboto',
-            fontSize: 21,
+            fontSize: 14,
             color: Colors.white,
           ),
         ),
