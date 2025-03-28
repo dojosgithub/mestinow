@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:timezone/data/latest.dart' as tz;
+import 'package:provider/provider.dart';
 import './pages/status.dart';
 // import './pages/settings.dart';
 import './theme/colors.dart';
+import './services/database_service.dart';
 
-void main() {
+
+void main() async {
   tz.initializeTimeZones();
-  
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  final db = await DatabaseService.create();
+  runApp(Provider<DatabaseService>.value(
+    value: db, child: const MyApp()
+  )); 
 }
 
 class MyApp extends StatelessWidget {

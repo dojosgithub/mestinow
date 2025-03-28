@@ -6,9 +6,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:lit_relative_date_time/lit_relative_date_time.dart';
+import 'package:provider/provider.dart';
 import '../theme/colors.dart';
 import '../pages/settings.dart';
 import '../widgets/symptom_button.dart';
+import '../services/database_service.dart';
+import '../models/event_log.dart';
+import '../pages/calendar_page.dart';
 
 class StatusPage extends StatefulWidget {
   const StatusPage({super.key});
@@ -18,6 +22,7 @@ class StatusPage extends StatefulWidget {
 }
 
 class _StatusPageState extends State<StatusPage> {
+  late DatabaseService db;
   late int totalSeconds = 3 * 60 * 60;
   static const String _timestampKey = 'last_button_press_time';
   static const String _intervalKey = 'mestinon_interval_hours';
@@ -58,6 +63,17 @@ class _StatusPageState extends State<StatusPage> {
       });
     });
     initializeNotifications();
+  }
+
+  Future<void> _saveMedIntake() async {
+    // final prefs = await SharedPreferences.getInstance();
+    // final intervalHours = prefs.getDouble(_intervalKey) ?? 3.0;
+    
+    await db.logEvent(EventType.medMestinon.name);
+    // await _saveButtonPressTime();
+    // setState(() {
+    //   remainingSeconds = totalSeconds;
+    // });
   }
 
   Future<void> initializeNotifications() async {
@@ -163,6 +179,7 @@ class _StatusPageState extends State<StatusPage> {
     final prefs = await SharedPreferences.getInstance();
     lastButtonPressTime = DateTime.now().millisecondsSinceEpoch;
     await prefs.setInt(_timestampKey, lastButtonPressTime!);
+    await _saveMedIntake();
 
     final scheduledTime = DateTime.fromMillisecondsSinceEpoch(
       lastButtonPressTime! + (totalSeconds * 1000),
@@ -237,6 +254,7 @@ class _StatusPageState extends State<StatusPage> {
 
   @override
   Widget build(BuildContext context) {
+    this.db = Provider.of<DatabaseService>(context);
     RelativeDateFormat relativeDateFormat = RelativeDateFormat(
       Localizations.localeOf(context),
     );
@@ -314,6 +332,17 @@ class _StatusPageState extends State<StatusPage> {
                 ).then(
                   (_) => _loadSavedTime(),
                 ); // Reload settings when returning
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.calendar_month),
+              title: const Text('Calendar'),
+              onTap: () {
+                Navigator.pop(context); // Close the drawer
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const CalendarPage()),
+                );
               },
             ),
           ],
