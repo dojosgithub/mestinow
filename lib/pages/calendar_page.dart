@@ -18,13 +18,42 @@ class _CalendarPageState extends State<CalendarPage> {
   late DateTime _selectedDate;
   late DateTime _displayedMonth;
   List<EventLog> _events = [];
+  final ScrollController _scrollController = ScrollController();
+  bool _isInitialized = false;
 
   @override
   void initState() {
     super.initState();
     _selectedDate = DateTime.now();
     _displayedMonth = DateTime(_selectedDate.year, _selectedDate.month);
-    _loadEvents();
+
+        // Scroll to today's position after the widget is built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollToSelectedDate();
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isInitialized) {
+      db = Provider.of<DatabaseService>(context);
+      _loadEvents(); // Now safe to call
+      _isInitialized = true;
+    }
+  }
+
+  void _scrollToSelectedDate() {
+    // Calculate position based on day of month (assuming each item width is 68.0 - 60 + 8 margin)
+    final double itemWidth = 68.0;
+    final double offset = (_selectedDate.day - 1) * itemWidth;
+    
+    // Animate to the position
+    _scrollController.animateTo(
+      offset,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    );
   }
 
   Future<void> _loadEvents() async {
@@ -32,11 +61,15 @@ class _CalendarPageState extends State<CalendarPage> {
     final startOfDay = DateTime(_selectedDate.year, _selectedDate.month, _selectedDate.day);
     final endOfDay = startOfDay.add(const Duration(days: 1));
 
-    final events = await db.getEventsForDateRange(startOfDay, endOfDay);
+    try {
+      final events = await db.getEventsForDateRange(startOfDay, endOfDay);
 
-    setState(() {
-      _events = events;
-    });
+      setState(() {
+        _events = events;
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 
   Widget _buildMonthSelector() {
@@ -86,6 +119,7 @@ class _CalendarPageState extends State<CalendarPage> {
     return Container(
       height: 100,
       child: ListView.builder(
+        controller: _scrollController,
         scrollDirection: Axis.horizontal,
         itemCount: daysInMonth,
         itemBuilder: (context, index) {
@@ -171,7 +205,6 @@ class _CalendarPageState extends State<CalendarPage> {
 
   @override
   Widget build(BuildContext context) {
-    this.db = Provider.of<DatabaseService>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,

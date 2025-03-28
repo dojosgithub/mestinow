@@ -33,9 +33,6 @@ class _StatusPageState extends State<StatusPage> {
   final FlutterLocalNotificationsPlugin notificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
-  // Add state for tracking active symptoms
-  final Set<String> _activeSymptoms = {};
-
   // Add symptom data
   final List<Map<String, String>> symptoms = [
     {'icon': 'assets/icons/ptosis.png', 'label': 'Ptosis'},
@@ -235,15 +232,10 @@ class _StatusPageState extends State<StatusPage> {
         return SymptomButton(
           iconPath: symptom['icon']!,
           label: symptom['label']!,
-          // isActive: _activeSymptoms.contains(symptom['label']),
           onPressed: () {
             setState(() {
               final label = symptom['label']!;
-              if (_activeSymptoms.contains(label)) {
-                _activeSymptoms.remove(label);
-              } else {
-                _activeSymptoms.add(label);
-              }
+              db.logEvent(label);
             });
           },
         );
