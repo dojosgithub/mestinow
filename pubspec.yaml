@@ -79,6 +79,8 @@ flutter:
     - assets/icons/neck.png
     - assets/icons/breathing.png
     - assets/icons/walking.png
+    - assets/images/welcome_illustration.webp
+    - assets/images/medication_illustration.webp
     
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

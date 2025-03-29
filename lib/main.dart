@@ -5,6 +5,7 @@ import './pages/status.dart';
 // import './pages/settings.dart';
 import './theme/colors.dart';
 import './services/database_service.dart';
+import './pages/onboarding/tour_page.dart';
 
 
 void main() async {
@@ -46,6 +47,12 @@ class MyApp extends StatelessWidget {
       ),
       home: StatusPage(),
       // home: SettingsPage(),
+      initialRoute: '/tour',
+      routes: {
+        '/tour': (context) => const TourPage(),
+        '/home': (context) => const StatusPage(),
+        // ... other routes ...
+      },
     );
   }
 }

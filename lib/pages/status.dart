@@ -75,7 +75,7 @@ class _StatusPageState extends State<StatusPage> {
 
   Future<void> initializeNotifications() async {
     const androidSettings = AndroidInitializationSettings(
-      '@mipmap/ic_launcher',
+      '@mipmap/launcher_icon',
     );
     const iosSettings = DarwinInitializationSettings();
     const initSettings = InitializationSettings(
