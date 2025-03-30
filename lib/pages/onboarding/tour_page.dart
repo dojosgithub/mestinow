@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../theme/colors.dart';
 
 class TourPage extends StatefulWidget {
@@ -11,7 +12,7 @@ class TourPage extends StatefulWidget {
 class _TourPageState extends State<TourPage> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
-
+  bool _neverShowAgain = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,7 +45,7 @@ class _TourPageState extends State<TourPage> {
                 children: [
                   _buildFirstPage(),
                   _buildSecondPage(),
-                  // Add more pages as needed
+                  _buildThirdPage(),
                 ],
               ),
             ),
@@ -82,7 +83,7 @@ class _TourPageState extends State<TourPage> {
             style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF016367),
+              color: AppColors.darkPrimary,
               height: 1.2,
             ),
           ),
@@ -108,7 +109,7 @@ class _TourPageState extends State<TourPage> {
             child: Text(
               'Skip Tour',
               style: TextStyle(
-                color: AppColors.darkPrimary,
+                color: AppColors.primary,
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
               ),
@@ -211,6 +212,97 @@ class _TourPageState extends State<TourPage> {
             ],
           ),
         ); // Add the previous page implementation here
+  }
+
+  Widget _buildThirdPage() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // Illustration
+          Container(
+            width: double.infinity,
+            height: 300,
+            child: Image.asset(
+              'assets/images/open_pill.png',
+              fit: BoxFit.contain,
+            ),
+          ),
+          const SizedBox(height: 48),
+
+          // Page Indicators
+          _buildPageIndicator(_currentPage),
+          const SizedBox(height: 48),
+
+          // Title
+          Text(
+            'Your data stays with you',
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: AppColors.darkPrimary,
+              height: 1.2,
+            ),
+          ),
+          const SizedBox(height: 24),
+
+          // Description
+          Text(
+            'mestiNow respects your privacy. All your medical information and tracking data is stored locally on your device and never shared with external servers.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 16,
+              color: AppColors.darkPrimary,
+              height: 1.5,
+            ),
+          ),
+          const SizedBox(height: 48),
+
+          // Don't show again checkbox
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Checkbox(
+                value: _neverShowAgain,
+                activeColor: AppColors.primary,
+                onChanged: (bool? value) {
+                  setState(() {
+                    _neverShowAgain = value ?? false;
+                  });
+                },
+              ),
+              Text(
+                'Don\'t show tour again',
+                style: TextStyle(
+                  color: AppColors.primary,
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 24),
+          // Skip Tour Button
+          TextButton(
+            onPressed: () {                  // Navigate to main app
+              SharedPreferences.getInstance().then((prefs) {
+                prefs.setBool('showTour', !_neverShowAgain);
+              });
+              Navigator.pushReplacementNamed(context, '/home');
+            },
+            child: Text(
+              'End Tour',
+              style: TextStyle(
+                color: AppColors.primary,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override

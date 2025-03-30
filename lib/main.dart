@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import './pages/status.dart';
 // import './pages/settings.dart';
 import './theme/colors.dart';
@@ -15,6 +16,12 @@ void main() async {
   runApp(Provider<DatabaseService>.value(
     value: db, child: const MyApp()
   )); 
+}
+
+Future<String> getInitialRoute() async {
+  final prefs = await SharedPreferences.getInstance();
+  final showTour = prefs.getBool('showTour') ?? false;
+  return showTour ? '/tour' : '/home';
 }
 
 class MyApp extends StatelessWidget {
@@ -45,9 +52,17 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primary),
         useMaterial3: true,
       ),
-      home: StatusPage(),
+      home: FutureBuilder<String>(
+        future: getInitialRoute(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return snapshot.data == '/home' ? StatusPage() : TourPage();
+          }
+          return Center(child: CircularProgressIndicator());
+        },
+      ),
       // home: SettingsPage(),
-      initialRoute: '/tour',
+      // initialRoute: '/tour',
       routes: {
         '/tour': (context) => const TourPage(),
         '/home': (context) => const StatusPage(),

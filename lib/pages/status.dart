@@ -13,6 +13,8 @@ import '../widgets/symptom_button.dart';
 import '../services/database_service.dart';
 import '../models/event_log.dart';
 import '../pages/calendar_page.dart';
+import '../pages/onboarding/tour_page.dart';
+
 
 class StatusPage extends StatefulWidget {
   const StatusPage({super.key});
@@ -311,6 +313,17 @@ class _StatusPageState extends State<StatusPage> {
               title: const Text('Home'),
               onTap: () {
                 Navigator.pop(context); // Close the drawer
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.info),
+              title: const Text('Tour'),
+              onTap: () {
+                Navigator.pop(context); // Close the drawer
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const TourPage()),
+                );
               },
             ),
             ListTile(
