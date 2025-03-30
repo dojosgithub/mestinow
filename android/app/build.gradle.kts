@@ -34,7 +34,7 @@ android {
     applicationVariants.all { 
         outputs.all {
             if (this is com.android.build.gradle.internal.api.ApkVariantOutputImpl) {
-                outputFileName = "MestiNow.apk"
+                outputFileName = "mestiNow.apk"
             }
         }
     }

@@ -272,7 +272,7 @@ class _StatusPageState extends State<StatusPage> {
           alignment: Alignment.centerLeft,
           padding: EdgeInsets.only(left: 16),
           child: Text(
-            'MestiNow',
+            'mestiNow',
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -302,7 +302,7 @@ class _StatusPageState extends State<StatusPage> {
             DrawerHeader(
               decoration: BoxDecoration(color: AppColors.primary),
               child: const Text(
-                'MestiNow',
+                'mestiNow',
                 style: TextStyle(color: Colors.white, fontSize: 24),
               ),
             ),

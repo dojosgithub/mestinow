@@ -2,11 +2,11 @@
 
 ## Overview
 
-**MestiNow is a mobile application specifically designed to help individuals with Myasthenia Gravis (MG) manage their Mestinon® (Pyridostigmine Bromide) medication intake and track their symptoms effectively** . This app was created out of a personal need for a more flexible and accurate way to schedule and log medication doses, taking into account the immediate and time-sensitive nature of the medication's effects . Unlike generic medication scheduling apps, MestiNow allows users to log doses based on when they actually take them, ensuring the next reminder is set accordingly . The app also provides tools to monitor various MG symptoms, helping users understand the correlation between medication and their well-being .
+**mestiNow is a mobile application specifically designed to help individuals with Myasthenia Gravis (MG) manage their Mestinon® (Pyridostigmine Bromide) medication intake and track their symptoms effectively** . This app was created out of a personal need for a more flexible and accurate way to schedule and log medication doses, taking into account the immediate and time-sensitive nature of the medication's effects . Unlike generic medication scheduling apps, mestiNow allows users to log doses based on when they actually take them, ensuring the next reminder is set accordingly . The app also provides tools to monitor various MG symptoms, helping users understand the correlation between medication and their well-being .
 
 ## Background
 
-Living with Myasthenia Gravis involves a daily cycle where symptoms worsen as the day progresses, with sleep offering a temporary reset . While MG itself may not be inherently painful, the strain on muscles due to weakening can lead to significant discomfort . Managing this condition often requires strict adherence to a Mestinon® regimen, as the medication provides only temporary relief . **Accurate timing of Mestinon® doses is crucial; taking it too early can cause stomach upset, while delaying it can lead to the onset of symptoms and associated pain** . Existing medication scheduling applications often lack the flexibility needed for MG patients, who might need to adjust their dose times based on their immediate needs and wake-up times . MestiNow was developed to address this gap, providing a user-friendly solution for tracking medication intake in a way that adapts to the user's actual schedule .
+Living with Myasthenia Gravis involves a daily cycle where symptoms worsen as the day progresses, with sleep offering a temporary reset . While MG itself may not be inherently painful, the strain on muscles due to weakening can lead to significant discomfort . Managing this condition often requires strict adherence to a Mestinon® regimen, as the medication provides only temporary relief . **Accurate timing of Mestinon® doses is crucial; taking it too early can cause stomach upset, while delaying it can lead to the onset of symptoms and associated pain** . Existing medication scheduling applications often lack the flexibility needed for MG patients, who might need to adjust their dose times based on their immediate needs and wake-up times . mestiNow was developed to address this gap, providing a user-friendly solution for tracking medication intake in a way that adapts to the user's actual schedule .
 
 ## Key Features
 
@@ -89,7 +89,7 @@ For additional support or questions about the app's functionality, please refer 
 
 ## Getting Started
 
-MestiNow is designed to be intuitive and easy to use. Once you download and install the app, a brief welcome sequence and visual guide will explain the core functionalities . You can then start tracking your Pyridostigmine Bromide doses and symptoms immediately to better manage your Myasthenia Gravis.
+mestiNow is designed to be intuitive and easy to use. Once you download and install the app, a brief welcome sequence and visual guide will explain the core functionalities . You can then start tracking your Pyridostigmine Bromide doses and symptoms immediately to better manage your Myasthenia Gravis.
 
 
 ### Disclaimer:

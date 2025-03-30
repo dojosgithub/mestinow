@@ -1,4 +1,4 @@
-# Functional Requirements for UX Developer - "MestiNow" Mobile App
+# Functional Requirements for UX Developer - "mestiNow" Mobile App
 
 1. User Onboarding
 

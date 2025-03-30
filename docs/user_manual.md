@@ -1,7 +1,7 @@
-# MestiNow App Documentation
+# mestiNow App Documentation
 
 ## Overview
-MestiNow is a medication tracking application specifically designed for managing Mestinon doses and monitoring MG (Myasthenia Gravis) symptoms. The app helps users track their medication schedule and log various symptoms associated with their condition.
+mestiNow is a medication tracking application specifically designed for managing Mestinon doses and monitoring MG (Myasthenia Gravis) symptoms. The app helps users track their medication schedule and log various symptoms associated with their condition.
 
 ## Main Features
 

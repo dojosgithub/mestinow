@@ -24,7 +24,7 @@ class _TourPageState extends State<TourPage> {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'MestiNow',
+                  'mestiNow',
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -90,7 +90,7 @@ class _TourPageState extends State<TourPage> {
 
           // Description
           Text(
-            'MestiNow is free and open-source software, and it will always remain free—for the benefit of Myasthenia Gravis patients and anyone else who finds it helpful.',
+            'mestiNow is free and open-source software, and it will always remain free—for the benefit of Myasthenia Gravis patients and anyone else who finds it helpful.',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 16,
