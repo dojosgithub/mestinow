@@ -12,10 +12,10 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   static const String _intervalKey = 'mestinon_interval_hours';
   static const String _timestampKey = 'last_button_press_time';
-  
+
   late double _intervalHours;
   late DateTime _lastTakenTime;
-  
+
   @override
   void initState() {
     super.initState();
@@ -25,8 +25,9 @@ class _SettingsPageState extends State<SettingsPage> {
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
     final interval = prefs.getDouble(_intervalKey) ?? 3.0;
-    final timestamp = prefs.getInt(_timestampKey) ?? DateTime.now().millisecondsSinceEpoch;
-    
+    final timestamp =
+        prefs.getInt(_timestampKey) ?? DateTime.now().millisecondsSinceEpoch;
+
     setState(() {
       _intervalHours = interval;
       _lastTakenTime = DateTime.fromMillisecondsSinceEpoch(timestamp);
@@ -82,10 +83,7 @@ class _SettingsPageState extends State<SettingsPage> {
           children: [
             const Text(
               'Medication Interval',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Row(
@@ -116,10 +114,7 @@ class _SettingsPageState extends State<SettingsPage> {
             const SizedBox(height: 32),
             const Text(
               'Last Dose Time',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             InkWell(

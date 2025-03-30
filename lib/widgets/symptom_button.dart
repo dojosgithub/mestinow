@@ -29,10 +29,7 @@ class SymptomButton extends StatelessWidget {
               backgroundColor: isActive ? AppColors.primary : Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
-                side: BorderSide(
-                  color: AppColors.primary,
-                  width: 2,
-                ),
+                side: BorderSide(color: AppColors.primary, width: 2),
               ),
               padding: EdgeInsets.all(8),
             ),
@@ -45,12 +42,9 @@ class SymptomButton extends StatelessWidget {
         SizedBox(height: 2),
         Text(
           label,
-          style: TextStyle(
-            fontSize: 12,
-            color: AppColors.darkPrimary,
-          ),
+          style: TextStyle(fontSize: 12, color: AppColors.darkPrimary),
         ),
       ],
     );
   }
-} 
+}

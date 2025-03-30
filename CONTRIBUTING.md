@@ -83,7 +83,7 @@ This project and everyone participating in it is governed by our Code of Conduct
    flutter analyze
 
    # Format code
-   flutter format .
+   dart format .
    ```
 
 ## Pull Request Process

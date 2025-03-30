@@ -12,10 +12,7 @@ class EventLog {
   // EventType eventType = EventType.medMestinon; // e.g., 'ptosis', 'vision', etc.
   String eventType;
 
-  EventLog({
-    required this.timestamp,
-    required this.eventType,
-  });
+  EventLog({required this.timestamp, required this.eventType});
 }
 
 enum EventType {

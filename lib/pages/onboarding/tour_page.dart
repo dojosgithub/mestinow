@@ -120,7 +120,7 @@ class _TourPageState extends State<TourPage> {
     );
   }
 
-  Widget _buildPageIndicator(currentPage){
+  Widget _buildPageIndicator(currentPage) {
     // Page Indicators
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -132,9 +132,10 @@ class _TourPageState extends State<TourPage> {
           height: 8,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: currentPage == index
-                ? Color(0xFF016367)
-                : Color(0xFF016367).withOpacity(0.2),
+            color:
+                currentPage == index
+                    ? Color(0xFF016367)
+                    : Color(0xFF016367).withOpacity(0.2),
           ),
         ),
       ),
@@ -145,73 +146,73 @@ class _TourPageState extends State<TourPage> {
   Widget _buildFirstPage() {
     // Implementation from the previous welcome page
     return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // App Logo/Icon
-              Container(
-                width: 250,
-                height: 250,
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: Center(
-                  child: Image.asset(
-                    'assets/images/welcome_illustration.webp',
-                    width: 200,
-                    height: 200,
-                    fit: BoxFit.contain,
-                  ),
-                ),
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // App Logo/Icon
+          Container(
+            width: 250,
+            height: 250,
+            decoration: BoxDecoration(
+              color: AppColors.primary.withOpacity(0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Center(
+              child: Image.asset(
+                'assets/images/welcome_illustration.webp',
+                width: 200,
+                height: 200,
+                fit: BoxFit.contain,
               ),
-              const SizedBox(height: 48),
-
-              _buildPageIndicator(_currentPage),
-              const SizedBox(height: 48),
-              
-              // Title
-              const Text(
-                'Never miss a dose',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.darkPrimary,
-                ),
-              ),
-              const SizedBox(height: 16),
-              
-              // Subtitle
-              Text(
-                'Track your Pyridostigmine precisely and keep an eye on your symptoms effortlessly.',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: AppColors.darkPrimary,
-                  height: 1.5,
-                ),
-              ),
-              const SizedBox(height: 48),
-              
-              // Skip Tour Button
-              TextButton(
-                onPressed: () {
-                  // Navigate to main app
-                  Navigator.pushReplacementNamed(context, '/home');
-                },
-                child: const Text(
-                  'Skip Tour',
-                  style: TextStyle(
-                    color: AppColors.primary,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
-        ); // Add the previous page implementation here
+          const SizedBox(height: 48),
+
+          _buildPageIndicator(_currentPage),
+          const SizedBox(height: 48),
+
+          // Title
+          const Text(
+            'Never miss a dose',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: AppColors.darkPrimary,
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // Subtitle
+          Text(
+            'Track your Pyridostigmine precisely and keep an eye on your symptoms effortlessly.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 16,
+              color: AppColors.darkPrimary,
+              height: 1.5,
+            ),
+          ),
+          const SizedBox(height: 48),
+
+          // Skip Tour Button
+          TextButton(
+            onPressed: () {
+              // Navigate to main app
+              Navigator.pushReplacementNamed(context, '/home');
+            },
+            child: const Text(
+              'Skip Tour',
+              style: TextStyle(
+                color: AppColors.primary,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ],
+      ),
+    ); // Add the previous page implementation here
   }
 
   Widget _buildThirdPage() {
@@ -274,10 +275,7 @@ class _TourPageState extends State<TourPage> {
               ),
               Text(
                 'Don\'t show tour again',
-                style: TextStyle(
-                  color: AppColors.primary,
-                  fontSize: 14,
-                ),
+                style: TextStyle(color: AppColors.primary, fontSize: 14),
               ),
             ],
           ),
@@ -285,7 +283,8 @@ class _TourPageState extends State<TourPage> {
           const SizedBox(height: 24),
           // Skip Tour Button
           TextButton(
-            onPressed: () {                  // Navigate to main app
+            onPressed: () {
+              // Navigate to main app
               SharedPreferences.getInstance().then((prefs) {
                 prefs.setBool('showTour', !_neverShowAgain);
               });
@@ -310,4 +309,4 @@ class _TourPageState extends State<TourPage> {
     _pageController.dispose();
     super.dispose();
   }
-} 
+}

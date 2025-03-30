@@ -22,16 +22,15 @@ class DatabaseService {
 
   static Future<DatabaseService> create() async {
     final dir = await getApplicationDocumentsDirectory();
-    final store = await openStore(directory: p.join(dir.path, "mestinow.db")); //ObjectBox.create(getObjectBoxModel(), directory: dir.path);
+    final store = await openStore(
+      directory: p.join(dir.path, "mestinow.db"),
+    ); //ObjectBox.create(getObjectBoxModel(), directory: dir.path);
     return DatabaseService._create(store);
   }
 
   // Symptom logging methods
   Future<void> logEvent(String eventType) async {
-    final eventLog = EventLog(
-      timestamp: DateTime.now(),
-      eventType: eventType,
-    );
+    final eventLog = EventLog(timestamp: DateTime.now(), eventType: eventType);
 
     eventLogBox.put(eventLog);
 
@@ -53,15 +52,22 @@ class DatabaseService {
     DateTime start,
     DateTime end,
   ) async {
-  //   return await isar.eventLogs
-  //       .filter()
-  //       .timestampBetween(start, end)
-  //       .sortByTimestampDesc()
-  //       .findAll();
-  // }
-    final query = eventLogBox.query(
-      EventLog_.timestamp.between(start.millisecondsSinceEpoch, end.millisecondsSinceEpoch)
-    ).order(EventLog_.timestamp, flags: Order.descending).build();
+    //   return await isar.eventLogs
+    //       .filter()
+    //       .timestampBetween(start, end)
+    //       .sortByTimestampDesc()
+    //       .findAll();
+    // }
+    final query =
+        eventLogBox
+            .query(
+              EventLog_.timestamp.between(
+                start.millisecondsSinceEpoch,
+                end.millisecondsSinceEpoch,
+              ),
+            )
+            .order(EventLog_.timestamp, flags: Order.descending)
+            .build();
     final results = query.find();
     query.close();
     return results;

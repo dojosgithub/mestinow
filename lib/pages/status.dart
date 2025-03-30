@@ -15,7 +15,6 @@ import '../models/event_log.dart';
 import '../pages/calendar_page.dart';
 import '../pages/onboarding/tour_page.dart';
 
-
 class StatusPage extends StatefulWidget {
   const StatusPage({super.key});
 
@@ -67,7 +66,7 @@ class _StatusPageState extends State<StatusPage> {
   Future<void> _saveMedIntake() async {
     // final prefs = await SharedPreferences.getInstance();
     // final intervalHours = prefs.getDouble(_intervalKey) ?? 3.0;
-    
+
     await db.logEvent(EventType.medMestinon.name);
     // await _saveButtonPressTime();
     // setState(() {
@@ -411,7 +410,10 @@ class _StatusPageState extends State<StatusPage> {
       radius: 120.0,
       lineWidth: 13.0,
       circularStrokeCap: CircularStrokeCap.round,
-      percent: remainingSeconds <= 0 ? 0.0 : min(remainingSeconds,totalSeconds) / totalSeconds,
+      percent:
+          remainingSeconds <= 0
+              ? 0.0
+              : min(remainingSeconds, totalSeconds) / totalSeconds,
       center: Text(
         "Next dose\n$relativeNextDose",
         textAlign: TextAlign.center,

@@ -8,7 +8,6 @@ import '../services/database_service.dart';
 class CalendarPage extends StatefulWidget {
   const CalendarPage({super.key});
 
-
   @override
   _CalendarPageState createState() => _CalendarPageState();
 }
@@ -27,7 +26,7 @@ class _CalendarPageState extends State<CalendarPage> {
     _selectedDate = DateTime.now();
     _displayedMonth = DateTime(_selectedDate.year, _selectedDate.month);
 
-        // Scroll to today's position after the widget is built
+    // Scroll to today's position after the widget is built
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollToSelectedDate();
     });
@@ -47,7 +46,7 @@ class _CalendarPageState extends State<CalendarPage> {
     // Calculate position based on day of month (assuming each item width is 68.0 - 60 + 8 margin)
     final double itemWidth = 68.0;
     final double offset = (_selectedDate.day - 1) * itemWidth;
-    
+
     // Animate to the position
     _scrollController.animateTo(
       offset,
@@ -58,7 +57,11 @@ class _CalendarPageState extends State<CalendarPage> {
 
   Future<void> _loadEvents() async {
     // Load events for selected date
-    final startOfDay = DateTime(_selectedDate.year, _selectedDate.month, _selectedDate.day);
+    final startOfDay = DateTime(
+      _selectedDate.year,
+      _selectedDate.month,
+      _selectedDate.day,
+    );
     final endOfDay = startOfDay.add(const Duration(days: 1));
 
     try {
@@ -91,10 +94,7 @@ class _CalendarPageState extends State<CalendarPage> {
           ),
           Text(
             DateFormat('MMMM yyyy').format(_displayedMonth),
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           IconButton(
             icon: const Icon(Icons.chevron_right),
@@ -113,8 +113,13 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   Widget _buildDaySelector() {
-    final firstDayOfMonth = DateTime(_displayedMonth.year, _displayedMonth.month, 1);
-    final daysInMonth = DateTime(_displayedMonth.year, _displayedMonth.month + 1, 0).day;
+    final firstDayOfMonth = DateTime(
+      _displayedMonth.year,
+      _displayedMonth.month,
+      1,
+    );
+    final daysInMonth =
+        DateTime(_displayedMonth.year, _displayedMonth.month + 1, 0).day;
 
     return Container(
       height: 100,
@@ -124,7 +129,8 @@ class _CalendarPageState extends State<CalendarPage> {
         itemCount: daysInMonth,
         itemBuilder: (context, index) {
           final date = firstDayOfMonth.add(Duration(days: index));
-          final isSelected = date.day == _selectedDate.day &&
+          final isSelected =
+              date.day == _selectedDate.day &&
               date.month == _selectedDate.month &&
               date.year == _selectedDate.year;
 
@@ -141,10 +147,7 @@ class _CalendarPageState extends State<CalendarPage> {
               decoration: BoxDecoration(
                 color: isSelected ? AppColors.primary : Colors.white,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: AppColors.primary,
-                  width: 1,
-                ),
+                border: Border.all(color: AppColors.primary, width: 1),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -178,9 +181,7 @@ class _CalendarPageState extends State<CalendarPage> {
     return Expanded(
       child: ListView(
         padding: const EdgeInsets.all(16),
-        children: [
-          ..._buildSymptomEvents(),
-        ],
+        children: [..._buildSymptomEvents()],
       ),
     );
   }
@@ -190,14 +191,9 @@ class _CalendarPageState extends State<CalendarPage> {
       return Card(
         margin: const EdgeInsets.only(bottom: 8),
         child: ListTile(
-          leading: Icon(
-            Icons.warning_amber_rounded,
-            color: AppColors.primary,
-          ),
+          leading: Icon(Icons.warning_amber_rounded, color: AppColors.primary),
           title: Text(event.eventType),
-          subtitle: Text(
-            '${DateFormat('h:mm a').format(event.timestamp)} ',
-          ),
+          subtitle: Text('${DateFormat('h:mm a').format(event.timestamp)} '),
         ),
       );
     }).toList();
@@ -228,4 +224,4 @@ class _CalendarPageState extends State<CalendarPage> {
       ),
     );
   }
-} 
+}

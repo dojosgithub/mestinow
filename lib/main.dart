@@ -8,14 +8,11 @@ import './theme/colors.dart';
 import './services/database_service.dart';
 import './pages/onboarding/tour_page.dart';
 
-
 void main() async {
   tz.initializeTimeZones();
   WidgetsFlutterBinding.ensureInitialized();
   final db = await DatabaseService.create();
-  runApp(Provider<DatabaseService>.value(
-    value: db, child: const MyApp()
-  )); 
+  runApp(Provider<DatabaseService>.value(value: db, child: const MyApp()));
 }
 
 Future<String> getInitialRoute() async {
