@@ -1,4 +1,4 @@
-# Mesti**Now** - Your Personal Mestinon® (pyridostigmine bromide) & MG Symptom Tracker
+# mesti**Now** - Your Personal Mestinon® (pyridostigmine bromide) & MG Symptom Tracker
 
 ## Overview
 
