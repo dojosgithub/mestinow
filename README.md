@@ -91,6 +91,19 @@ For additional support or questions about the app's functionality, please refer 
 
 mestiNow is designed to be intuitive and easy to use. Once you download and install the app, a brief welcome sequence and visual guide will explain the core functionalities . You can then start tracking your Pyridostigmine Bromide doses and symptoms immediately to better manage your Myasthenia Gravis.
 
+## Contributing
+
+We love your input! We want to make contributing to mestiNow as easy and transparent as possible, whether it's:
+
+- Reporting a bug
+- Discussing the current state of the code
+- Submitting a fix
+- Proposing new features
+- Becoming a maintainer
+
+Check out our [Contributing Guide](CONTRIBUTING.md) for ways to get started.
+
+Please refer to our [License](LICENSE) for information on our code of conduct.
 
 ### Disclaimer:
 Mestinon® is a registered trademark of Bausch Health Companies Inc. Mesti**Now** is not affiliated with, endorsed, sponsored, or supported by Bausch Health Companies Inc. This application is provided solely for the convenience of patients.
