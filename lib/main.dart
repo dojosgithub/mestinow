@@ -20,7 +20,7 @@ void main() async {
 
 Future<String> getInitialRoute() async {
   final prefs = await SharedPreferences.getInstance();
-  final showTour = prefs.getBool('showTour') ?? false;
+  final showTour = prefs.getBool('showTour') ?? true;
   return showTour ? '/tour' : '/home';
 }
 
