@@ -91,9 +91,9 @@ class _SettingsPageState extends State<SettingsPage> {
                 Expanded(
                   child: Slider(
                     value: _intervalHours,
-                    min: 1,
-                    max: 8,
-                    divisions: 14,
+                    min: 3,
+                    max: 6,
+                    divisions: 6,
                     label: '${_intervalHours.toStringAsFixed(1)} hours',
                     onChanged: (value) => _saveInterval(value),
                     activeColor: AppColors.primary,
