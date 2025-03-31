@@ -128,17 +128,21 @@ class _StatusPageState extends State<StatusPage> {
       tz.TZDateTime.from(scheduledTime, tz.local),
       const NotificationDetails(
         android: AndroidNotificationDetails(
-          'medication_channel',
+          'medication_channel2',
           'Medication Reminders',
+          channelDescription: 'Medication AudioReminders',
           importance: Importance.max,
           priority: Priority.high,
           channelShowBadge: true,
           enableVibration: true,
+          sound: RawResourceAndroidNotificationSound('alert'),
+          playSound: true,
         ),
         iOS: DarwinNotificationDetails(
           presentAlert: true,
           presentSound: true,
           presentBadge: true,
+          sound: 'alert.mp3',
         ),
       ),
       // uiLocalNotificationDateInterpretation:
