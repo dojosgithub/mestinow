@@ -23,8 +23,6 @@ Future<String> getInitialRoute() async {
   return showTour ? '/tour' : '/home';
 }
 
-
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 

@@ -13,10 +13,10 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   static const String _intervalKey = 'mestinon_interval_hours';
   static const String _timestampKey = 'last_button_press_time';
-  
+
   late double _intervalHours;
   late DateTime _lastTakenTime;
-  
+
   @override
   void initState() {
     _intervalHours = 3.0;
