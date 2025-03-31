@@ -1,0 +1,51 @@
+name: Build and Release APK
+
+on:
+  push:
+    branches: [ "main" ]  # Trigger on push to main branch
+  pull_request:
+    branches: [ "main" ]  # Trigger on PRs to main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+      
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.29.2'  # Specify your Flutter version
+          channel: 'stable'
+      
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Build localizations
+        run: flutter gen-l10n
+      
+      - name: Build APK
+        run: flutter build apk --release
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+      # Optional: Create a GitHub Release with the APK
+      - name: Create Release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'  # Only on push to main
+        uses: softprops/action-gh-release@v1
+        with:
+          files: build/app/outputs/flutter-apk/app-release.apk
+          tag_name: v1.0.${{ github.run_number }}
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 

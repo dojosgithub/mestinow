@@ -407,7 +407,7 @@ class _StatusPageState extends State<StatusPage> {
     );
   }
 
-  Widget _buildCircularPercentIndicator(leftColor, relativeNextDose,l10n) {
+  Widget _buildCircularPercentIndicator(leftColor, relativeNextDose, l10n) {
     return CircularPercentIndicator(
       radius: 120.0,
       lineWidth: 13.0,
