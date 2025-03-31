@@ -26,6 +26,9 @@ jobs:
       
       - name: Get dependencies
         run: flutter pub get
+
+      - name: Build localizations
+        run: flutter gen-l10n
       
       - name: Build APK
         run: flutter build apk --release
