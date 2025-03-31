@@ -23,19 +23,19 @@ class SymptomButton extends StatelessWidget {
         Container(
           width: 60,
           height: 60,
-          child: TextButton(
+          child: ElevatedButton(
             onPressed: onPressed,
             style: TextButton.styleFrom(
-              backgroundColor: isActive ? AppColors.primary : Colors.white,
+              backgroundColor: isActive ? AppColors.primary : AppColors.lighterPrimary,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
-                side: BorderSide(color: AppColors.primary, width: 2),
+                side: BorderSide(color: AppColors.lightPrimary, width: 0),
               ),
-              padding: EdgeInsets.all(8),
+              padding: EdgeInsets.all(4),
             ),
             child: Image.asset(
               iconPath,
-              color: isActive ? Colors.white : AppColors.primary,
+              color: isActive ? Colors.white : AppColors.darkPrimary,
             ),
           ),
         ),

@@ -120,11 +120,16 @@ class _StatusPageState extends State<StatusPage> {
     if (scheduledTime.isBefore(DateTime.now())) {
       return;
     }
+    final fiveMinutesBefore = scheduledTime.subtract(Duration(minutes: 5));
+    await doScheduleNextDoseNotification(fiveMinutesBefore, 'It will soon be time to take your Medication.',0);
+    await doScheduleNextDoseNotification(scheduledTime, 'It\'s time to take your Medication.',1);
+  }
 
+  Future<void>doScheduleNextDoseNotification(DateTime scheduledTime,String message,int notificationId) async {
     await notificationsPlugin.zonedSchedule(
-      0,
+      notificationId,
       'Medication Reminder',
-      'It\'s time to take your Mestinon.',
+      message,
       tz.TZDateTime.from(scheduledTime, tz.local),
       const NotificationDetails(
         android: AndroidNotificationDetails(
@@ -213,8 +218,7 @@ class _StatusPageState extends State<StatusPage> {
 
   Color _getTimeBasedBackColor(int minutes) {
     if (minutes < 1) return AppColors.error;
-    return Color(0xff5CBE9D);
-    // minutes > 0 ? Color(0xff5CBE9D) : AppColors.error,// Color(0xff5CBE9D),
+    return AppColors.lightPrimary;
   }
 
   // Add this widget to your build method, before the CircularPercentIndicator
@@ -228,7 +232,7 @@ class _StatusPageState extends State<StatusPage> {
 
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
-        crossAxisSpacing: 16,
+        crossAxisSpacing: 1,
         mainAxisExtent: 85.0,
         // mainAxisSpacing: 8,
         // childAspectRatio: 1.5,
