@@ -1,0 +1,23 @@
+{
+    "settings": "Settings",
+    "calendar": "Calendar",
+    "lastDose": "Last Dose",
+    "nextDose": "Next Dose",
+    "at": "at",
+    "logDoseNow": "Log Dose Now",
+    "tour": "Tour",
+    "medicationInterval": "Medication Interval",
+    "lastDoseTime": "Last Dose Time",
+    "language": "Language",
+    "english": "English",
+    "spanish": "Spanish",
+    "@settings": {
+        "description": "Title for the settings page"
+    },
+    "@medicationInterval": {
+        "description": "Label for medication interval setting"
+    },
+    "@lastDoseTime": {
+        "description": "Label for last dose time setting"
+    }
+} 

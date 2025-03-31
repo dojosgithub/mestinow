@@ -1,0 +1,23 @@
+{
+    "settings": "Configuración",
+    "calendar": "Calendario",
+    "lastDose": "Última dosis",
+    "nextDose": "Siguiente dosis",
+    "at": "a las",
+    "logDoseNow": "Registrar Dosis",
+    "tour": "Recorrido",
+    "medicationInterval": "Intervalo de medicación",
+    "lastDoseTime": "Hora de la última dosis",
+    "language": "Idioma",
+    "english": "Inglés",
+    "spanish": "Español",
+    "@settings": {
+        "description": "Título para la página de ajustes"
+    },
+    "@medicationInterval": {
+        "description": "Etiqueta para el ajuste del intervalo"
+    },
+    "@lastDoseTime": {
+        "description": "Etiqueta para la última dosis"
+    }
+} 

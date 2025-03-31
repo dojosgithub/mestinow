@@ -1,4 +1,4 @@
-name: mesti_now
+name: mestinow
 description: "A medication tracker app for Myasthenia Gravis patients."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -34,9 +34,10 @@ dependencies:
   shared_preferences: ^2.2.0
   flutter_local_notifications: ^19.0.0
   timezone: ^0.10.0
-  lit_relative_date_time: ^1.2.0
   flutter_native_splash: ^2.4.5
   flutter_launcher_icons: ^0.14.3
+  flutter_localizations:
+    sdk: flutter
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -47,6 +48,8 @@ dependencies:
   path: ^1.9.1
   provider: ^6.1.1
   intl: ^0.19.0
+  relative_time: ^5.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -69,6 +72,7 @@ flutter:
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
+  generate: true
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:

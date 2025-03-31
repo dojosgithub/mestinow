@@ -3,10 +3,12 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import './pages/status.dart';
-// import './pages/settings.dart';
 import './theme/colors.dart';
 import './services/database_service.dart';
 import './pages/onboarding/tour_page.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:relative_time/relative_time.dart';
 
 void main() async {
   tz.initializeTimeZones();
@@ -20,6 +22,8 @@ Future<String> getInitialRoute() async {
   final showTour = prefs.getBool('showTour') ?? true;
   return showTour ? '/tour' : '/home';
 }
+
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -65,6 +69,18 @@ class MyApp extends StatelessWidget {
         '/home': (context) => const StatusPage(),
         // ... other routes ...
       },
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        RelativeTimeLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en'), // English
+        Locale('es'), // Spanish
+        // Add more locales as needed
+      ],
     );
   }
 }

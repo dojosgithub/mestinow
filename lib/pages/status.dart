@@ -5,8 +5,10 @@ import 'package:percent_indicator/percent_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
-import 'package:lit_relative_date_time/lit_relative_date_time.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:relative_time/relative_time.dart';
+
 import '../theme/colors.dart';
 import '../pages/settings.dart';
 import '../widgets/symptom_button.dart';
@@ -247,10 +249,9 @@ class _StatusPageState extends State<StatusPage> {
 
   @override
   Widget build(BuildContext context) {
-    this.db = Provider.of<DatabaseService>(context);
-    RelativeDateFormat relativeDateFormat = RelativeDateFormat(
-      Localizations.localeOf(context),
-    );
+    db = Provider.of<DatabaseService>(context);
+    final l10n = AppLocalizations.of(context)!;
+
     int minutes = remainingSeconds ~/ 60;
     final lastDoseDateTime = DateTime.fromMillisecondsSinceEpoch(
       lastButtonPressTime!,
@@ -258,9 +259,9 @@ class _StatusPageState extends State<StatusPage> {
     final nextDoseDateTime = lastDoseDateTime.add(
       Duration(seconds: totalSeconds),
     );
-    final relativeNextDose = relativeDateFormat.format(
-      RelativeDateTime(dateTime: DateTime.now(), other: nextDoseDateTime),
-    );
+    final relativeNextDose = RelativeTime(context).format(nextDoseDateTime);
+    final relativeLastDose = RelativeTime(context).format(lastDoseDateTime);
+
     Color frontColor = _getTimeBasedFrontColor(minutes);
     Color backColor = _getTimeBasedBackColor(minutes);
 
@@ -316,7 +317,7 @@ class _StatusPageState extends State<StatusPage> {
             ),
             ListTile(
               leading: const Icon(Icons.info),
-              title: const Text('Tour'),
+              title: Text(l10n.tour),
               onTap: () {
                 Navigator.pop(context); // Close the drawer
                 Navigator.push(
@@ -327,7 +328,7 @@ class _StatusPageState extends State<StatusPage> {
             ),
             ListTile(
               leading: const Icon(Icons.settings),
-              title: const Text('Settings'),
+              title: Text(l10n.settings),
               onTap: () {
                 Navigator.pop(context); // Close the drawer
                 Navigator.push(
@@ -340,7 +341,7 @@ class _StatusPageState extends State<StatusPage> {
             ),
             ListTile(
               leading: const Icon(Icons.calendar_month),
-              title: const Text('Calendar'),
+              title: Text(l10n.calendar),
               onTap: () {
                 Navigator.pop(context); // Close the drawer
                 Navigator.push(
@@ -373,7 +374,7 @@ class _StatusPageState extends State<StatusPage> {
                 Container(
                   width: MediaQuery.of(context).size.width,
                   child: Text(
-                    'Last dose: ${relativeDateFormat.format(RelativeDateTime(dateTime: DateTime.now(), other: lastDoseDateTime))} at ${_formatTime(lastDoseDateTime)}',
+                    '${l10n.lastDose}: $relativeLastDose ${l10n.at} ${_formatTime(lastDoseDateTime)}',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 18,
@@ -388,12 +389,13 @@ class _StatusPageState extends State<StatusPage> {
                     _buildCircularPercentIndicator(
                       frontColor,
                       relativeNextDose,
+                      l10n,
                     ),
                     // SizedBox(height: 50),
                     Positioned(
                       bottom: 0,
                       right: 0,
-                      child: _buildTakeMestinonButton(),
+                      child: _buildTakeMestinonButton(l10n),
                     ),
                   ],
                 ),
@@ -405,7 +407,7 @@ class _StatusPageState extends State<StatusPage> {
     );
   }
 
-  Widget _buildCircularPercentIndicator(leftColor, relativeNextDose) {
+  Widget _buildCircularPercentIndicator(leftColor, relativeNextDose,l10n) {
     return CircularPercentIndicator(
       radius: 120.0,
       lineWidth: 13.0,
@@ -415,10 +417,10 @@ class _StatusPageState extends State<StatusPage> {
               ? 0.0
               : min(remainingSeconds, totalSeconds) / totalSeconds,
       center: Text(
-        "Next dose\n$relativeNextDose",
+        "${l10n.nextDose}\n$relativeNextDose",
         textAlign: TextAlign.center,
         style: TextStyle(
-          fontSize: 24,
+          fontSize: 21,
           fontWeight: FontWeight.bold,
           color: Colors.white,
         ),
@@ -428,7 +430,7 @@ class _StatusPageState extends State<StatusPage> {
     );
   }
 
-  Widget _buildTakeMestinonButton() {
+  Widget _buildTakeMestinonButton(l10n) {
     return Container(
       height: 40,
       decoration: BoxDecoration(
@@ -444,7 +446,7 @@ class _StatusPageState extends State<StatusPage> {
           });
         },
         child: Text(
-          '+ Log Dose Now',
+          '+ ${l10n.logDoseNow}',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontFamily: 'Roboto',
