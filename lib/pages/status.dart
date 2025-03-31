@@ -259,8 +259,14 @@ class _StatusPageState extends State<StatusPage> {
     final nextDoseDateTime = lastDoseDateTime.add(
       Duration(seconds: totalSeconds),
     );
-    final relativeNextDose = RelativeTime(context).format(nextDoseDateTime);
-    final relativeLastDose = RelativeTime(context).format(lastDoseDateTime);
+    final relativeNextDose = RelativeTime(
+      context,
+      timeUnits: [TimeUnit.day, TimeUnit.hour, TimeUnit.minute],
+    ).format(nextDoseDateTime);
+    final relativeLastDose = RelativeTime(
+      context,
+      timeUnits: [TimeUnit.day, TimeUnit.hour, TimeUnit.minute],
+    ).format(lastDoseDateTime);
 
     Color frontColor = _getTimeBasedFrontColor(minutes);
     Color backColor = _getTimeBasedBackColor(minutes);
