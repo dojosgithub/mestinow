@@ -48,17 +48,20 @@ jobs:
           name: app-bundle
           path: build/app/outputs/bundle/release/app-release.aab
 
+      - name: Create service_account.json
+        run: echo '${{ secrets.PLAY_STORE_SERVICE_ACCOUNT }}' > service_account.json
+
       # Deploy to Play Store
       - name: Deploy to Play Store
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: r0adkll/upload-google-play@v1
         with:
-          serviceAccountJson: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT }}
+          serviceAccountJson: service_account.json
           packageName: com.dojo.mestinow
           releaseFiles: build/app/outputs/bundle/release/app-release.aab
           track: internal
           status: completed
-          # whatsNewDirectory: whatsnew  # Optional: Directory containing release notes
+          whatsNewDirectory: whatsnew
 
 permissions:
   contents: write
