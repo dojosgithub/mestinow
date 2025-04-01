@@ -1,4 +1,4 @@
-package com.example.mestinow
+package com.dojo.mestinow
 
 import io.flutter.embedding.android.FlutterActivity
 

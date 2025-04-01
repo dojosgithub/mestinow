@@ -1,4 +1,4 @@
-name: Build and Release APK
+name: Build and Release to Play Store
 
 on:
   push:
@@ -21,7 +21,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.29.2'  # Specify your Flutter version
+          flutter-version: '3.29.2'
           channel: 'stable'
       
       - name: Get dependencies
@@ -29,26 +29,36 @@ jobs:
 
       - name: Build localizations
         run: flutter gen-l10n
-      
-      - name: Build APK
-        run: flutter build apk --release
 
-      - name: Upload APK
+      - name: Decode Keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/keystore.jks
+      
+      - name: Build App Bundle
+        run: flutter build appbundle --release
+        env:
+          KEYSTORE_PATH: android/app/keystore.jks
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+
+      - name: Upload App Bundle
         uses: actions/upload-artifact@v4
         with:
-          name: app-release
-          path: build/app/outputs/flutter-apk/app-release.apk
+          name: app-bundle
+          path: build/app/outputs/bundle/release/app-release.aab
 
-      # Optional: Create a GitHub Release with the APK
-      - name: Create Release
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'  # Only on push to main
-        uses: softprops/action-gh-release@v1
+      # Deploy to Play Store
+      - name: Deploy to Play Store
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: r0adkll/upload-google-play@v1
         with:
-          files: build/app/outputs/flutter-apk/app-release.apk
-          tag_name: v1.0.${{ github.run_number }}
-          generate_release_notes: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+          serviceAccountJson: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT }}
+          packageName: com.dojo.mestinow  # Replace with your actual package name
+          releaseFiles: build/app/outputs/bundle/release/app-release.aab
+          track: internal  # Start with internal testing track
+          status: completed
+          whatsNewDirectory: whatsnew  # Optional: Directory containing release notes
 
 permissions:
   contents: write
