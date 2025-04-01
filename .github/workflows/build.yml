@@ -54,11 +54,11 @@ jobs:
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJson: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT }}
-          packageName: com.dojo.mestinow  # Replace with your actual package name
+          packageName: com.dojo.mestinow
           releaseFiles: build/app/outputs/bundle/release/app-release.aab
-          track: internal  # Start with internal testing track
+          track: internal
           status: completed
-          whatsNewDirectory: whatsnew  # Optional: Directory containing release notes
+          # whatsNewDirectory: whatsnew  # Optional: Directory containing release notes
 
 permissions:
   contents: write
