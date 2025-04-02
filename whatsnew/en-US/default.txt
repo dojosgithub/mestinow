@@ -1,1 +1,1 @@
-Initial publish
+Calendar events now match the symptom icons
