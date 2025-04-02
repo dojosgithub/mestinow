@@ -86,6 +86,7 @@ flutter:
     - assets/images/welcome_illustration.webp
     - assets/images/medication_illustration.webp
     - assets/images/open_pill.png
+    - android/app/src/main/res/raw/alert.mp3
     - assets/sounds/alert.mp3
     
   # An image asset can refer to one or more resolution-specific "variants", see
