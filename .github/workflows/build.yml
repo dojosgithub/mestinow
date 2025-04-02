@@ -60,7 +60,7 @@ jobs:
           packageName: com.dojo.mestinow
           releaseFiles: build/app/outputs/bundle/release/app-release.aab
           track: internal
-          status: draft # Set to completed to publish
+          status: completed # draft # Set to completed to publish
           whatsNewDirectory: whatsnew
 
 permissions:
