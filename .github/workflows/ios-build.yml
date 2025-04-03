@@ -1,0 +1,76 @@
+name: Build and Release iOS App
+
+on:
+  push:
+    branches: [ "main","26-ios-pipeline" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.29.2'
+          channel: 'stable'
+      
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Build localizations
+        run: flutter gen-l10n
+
+      - name: Install CocoaPods
+        run: |
+          cd ios
+          pod install
+          cd ..
+
+      - name: Setup Code Signing
+        run: |
+          echo "${{ secrets.IOS_DISTRIBUTION_CERTIFICATE }}" | base64 --decode > ios_distribution.p12
+          echo "${{ secrets.IOS_PROVISIONING_PROFILE }}" | base64 --decode > ios_distribution.mobileprovision
+          
+          # Create keychain
+          security create-keychain -p "${{ secrets.KEYCHAIN_PASSWORD }}" build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p "${{ secrets.KEYCHAIN_PASSWORD }}" build.keychain
+          security set-keychain-settings -t 3600 -l ~/Library/Keychains/build.keychain
+          
+          # Import certificate
+          security import ios_distribution.p12 -k build.keychain -P "${{ secrets.CERTIFICATE_PASSWORD }}" -A
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "${{ secrets.KEYCHAIN_PASSWORD }}" build.keychain
+          
+          # Install provisioning profile
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          cp ios_distribution.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+          
+      - name: Build IPA
+        run: flutter build ipa --release
+        env:
+          CODE_SIGN_IDENTITY: "${{ secrets.CODE_SIGN_IDENTITY }}"
+          PROVISIONING_PROFILE_SPECIFIER: "${{ secrets.PROVISIONING_PROFILE_SPECIFIER }}"
+          TEAM_ID: "${{ secrets.TEAM_ID }}"
+
+      - name: Upload IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-ipa
+          path: build/ios/ipa/*.ipa
+
+      # Optional: Upload to TestFlight
+      - name: Upload to TestFlight
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: apple-actions/upload-testflight-build@v1
+        with:
+          app-path: build/ios/ipa/*.ipa
+          issuer-id: ${{ secrets.APPSTORE_ISSUER_ID }}
+          api-key-id: ${{ secrets.APPSTORE_KEY_ID }}
+          api-private-key: ${{ secrets.APPSTORE_PRIVATE_KEY }}
+
+permissions:
+  contents: write 
