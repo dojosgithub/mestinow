@@ -308,6 +308,7 @@ class _StatusPageState extends State<StatusPage> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
+        scrolledUnderElevation: 0,
         leading: Container(
           alignment: Alignment.centerLeft,
           padding: EdgeInsets.only(left: 16),
