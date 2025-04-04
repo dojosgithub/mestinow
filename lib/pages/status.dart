@@ -8,6 +8,7 @@ import 'package:timezone/timezone.dart' as tz;
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:relative_time/relative_time.dart';
+import 'package:intl/intl.dart';
 
 import '../theme/colors.dart';
 import '../pages/settings.dart';
@@ -31,6 +32,7 @@ class _StatusPageState extends State<StatusPage> {
   static const String _intervalKey = 'mestinon_interval_hours';
   late int remainingSeconds;
   late int? lastButtonPressTime;
+  late List<EventLog> _events = [];
   Timer? timer;
 
   final FlutterLocalNotificationsPlugin notificationsPlugin =
@@ -45,6 +47,27 @@ class _StatusPageState extends State<StatusPage> {
     {'icon': 'assets/icons/breathing.png', 'label': 'Breathing'},
     {'icon': 'assets/icons/walking.png', 'label': 'Walking'},
   ];
+
+  Future<void> _loadEvents() async {
+    // Load events for today
+    final today = DateTime.now();
+    final startOfDay = DateTime(
+      today.year,
+      today.month,
+      today.day,
+    );
+    final endOfDay = startOfDay.add(const Duration(days: 1));
+
+    try {
+      final events = await db.getEventsForDateRange(startOfDay, endOfDay);
+
+      setState(() {
+        _events = events;
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
 
   @override
   void initState() {
@@ -258,6 +281,7 @@ class _StatusPageState extends State<StatusPage> {
   @override
   Widget build(BuildContext context) {
     db = Provider.of<DatabaseService>(context);
+    _loadEvents();
     final l10n = AppLocalizations.of(context)!;
 
     int minutes = remainingSeconds ~/ 60;
@@ -348,9 +372,7 @@ class _StatusPageState extends State<StatusPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const SettingsPage()),
-                ).then(
-                  (_) => _loadSavedTime(),
-                ); // Reload settings when returning
+                ).then((_) => _loadSavedTime()); // Reload settings when returning
               },
             ),
             ListTile(
@@ -367,53 +389,109 @@ class _StatusPageState extends State<StatusPage> {
           ],
         ),
       ),
-      body: Column(
+      body: Stack(
         children: [
-          _buildSymptomGrid(),
-          Spacer(),
-          Container(
-            // lower panel
-            height: 350,
-            width: MediaQuery.of(context).size.width,
-            decoration: BoxDecoration(
-              color: backColor,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(20),
-                topRight: Radius.circular(20),
-              ),
-            ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 350), // Leave space for bottom panel
             child: Column(
               children: [
-                SizedBox(height: 20),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  child: Text(
-                    '${l10n.lastDose}: $relativeLastDose ${l10n.at} ${_formatTime(lastDoseDateTime)}',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: AppColors.darkPrimary,
-                    ),
+                _buildSymptomGrid(),
+
+                // Centered "Today" with underline
+                Padding(
+                  padding: const EdgeInsets.only(top: 0, bottom: 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Center(
+                        child: Text(
+                          'Today',
+                          style: TextStyle(
+                            fontSize: 12, 
+                          )
+                        ),
+                      ),
+                      SizedBox(height: 2),
+                      Divider(
+                        thickness: 1,
+                        color: AppColors.lightGrey,
+                        indent: 0,
+                        endIndent: 0, // light underline
+                      ),
+                    ],
                   ),
                 ),
-                SizedBox(height: 20),
-                Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    _buildCircularPercentIndicator(
-                      frontColor,
-                      relativeNextDose,
-                      l10n,
+
+                // Scrollable List
+                Expanded(
+                  child: ListView.separated(
+                    itemCount: _events.length,
+                    itemBuilder: (context, index) {
+                      final event = _events[index];
+                      String formattedTime = '${DateFormat('h:mm a').format(event.timestamp)} '; // e.g., 5:30 PM
+                      return ListTile(
+                        title: Text('$formattedTime - ${event.eventType}'),
+                      );
+                    },
+                    separatorBuilder: (context, index) => Divider(
+                      color: AppColors.lightGrey,
+                      thickness: 1,
+                      height: 0, // tight spacing between items
+                      indent: 16,
+                      endIndent: 16,
+                      ),
                     ),
-                    // SizedBox(height: 50),
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: _buildTakeMestinonButton(l10n),
-                    ),
-                  ],
+                  ), // Makes the ListView take up the remaining space
+                ],
+              ),
+            ),
+            // Fixed bottom panel
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                // lower panel
+                height: 350,
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                  color: backColor,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
+                  ),
                 ),
-              ],
+                child: Column(
+                  children: [
+                    SizedBox(height: 20),
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      child: Text(
+                        '${l10n.lastDose}: $relativeLastDose ${l10n.at} ${_formatTime(lastDoseDateTime)}',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: AppColors.darkPrimary,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        _buildCircularPercentIndicator(
+                          frontColor,
+                          relativeNextDose,
+                          l10n,
+                        ),
+                        // SizedBox(height: 50),
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: _buildTakeMestinonButton(l10n),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ],
