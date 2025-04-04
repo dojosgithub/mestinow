@@ -30,12 +30,12 @@ jobs:
       - name: Build localizations
         run: flutter gen-l10n
 
-      - Inject Build Number
+      - naem: Inject Build Number
         run: |
           BUILD_NUMBER=${{ github.run_number }}
           sed -i "s/BUILD_NUMBER/$BUILD_NUMBER/g" pubspec.yaml
           cat pubspec.yaml  # To verify the substitution
-                    
+
       - name: Setup Keystore
         run: |
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/keystore.jks
