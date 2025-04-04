@@ -49,25 +49,6 @@ jobs:
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp ios_distribution.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
           
-          # Debug: List certificates
-          echo "Listing certificates in keychain:"
-          security find-identity -v -p codesigning build.keychain
-          
-          # Debug: List provisioning profiles
-          echo "Listing provisioning profiles:"
-          ls -la ~/Library/MobileDevice/Provisioning\ Profiles/
-
-      - name: Configure Xcode Project
-        run: |
-          cd ios
-          # Set the development team
-          /usr/libexec/PlistBuddy -c "Set :objects:13B07F941A680F5B00A75B9A:buildSettings:DEVELOPMENT_TEAM ${{ secrets.TEAM_ID }}" Runner.xcodeproj/project.pbxproj
-          # Set the code signing identity
-          /usr/libexec/PlistBuddy -c "Set :objects:13B07F941A680F5B00A75B9A:buildSettings:CODE_SIGN_IDENTITY ${{ secrets.CODE_SIGN_IDENTITY }}" Runner.xcodeproj/project.pbxproj
-          # Set the provisioning profile
-          /usr/libexec/PlistBuddy -c "Set :objects:13B07F941A680F5B00A75B9A:buildSettings:PROVISIONING_PROFILE_SPECIFIER ${{ secrets.PROVISIONING_PROFILE_SPECIFIER }}" Runner.xcodeproj/project.pbxproj
-          cd ..
-
       - name: Build IPA
         run: flutter build ipa --release
         env:
