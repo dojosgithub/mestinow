@@ -23,7 +23,13 @@ jobs:
         with:
           flutter-version: '3.29.2'
           channel: 'stable'
-      
+          
+      - name: Inject Build Number
+        run: |
+          BUILD_NUMBER=${{ github.run_number }}
+          sed -i "s/BUILD_NUMBER/$BUILD_NUMBER/g" pubspec.yaml
+          cat pubspec.yaml  # To verify the substitution
+
       - name: Get dependencies
         run: flutter pub get
 
