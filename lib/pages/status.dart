@@ -431,7 +431,7 @@ class _StatusPageState extends State<StatusPage> {
                       final event = _events[index];
                       String formattedTime = '${DateFormat('h:mm a').format(event.timestamp)} '; // e.g., 5:30 PM
                       return ListTile(
-                        title: Text('$formattedTime - ${event.eventType}'),
+                        title: Text('$formattedTime - ${event.eventType=='medMestinon'?'Mestinon':event.eventType}'),
                       );
                     },
                     separatorBuilder: (context, index) => Divider(
