@@ -30,7 +30,7 @@ jobs:
       - name: Build localizations
         run: flutter gen-l10n
 
-      - naem: Inject Build Number
+      - name: Inject Build Number
         run: |
           BUILD_NUMBER=${{ github.run_number }}
           sed -i "s/BUILD_NUMBER/$BUILD_NUMBER/g" pubspec.yaml
