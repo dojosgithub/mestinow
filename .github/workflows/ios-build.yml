@@ -50,7 +50,7 @@ jobs:
           cp ios_distribution.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
           
       - name: Build IPA
-        run: flutter build ipa --release --export-options-plist ios/export_options.plist
+        run: flutter build ipa --release --export-options-plist ios/export_options.plist --build-number ${{ github.run_number }}
         env:
           CODE_SIGN_IDENTITY: "${{ secrets.CODE_SIGN_IDENTITY }}"
           PROVISIONING_PROFILE_SPECIFIER: "${{ secrets.PROVISIONING_PROFILE_SPECIFIER }}"
@@ -62,12 +62,6 @@ jobs:
         with:
           name: ios-ipa
           path: build/ios/ipa/*.ipa
-
-      - name: List build directory contents
-        run: ls -la build/ios/ipa/
-
-      - name: Find IPA file
-        run: find build -name "*.ipa" -type f
 
       # Optional: Upload to TestFlight
       - name: Upload to TestFlight
