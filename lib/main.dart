@@ -9,7 +9,6 @@ import './services/database_service.dart';
 import './pages/onboarding/tour_page.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:relative_time/relative_time.dart';
 
 void main() async {
   tz.initializeTimeZones();
@@ -77,7 +76,6 @@ class MyApp extends StatelessWidget {
       },
       localizationsDelegates: const [
         AppLocalizations.delegate,
-        RelativeTimeLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,

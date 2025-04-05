@@ -7,7 +7,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:relative_time/relative_time.dart';
+import 'package:timeago/timeago.dart' as timeago;
 import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../theme/colors.dart';
@@ -299,14 +299,8 @@ class _StatusPageState extends State<StatusPage> {
     final nextDoseDateTime = lastDoseDateTime.add(
       Duration(seconds: totalSeconds),
     );
-    final relativeNextDose = RelativeTime(
-      context,
-      timeUnits: [TimeUnit.day, TimeUnit.hour, TimeUnit.minute],
-    ).format(nextDoseDateTime);
-    final relativeLastDose = RelativeTime(
-      context,
-      timeUnits: [TimeUnit.day, TimeUnit.hour, TimeUnit.minute],
-    ).format(lastDoseDateTime);
+    final relativeNextDose = timeago.format(nextDoseDateTime, allowFromNow: true, locale: Localizations.localeOf(context).languageCode);
+    final relativeLastDose = timeago.format(lastDoseDateTime, allowFromNow: true, locale: Localizations.localeOf(context).languageCode);
 
     Color frontColor = _getTimeBasedFrontColor(minutes);
     Color backColor = _getTimeBasedBackColor(minutes);
