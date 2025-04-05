@@ -13,6 +13,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../theme/colors.dart';
 import '../pages/settings.dart';
 import '../widgets/symptom_button.dart';
+import '../widgets/brand_text.dart';
 import '../services/database_service.dart';
 import '../models/event_log.dart';
 import '../pages/calendar_page.dart';
@@ -320,14 +321,7 @@ class _StatusPageState extends State<StatusPage> {
         leading: Container(
           alignment: Alignment.centerLeft,
           padding: EdgeInsets.only(left: 16),
-          child: Text(
-            'mestiNow',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: AppColors.darkPrimary,
-            ),
-          ),
+          child: const BrandText(),
         ),
         leadingWidth: 180,
         actions: [
@@ -350,9 +344,8 @@ class _StatusPageState extends State<StatusPage> {
           children: [
             DrawerHeader(
               decoration: BoxDecoration(color: AppColors.primary),
-              child: const Text(
-                'mestiNow',
-                style: TextStyle(color: Colors.white, fontSize: 24),
+              child: const BrandText(
+                color: Colors.white,
               ),
             ),
             ListTile(
