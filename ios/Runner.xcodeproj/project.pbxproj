@@ -470,7 +470,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Dojo Design & Development, LLC (W7J832VH7L)";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = W7J832VH7L;
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = W7J832VH7L;
@@ -482,7 +482,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.dojo.mestinow;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = "mestiNow Profile";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "mestiNow Profile";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
@@ -682,7 +682,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Dojo Design & Development, LLC (W7J832VH7L)";
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = W7J832VH7L;
 				ENABLE_BITCODE = NO;
@@ -693,6 +693,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.dojo.mestinow;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "mestiNow Profile";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "mestiNow Profile";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;

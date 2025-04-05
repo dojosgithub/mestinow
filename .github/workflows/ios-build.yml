@@ -50,7 +50,7 @@ jobs:
           cp ios_distribution.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
           
       - name: Build IPA
-        run: flutter build ipa --release
+        run: flutter build ipa --release --export-options-plist ios/export_options.plist
         env:
           CODE_SIGN_IDENTITY: "${{ secrets.CODE_SIGN_IDENTITY }}"
           PROVISIONING_PROFILE_SPECIFIER: "${{ secrets.PROVISIONING_PROFILE_SPECIFIER }}"
