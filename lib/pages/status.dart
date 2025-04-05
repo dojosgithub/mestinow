@@ -518,14 +518,17 @@ class _StatusPageState extends State<StatusPage> {
           remainingSeconds <= 0
               ? 0.0
               : min(remainingSeconds, totalSeconds) / totalSeconds,
-      center: Text(
-        "${l10n.nextDose}\n$relativeNextDose",
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          fontSize: screenWidth * 0.05,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-          fontFamily: _fontFamily,
+      center: Container(
+        width: screenWidth * 0.3,
+        child: Text(
+          "${l10n.nextDose}\n$relativeNextDose",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: screenWidth * 0.055,
+            fontWeight: FontWeight.w900,
+            color: Colors.white,
+            fontFamily: _fontFamily,
+          ),
         ),
       ),
       progressColor: leftColor,
