@@ -52,11 +52,7 @@ class _StatusPageState extends State<StatusPage> {
   Future<void> _loadEvents() async {
     // Load events for today
     final today = DateTime.now();
-    final startOfDay = DateTime(
-      today.year,
-      today.month,
-      today.day,
-    );
+    final startOfDay = DateTime(today.year, today.month, today.day);
     final endOfDay = startOfDay.add(const Duration(days: 1));
 
     try {
@@ -145,11 +141,23 @@ class _StatusPageState extends State<StatusPage> {
       return;
     }
     final fiveMinutesBefore = scheduledTime.subtract(Duration(minutes: 5));
-    await doScheduleNextDoseNotification(fiveMinutesBefore, 'It will soon be time to take your Medication.',0);
-    await doScheduleNextDoseNotification(scheduledTime, 'It\'s time to take your Medication.',1);
+    await doScheduleNextDoseNotification(
+      fiveMinutesBefore,
+      'It will soon be time to take your Medication.',
+      0,
+    );
+    await doScheduleNextDoseNotification(
+      scheduledTime,
+      'It\'s time to take your Medication.',
+      1,
+    );
   }
 
-  Future<void>doScheduleNextDoseNotification(DateTime scheduledTime,String message,int notificationId) async {
+  Future<void> doScheduleNextDoseNotification(
+    DateTime scheduledTime,
+    String message,
+    int notificationId,
+  ) async {
     await notificationsPlugin.zonedSchedule(
       notificationId,
       'Medication Reminder',
@@ -247,35 +255,33 @@ class _StatusPageState extends State<StatusPage> {
 
   // Add this widget to your build method, before the CircularPercentIndicator
   Widget _buildSymptomGrid() {
-    // return Padding(
-    //   padding: const EdgeInsets.symmetric(horizontal: 24.0),
-    // child:
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        crossAxisSpacing: 1,
-        mainAxisExtent: 85.0,
-        // mainAxisSpacing: 8,
-        // childAspectRatio: 1.5,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 30.0),
+      child: GridView.builder(
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          crossAxisSpacing: 1,
+          mainAxisExtent: 85.0,
+          mainAxisSpacing: 8,
+          // childAspectRatio: 1.5,
+        ),
+        itemCount: symptoms.length,
+        itemBuilder: (context, index) {
+          final symptom = symptoms[index];
+          return SymptomButton(
+            iconPath: symptom['icon']!,
+            label: symptom['label']!,
+            onPressed: () {
+              setState(() {
+                final label = symptom['label']!;
+                db.logEvent(label);
+              });
+            },
+          );
+        },
       ),
-      itemCount: symptoms.length,
-      itemBuilder: (context, index) {
-        final symptom = symptoms[index];
-        return SymptomButton(
-          iconPath: symptom['icon']!,
-          label: symptom['label']!,
-          onPressed: () {
-            setState(() {
-              final label = symptom['label']!;
-              db.logEvent(label);
-            });
-          },
-        );
-      },
-      // ),
     );
   }
 
@@ -304,7 +310,6 @@ class _StatusPageState extends State<StatusPage> {
     Color frontColor = _getTimeBasedFrontColor(minutes);
     Color backColor = _getTimeBasedBackColor(minutes);
     final screenWidth = MediaQuery.of(context).size.width;
-
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -376,7 +381,9 @@ class _StatusPageState extends State<StatusPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const SettingsPage()),
-                ).then((_) => _loadSavedTime()); // Reload settings when returning
+                ).then(
+                  (_) => _loadSavedTime(),
+                ); // Reload settings when returning
               },
             ),
             ListTile(
@@ -396,7 +403,9 @@ class _StatusPageState extends State<StatusPage> {
       body: Stack(
         children: [
           Padding(
-            padding: const EdgeInsets.only(bottom: 350), // Leave space for bottom panel
+            padding: const EdgeInsets.only(
+              bottom: 350,
+            ), // Leave space for bottom panel
             child: Column(
               children: [
                 _buildSymptomGrid(),
@@ -408,12 +417,7 @@ class _StatusPageState extends State<StatusPage> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Center(
-                        child: Text(
-                          'Today',
-                          style: TextStyle(
-                            fontSize: 12, 
-                          )
-                        ),
+                        child: Text('Today', style: TextStyle(fontSize: 12)),
                       ),
                       SizedBox(height: 2),
                       Divider(
@@ -432,10 +436,11 @@ class _StatusPageState extends State<StatusPage> {
                     itemCount: _events.length,
                     itemBuilder: (context, index) {
                       final event = _events[index];
-                      String formattedTime = '${DateFormat('h:mm a').format(event.timestamp)} '; // e.g., 5:30 PM
+                      String formattedTime =
+                          '${DateFormat('h:mm a').format(event.timestamp)} '; // e.g., 5:30 PM
                       return ListTile(
                         title: Text(
-                          '$formattedTime - ${event.eventType=='medMestinon'?'Mestinon':event.eventType}',
+                          '$formattedTime - ${event.eventType == 'medMestinon' ? 'Mestinon' : event.eventType}',
                           style: TextStyle(
                             fontFamily: _fontFamily,
                             fontSize: 14,
@@ -443,62 +448,63 @@ class _StatusPageState extends State<StatusPage> {
                         ),
                       );
                     },
-                    separatorBuilder: (context, index) => Divider(
-                      color: AppColors.lightGrey,
-                      thickness: 1,
-                      height: 0, // tight spacing between items
-                      indent: 16,
-                      endIndent: 16,
-                      ),
-                    ),
-                  ), // Makes the ListView take up the remaining space
-                ],
-              ),
-            ),
-            // Fixed bottom panel
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                // lower panel
-                height: screenWidth * 0.75,
-                width: screenWidth,
-                decoration: BoxDecoration(
-                  color: backColor,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(25),
-                    topRight: Radius.circular(25),
+                    separatorBuilder:
+                        (context, index) => Divider(
+                          color: AppColors.lightGrey,
+                          thickness: 1,
+                          height: 0, // tight spacing between items
+                          indent: 16,
+                          endIndent: 16,
+                        ),
                   ),
+                ), // Makes the ListView take up the remaining space
+              ],
+            ),
+          ),
+          // Fixed bottom panel
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              // lower panel
+              height: screenWidth * 0.75,
+              width: screenWidth,
+              decoration: BoxDecoration(
+                color: backColor,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(25),
+                  topRight: Radius.circular(25),
                 ),
-                child: Column(
-                  children: [
-                    SizedBox(height: screenWidth * 0.05),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      child: Text(
-                        '${l10n.lastDose}: $relativeLastDose ${l10n.at} ${_formatTime(lastDoseDateTime)}',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: screenWidth * 0.04,
-                          color: AppColors.darkPrimary,
-                          fontFamily: _fontFamily,
-                        ),
+              ),
+              child: Column(
+                children: [
+                  SizedBox(height: screenWidth * 0.05),
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    child: Text(
+                      '${l10n.lastDose}: $relativeLastDose ${l10n.at} ${_formatTime(lastDoseDateTime)}',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: screenWidth * 0.04,
+                        color: AppColors.darkPrimary,
+                        fontFamily: _fontFamily,
                       ),
                     ),
-                    SizedBox(height: screenWidth * 0.05),
-                    Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        _buildCircularPercentIndicator(
-                          frontColor,
-                          relativeNextDose,
-                          screenWidth,
-                          l10n,
-                        ),
-                        // SizedBox(height: 50),
-                        Positioned(
-                          bottom: 0,
-                          right: 0,
-                          child: _buildTakeMestinonButton(l10n),
+                  ),
+                  SizedBox(height: screenWidth * 0.05),
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      _buildCircularPercentIndicator(
+                        frontColor,
+                        relativeNextDose,
+                        screenWidth,
+                        l10n,
+                      ),
+                      // SizedBox(height: 50),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: _buildTakeMestinonButton(l10n),
                       ),
                     ],
                   ),
@@ -511,7 +517,12 @@ class _StatusPageState extends State<StatusPage> {
     );
   }
 
-  Widget _buildCircularPercentIndicator(leftColor, relativeNextDose, screenWidth, l10n) {
+  Widget _buildCircularPercentIndicator(
+    leftColor,
+    relativeNextDose,
+    screenWidth,
+    l10n,
+  ) {
     return CircularPercentIndicator(
       radius: screenWidth * 0.25,
       lineWidth: 13.0,

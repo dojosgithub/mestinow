@@ -5,14 +5,12 @@ class SymptomButton extends StatelessWidget {
   final String iconPath;
   final String label;
   final VoidCallback onPressed;
-  final bool isActive;
 
   const SymptomButton({
     super.key,
     required this.iconPath,
     required this.label,
     required this.onPressed,
-    this.isActive = false,
   });
 
   @override
@@ -25,24 +23,33 @@ class SymptomButton extends StatelessWidget {
           height: 60,
           child: ElevatedButton(
             onPressed: onPressed,
-            style: TextButton.styleFrom(
-              backgroundColor: isActive ? AppColors.primary : AppColors.lighterPrimary,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.lightPrimary,
+              elevation: 2,
+              shadowColor: AppColors.darkPrimary.withValues(alpha: 0.7),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-                side: BorderSide(color: AppColors.lightPrimary, width: 0),
+                borderRadius: BorderRadius.circular(16),
+                side: BorderSide(
+                  color: AppColors.lightPrimary,
+                  width: 0.5,
+                ),
               ),
-              padding: EdgeInsets.all(4),
+              padding: EdgeInsets.all(12),
             ),
             child: Image.asset(
               iconPath,
-              color: isActive ? Colors.white : AppColors.darkPrimary,
+              color: Colors.white,
             ),
           ),
         ),
-        SizedBox(height: 2),
+        SizedBox(height: 4),
         Text(
           label,
-          style: TextStyle(fontSize: 12, color: AppColors.darkPrimary),
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+            color: AppColors.darkPrimary,
+          ),
         ),
       ],
     );
