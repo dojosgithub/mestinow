@@ -50,69 +50,6 @@ class _TourPageState extends State<TourPage> {
     );
   }
 
-  Widget _buildSecondPage(screenWidth) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // Illustration
-          Container(
-            width: screenWidth * 0.7,
-            height: screenWidth * 0.5,
-            child: Image.asset(
-              'assets/images/medication_illustration.webp',
-              fit: BoxFit.contain,
-            ),
-          ),
-          SizedBox(height: screenWidth * 0.1),
-          _buildPageIndicator(_currentPage),
-          SizedBox(height: screenWidth * 0.1),
-
-          // Title
-          Text(
-            'Taking medication\non time should always be free',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: screenWidth * 0.06,
-              fontWeight: FontWeight.bold,
-              color: AppColors.darkPrimary,
-              height: 1.2,
-            ),
-          ),
-          const SizedBox(height: 16),
-
-          // Description
-          Text(
-            'mestiNow is free and open-source software, and it will always remain free—for the benefit of Myasthenia Gravis patients and anyone else who finds it helpful.',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: screenWidth * 0.04,
-              color: AppColors.darkPrimary,
-              height: 1.5,
-            ),
-          ),
-          SizedBox(height: screenWidth * 0.1),
-
-          // Skip Tour Button
-          TextButton(
-            onPressed: () {
-              Navigator.pushReplacementNamed(context, '/home');
-            },
-            child: Text(
-              'Skip Tour',
-              style: TextStyle(
-                color: AppColors.primary,
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildPageIndicator(currentPage) {
     // Page Indicators
     return Row(
@@ -134,6 +71,8 @@ class _TourPageState extends State<TourPage> {
       ),
     );
   }
+
+
 
   // First page implementation from previous code
   Widget _buildFirstPage(screenWidth) {
@@ -205,6 +144,69 @@ class _TourPageState extends State<TourPage> {
         ],
       ),
     ); // Add the previous page implementation here
+  }
+
+  Widget _buildSecondPage(screenWidth) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // Illustration
+          Container(
+            width: screenWidth * 0.7,
+            height: screenWidth * 0.5,
+            child: Image.asset(
+              'assets/images/medication_illustration.webp',
+              fit: BoxFit.contain,
+            ),
+          ),
+          SizedBox(height: screenWidth * 0.1),
+          _buildPageIndicator(_currentPage),
+          SizedBox(height: screenWidth * 0.1),
+
+          // Title
+          Text(
+            'Taking medication\non time should always be free',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: screenWidth * 0.06,
+              fontWeight: FontWeight.bold,
+              color: AppColors.darkPrimary,
+              height: 1.2,
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // Description
+          Text(
+            'mestiNow is free and open-source software, and it will always remain free—for the benefit of Myasthenia Gravis patients and anyone else who finds it helpful.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: screenWidth * 0.04,
+              color: AppColors.darkPrimary,
+              height: 1.5,
+            ),
+          ),
+          SizedBox(height: screenWidth * 0.1),
+
+          // Skip Tour Button
+          TextButton(
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, '/home');
+            },
+            child: Text(
+              'Skip Tour',
+              style: TextStyle(
+                color: AppColors.primary,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildThirdPage(screenWidth) {
