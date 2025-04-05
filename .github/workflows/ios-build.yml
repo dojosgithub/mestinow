@@ -71,7 +71,7 @@ jobs:
 
       # Optional: Upload to TestFlight
       - name: Upload to TestFlight
-        # if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: apple-actions/upload-testflight-build@v1
         with:
           app-path: build/ios/ipa/mestiNow.ipa
