@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../theme/colors.dart';
 import '../../widgets/brand_text.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TourPage extends StatefulWidget {
   const TourPage({super.key});
@@ -17,6 +18,8 @@ class _TourPageState extends State<TourPage> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -38,9 +41,10 @@ class _TourPageState extends State<TourPage> {
                   });
                 },
                 children: [
-                  _buildFirstPage(screenWidth),
-                  _buildSecondPage(screenWidth),
-                  _buildThirdPage(screenWidth),
+                  _buildFirstPage(l10n,screenWidth),
+                  _buildSecondPage(l10n,screenWidth),
+                  _buildThirdPage(l10n,screenWidth),
+                  _buildFourthPage(l10n,screenWidth),
                 ],
               ),
             ),
@@ -55,7 +59,7 @@ class _TourPageState extends State<TourPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(
-        3,
+        4,
         (index) => Container(
           margin: EdgeInsets.symmetric(horizontal: 4),
           width: 8,
@@ -75,7 +79,7 @@ class _TourPageState extends State<TourPage> {
 
 
   // First page implementation from previous code
-  Widget _buildFirstPage(screenWidth) {
+  Widget _buildFirstPage(l10n,screenWidth) {
     // Implementation from the previous welcome page
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
@@ -105,7 +109,7 @@ class _TourPageState extends State<TourPage> {
 
           // Title
           Text(
-            'Never miss a dose',
+            l10n.tour1_title,
             style: TextStyle(
               fontSize: screenWidth * 0.06,
               fontWeight: FontWeight.bold,
@@ -116,7 +120,7 @@ class _TourPageState extends State<TourPage> {
 
           // Subtitle
           Text(
-            'Track your Pyridostigmine precisely and keep an eye on your symptoms effortlessly.',
+            l10n.tour1_text,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: screenWidth * 0.04,
@@ -146,7 +150,7 @@ class _TourPageState extends State<TourPage> {
     ); // Add the previous page implementation here
   }
 
-  Widget _buildSecondPage(screenWidth) {
+  Widget _buildSecondPage(l10n,screenWidth) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
       child: Column(
@@ -167,7 +171,7 @@ class _TourPageState extends State<TourPage> {
 
           // Title
           Text(
-            'Taking medication\non time should always be free',
+            l10n.tour2_title,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: screenWidth * 0.06,
@@ -180,7 +184,7 @@ class _TourPageState extends State<TourPage> {
 
           // Description
           Text(
-            'mestiNow is free and open-source software, and it will always remain free—for the benefit of Myasthenia Gravis patients and anyone else who finds it helpful.',
+            l10n.tour2_text,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: screenWidth * 0.04,
@@ -209,7 +213,7 @@ class _TourPageState extends State<TourPage> {
     );
   }
 
-  Widget _buildThirdPage(screenWidth) {
+  Widget _buildThirdPage(l10n,screenWidth) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
       child: Column(
@@ -220,7 +224,7 @@ class _TourPageState extends State<TourPage> {
             width: screenWidth * 0.7,
             height: screenWidth * 0.7,
             child: Image.asset(
-              'assets/images/open_pill.png',
+              'assets/images/security_illustration.webp',
               fit: BoxFit.contain,
             ),
           ),
@@ -230,7 +234,7 @@ class _TourPageState extends State<TourPage> {
 
           // Title
           Text(
-            'Your data stays with you',
+            l10n.tour3_title,
             style: TextStyle(
               fontSize: screenWidth * 0.06,
               fontWeight: FontWeight.bold,
@@ -242,7 +246,71 @@ class _TourPageState extends State<TourPage> {
 
           // Description
           Text(
-            'mestiNow respects your privacy. All your medical information and tracking data is stored locally on your device and never shared with external servers.',
+            l10n.tour3_text,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: screenWidth * 0.04,
+              color: AppColors.darkPrimary,
+              height: 1.5,
+            ),
+          ),
+          SizedBox(height: screenWidth * 0.01),
+
+          SizedBox(height: screenWidth * 0.01),
+          // Skip Tour Button
+          TextButton(
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, '/home');
+            },
+            child: Text(
+              'Skip Tour',
+              style: TextStyle(
+                color: AppColors.primary,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+
+  Widget _buildFourthPage(l10n,screenWidth) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // Illustration
+          Container(
+            width: screenWidth * 0.6,
+            height: screenWidth * 0.6,
+            child: Image.asset(
+              'assets/images/open_pill.png',
+              fit: BoxFit.contain,
+            ),
+          ),
+          SizedBox(height: screenWidth * 0.1),
+          _buildPageIndicator(_currentPage),
+          SizedBox(height: screenWidth * 0.1),
+
+          // Title
+          Text(
+            l10n.tour4_title,
+            style: TextStyle(
+              fontSize: screenWidth * 0.06,
+              fontWeight: FontWeight.bold,
+              color: AppColors.darkPrimary,
+              height: 1.2,
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // Description
+          Text(
+            l10n.tour4_text,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: screenWidth * 0.04,
@@ -295,6 +363,7 @@ class _TourPageState extends State<TourPage> {
       ),
     );
   }
+
 
   @override
   void dispose() {

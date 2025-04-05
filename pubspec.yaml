@@ -87,6 +87,7 @@ flutter:
     - assets/icons/walking.png
     - assets/images/welcome_illustration.webp
     - assets/images/medication_illustration.webp
+    - assets/images/security_illustration.webp
     - assets/images/open_pill.png
     - android/app/src/main/res/raw/alert.mp3
     - assets/sounds/alert.mp3

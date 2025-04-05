@@ -19,5 +19,13 @@
     },
     "@lastDoseTime": {
         "description": "Etiqueta para la última dosis"
-    }
+    },
+    "tour1_title": "¡Bienvenido!",
+    "tour1_text": "¡Gracias por elegir controlar tu Miastenia Gravis con la ayuda de nuestra app!\n\nNuestra app fue diseñada por un paciente de MG que no pudo encontrar ayuda con las applicationes de programación fija.",
+    "tour2_title": "No más confusión",
+    "tour2_text": "¿Lo tomé a las 10 o a las 11? ¿O fue ayer? Lleva un control preciso de tu Piridostigmina y monitorea tus síntomas sin esfuerzo.",
+    "tour3_title": "Tus datos permanecen contigo",
+    "tour3_text": "mestiNow respeta tu privacidad. Toda tu información y datos de seguimiento se almacenan localmente en tu dispositivo y nunca se comparten con servidores externos.",
+    "tour4_title": "¡Siempre será gratis!",
+    "tour4_text": "mestiNow es un software libre y de código abierto, y siempre seguirá siendo gratuito—para el beneficio de los pacientes con Miastenia Grave y cualquier otra persona que lo encuentre útil."
 } 
