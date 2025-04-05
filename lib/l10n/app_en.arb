@@ -19,5 +19,13 @@
     },
     "@lastDoseTime": {
         "description": "Label for last dose time setting"
-    }
+    },
+    "tour1_title": "Welcome!",
+    "tour1_text": "Thank you for choosing to control your Myasthenia Gravis with the help of our app!\n\nOur app was designed by an MG patient who couldn't find help with the typical fixed scheduling apps.",
+    "tour2_title": "No more confusion",
+    "tour2_text": "Did I take it at 10 or 11? Or was that yesterday? Track your Pyridostigmine precisely and keep an eye on your symptoms effortlessly.",
+    "tour3_title": "Your data stays with you",
+    "tour3_text": "mestiNow respects your privacy. All your information and tracking data is stored locally on your device and never shared with external servers.",
+    "tour4_title": "Always free!",
+    "tour4_text": "mestiNow is free and open-source software, and it will always remain free—for the benefit of Myasthenia Gravis patients and anyone else who finds it helpful."
 } 
