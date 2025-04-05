@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:relative_time/relative_time.dart';
 import 'package:intl/intl.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 import '../theme/colors.dart';
 import '../pages/settings.dart';
 import '../widgets/symptom_button.dart';
@@ -33,6 +33,7 @@ class _StatusPageState extends State<StatusPage> {
   late int remainingSeconds;
   late int? lastButtonPressTime;
   late List<EventLog> _events = [];
+  final String _fontFamily = GoogleFonts.roboto().fontFamily!;
   Timer? timer;
 
   final FlutterLocalNotificationsPlugin notificationsPlugin =
@@ -302,6 +303,8 @@ class _StatusPageState extends State<StatusPage> {
 
     Color frontColor = _getTimeBasedFrontColor(minutes);
     Color backColor = _getTimeBasedBackColor(minutes);
+    final screenWidth = MediaQuery.of(context).size.width;
+
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -431,7 +434,13 @@ class _StatusPageState extends State<StatusPage> {
                       final event = _events[index];
                       String formattedTime = '${DateFormat('h:mm a').format(event.timestamp)} '; // e.g., 5:30 PM
                       return ListTile(
-                        title: Text('$formattedTime - ${event.eventType=='medMestinon'?'Mestinon':event.eventType}'),
+                        title: Text(
+                          '$formattedTime - ${event.eventType=='medMestinon'?'Mestinon':event.eventType}',
+                          style: TextStyle(
+                            fontFamily: _fontFamily,
+                            fontSize: 14,
+                          ),
+                        ),
                       );
                     },
                     separatorBuilder: (context, index) => Divider(
@@ -451,36 +460,38 @@ class _StatusPageState extends State<StatusPage> {
               alignment: Alignment.bottomCenter,
               child: Container(
                 // lower panel
-                height: 350,
-                width: MediaQuery.of(context).size.width,
+                height: screenWidth * 0.75,
+                width: screenWidth,
                 decoration: BoxDecoration(
                   color: backColor,
                   borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20),
+                    topLeft: Radius.circular(25),
+                    topRight: Radius.circular(25),
                   ),
                 ),
                 child: Column(
                   children: [
-                    SizedBox(height: 20),
+                    SizedBox(height: screenWidth * 0.05),
                     Container(
                       width: MediaQuery.of(context).size.width,
                       child: Text(
                         '${l10n.lastDose}: $relativeLastDose ${l10n.at} ${_formatTime(lastDoseDateTime)}',
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: screenWidth * 0.04,
                           color: AppColors.darkPrimary,
+                          fontFamily: _fontFamily,
                         ),
                       ),
                     ),
-                    SizedBox(height: 20),
+                    SizedBox(height: screenWidth * 0.05),
                     Stack(
                       alignment: Alignment.center,
                       children: [
                         _buildCircularPercentIndicator(
                           frontColor,
                           relativeNextDose,
+                          screenWidth,
                           l10n,
                         ),
                         // SizedBox(height: 50),
@@ -500,9 +511,9 @@ class _StatusPageState extends State<StatusPage> {
     );
   }
 
-  Widget _buildCircularPercentIndicator(leftColor, relativeNextDose, l10n) {
+  Widget _buildCircularPercentIndicator(leftColor, relativeNextDose, screenWidth, l10n) {
     return CircularPercentIndicator(
-      radius: 120.0,
+      radius: screenWidth * 0.25,
       lineWidth: 13.0,
       circularStrokeCap: CircularStrokeCap.round,
       percent:
@@ -513,12 +524,12 @@ class _StatusPageState extends State<StatusPage> {
         "${l10n.nextDose}\n$relativeNextDose",
         textAlign: TextAlign.center,
         style: TextStyle(
-          fontSize: 21,
+          fontSize: screenWidth * 0.05,
           fontWeight: FontWeight.bold,
           color: Colors.white,
+          fontFamily: _fontFamily,
         ),
       ),
-      // progressColor: Color(0xffe66912),
       progressColor: leftColor,
     );
   }
@@ -542,7 +553,7 @@ class _StatusPageState extends State<StatusPage> {
           '+ ${l10n.logDoseNow}',
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontFamily: 'Roboto',
+            fontFamily: _fontFamily,
             fontSize: 14,
             color: Colors.white,
           ),
