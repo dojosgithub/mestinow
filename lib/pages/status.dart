@@ -331,14 +331,14 @@ class _StatusPageState extends State<StatusPage> {
                 icon: const Icon(Icons.menu),
                 color: AppColors.darkPrimary,
                 onPressed: () {
-                  Scaffold.of(context).openDrawer();
+                  Scaffold.of(context).openEndDrawer();
                 },
               );
             },
           ),
         ],
       ),
-      drawer: Drawer(
+      endDrawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
