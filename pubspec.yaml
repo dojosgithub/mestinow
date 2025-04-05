@@ -48,8 +48,8 @@ dependencies:
   path: ^1.9.1
   provider: ^6.1.1
   intl: ^0.19.0
-  relative_time: ^5.0.0
   google_fonts: ^6.1.0
+  timeago: ^3.7.0
 
 dev_dependencies:
   flutter_test:
