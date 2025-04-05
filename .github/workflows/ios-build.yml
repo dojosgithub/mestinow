@@ -2,7 +2,7 @@ name: Build and Release iOS App
 
 on:
   push:
-    branches: [ "main","26-ios-pipeline" ]
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
@@ -56,18 +56,25 @@ jobs:
           PROVISIONING_PROFILE_SPECIFIER: "${{ secrets.PROVISIONING_PROFILE_SPECIFIER }}"
           TEAM_ID: "${{ secrets.TEAM_ID }}"
 
-      # - name: Upload IPA
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: ios-ipa
-      #     path: build/ios/ipa/*.ipa
+
+      - name: Upload IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-ipa
+          path: build/ios/ipa/*.ipa
+
+      - name: List build directory contents
+        run: ls -la build/ios/ipa/
+
+      - name: Find IPA file
+        run: find build -name "*.ipa" -type f
 
       # Optional: Upload to TestFlight
       - name: Upload to TestFlight
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: apple-actions/upload-testflight-build@v1
         with:
-          app-path: build/ios/ipa/*.ipa
+          app-path: build/ios/ipa/mestiNow.ipa
           issuer-id: ${{ secrets.APPSTORE_ISSUER_ID }}
           api-key-id: ${{ secrets.APPSTORE_KEY_ID }}
           api-private-key: ${{ secrets.APPSTORE_PRIVATE_KEY }}
