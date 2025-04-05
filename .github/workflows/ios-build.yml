@@ -56,11 +56,11 @@ jobs:
           PROVISIONING_PROFILE_SPECIFIER: "${{ secrets.PROVISIONING_PROFILE_SPECIFIER }}"
           TEAM_ID: "${{ secrets.TEAM_ID }}"
 
-      - name: Upload IPA
-        uses: actions/upload-artifact@v4
-        with:
-          name: ios-ipa
-          path: build/ios/ipa/*.ipa
+      # - name: Upload IPA
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: ios-ipa
+      #     path: build/ios/ipa/*.ipa
 
       # Optional: Upload to TestFlight
       - name: Upload to TestFlight
