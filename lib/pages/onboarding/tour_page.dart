@@ -16,6 +16,7 @@ class _TourPageState extends State<TourPage> {
   bool _neverShowAgain = false;
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -37,9 +38,9 @@ class _TourPageState extends State<TourPage> {
                   });
                 },
                 children: [
-                  _buildFirstPage(),
-                  _buildSecondPage(),
-                  _buildThirdPage(),
+                  _buildFirstPage(screenWidth),
+                  _buildSecondPage(screenWidth),
+                  _buildThirdPage(screenWidth),
                 ],
               ),
             ),
@@ -49,51 +50,49 @@ class _TourPageState extends State<TourPage> {
     );
   }
 
-  Widget _buildSecondPage() {
+  Widget _buildSecondPage(screenWidth) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // Illustration
           Container(
-            width: double.infinity,
-            height: 300,
+            width: screenWidth * 0.7,
+            height: screenWidth * 0.5,
             child: Image.asset(
               'assets/images/medication_illustration.webp',
               fit: BoxFit.contain,
             ),
           ),
-          const SizedBox(height: 48),
-
-          // Page Indicators
+          SizedBox(height: screenWidth * 0.1),
           _buildPageIndicator(_currentPage),
-          const SizedBox(height: 48),
+          SizedBox(height: screenWidth * 0.1),
 
           // Title
           Text(
             'Taking medication\non time should always be free',
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 28,
+              fontSize: screenWidth * 0.06,
               fontWeight: FontWeight.bold,
               color: AppColors.darkPrimary,
               height: 1.2,
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 16),
 
           // Description
           Text(
             'mestiNow is free and open-source software, and it will always remain free—for the benefit of Myasthenia Gravis patients and anyone else who finds it helpful.',
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 16,
+              fontSize: screenWidth * 0.04,
               color: AppColors.darkPrimary,
               height: 1.5,
             ),
           ),
-          const SizedBox(height: 48),
+          SizedBox(height: screenWidth * 0.1),
 
           // Skip Tour Button
           TextButton(
@@ -128,8 +127,8 @@ class _TourPageState extends State<TourPage> {
             shape: BoxShape.circle,
             color:
                 currentPage == index
-                    ? Color(0xFF016367)
-                    : Color(0xFF016367).withOpacity(0.2),
+                    ? AppColors.darkPrimary
+                    : AppColors.darkPrimary.withValues(alpha: 0.2),
           ),
         ),
       ),
@@ -137,40 +136,39 @@ class _TourPageState extends State<TourPage> {
   }
 
   // First page implementation from previous code
-  Widget _buildFirstPage() {
+  Widget _buildFirstPage(screenWidth) {
     // Implementation from the previous welcome page
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // App Logo/Icon
           Container(
-            width: 250,
-            height: 250,
+            width: screenWidth * 0.7,
+            height: screenWidth * 0.7,
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.1),
+              color: AppColors.primary.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: Center(
               child: Image.asset(
                 'assets/images/welcome_illustration.webp',
-                width: 200,
-                height: 200,
+                width: screenWidth * 0.6,
+                height: screenWidth * 0.6,
                 fit: BoxFit.contain,
               ),
             ),
           ),
-          const SizedBox(height: 48),
-
+          SizedBox(height: screenWidth * 0.1),
           _buildPageIndicator(_currentPage),
-          const SizedBox(height: 48),
+          SizedBox(height: screenWidth * 0.1),
 
           // Title
-          const Text(
+          Text(
             'Never miss a dose',
             style: TextStyle(
-              fontSize: 24,
+              fontSize: screenWidth * 0.06,
               fontWeight: FontWeight.bold,
               color: AppColors.darkPrimary,
             ),
@@ -182,12 +180,12 @@ class _TourPageState extends State<TourPage> {
             'Track your Pyridostigmine precisely and keep an eye on your symptoms effortlessly.',
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 16,
+              fontSize: screenWidth * 0.04,
               color: AppColors.darkPrimary,
               height: 1.5,
             ),
           ),
-          const SizedBox(height: 48),
+          SizedBox(height: screenWidth * 0.1),
 
           // Skip Tour Button
           TextButton(
@@ -209,50 +207,48 @@ class _TourPageState extends State<TourPage> {
     ); // Add the previous page implementation here
   }
 
-  Widget _buildThirdPage() {
+  Widget _buildThirdPage(screenWidth) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // Illustration
           Container(
-            width: double.infinity,
-            height: 300,
+            width: screenWidth * 0.7,
+            height: screenWidth * 0.7,
             child: Image.asset(
               'assets/images/open_pill.png',
               fit: BoxFit.contain,
             ),
           ),
-          const SizedBox(height: 48),
-
-          // Page Indicators
+          SizedBox(height: screenWidth * 0.1),
           _buildPageIndicator(_currentPage),
-          const SizedBox(height: 48),
+          SizedBox(height: screenWidth * 0.1),
 
           // Title
           Text(
             'Your data stays with you',
             style: TextStyle(
-              fontSize: 28,
+              fontSize: screenWidth * 0.06,
               fontWeight: FontWeight.bold,
               color: AppColors.darkPrimary,
               height: 1.2,
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 16),
 
           // Description
           Text(
             'mestiNow respects your privacy. All your medical information and tracking data is stored locally on your device and never shared with external servers.',
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 16,
+              fontSize: screenWidth * 0.04,
               color: AppColors.darkPrimary,
               height: 1.5,
             ),
           ),
-          const SizedBox(height: 48),
+          SizedBox(height: screenWidth * 0.01),
 
           // Don't show again checkbox
           Row(
@@ -274,7 +270,7 @@ class _TourPageState extends State<TourPage> {
             ],
           ),
 
-          const SizedBox(height: 24),
+          SizedBox(height: screenWidth * 0.01),
           // Skip Tour Button
           TextButton(
             onPressed: () {

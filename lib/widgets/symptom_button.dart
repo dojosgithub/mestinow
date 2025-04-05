@@ -34,7 +34,7 @@ class SymptomButton extends StatelessWidget {
                   width: 0.5,
                 ),
               ),
-              padding: EdgeInsets.all(12),
+              padding: EdgeInsets.all(6),
             ),
             child: Image.asset(
               iconPath,
