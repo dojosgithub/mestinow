@@ -2,7 +2,7 @@ name: Build and Release iOS App
 
 on:
   push:
-    branches: [ "main", "feature/tour-improve" ]
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
