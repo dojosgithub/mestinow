@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../theme/colors.dart';
+import '../../widgets/brand_text.dart';
 
 class TourPage extends StatefulWidget {
   const TourPage({super.key});
@@ -24,14 +25,7 @@ class _TourPageState extends State<TourPage> {
               padding: const EdgeInsets.only(top: 16.0, left: 16.0),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Text(
-                  'mestiNow',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF016367),
-                  ),
-                ),
+                child: const BrandText(),
               ),
             ),
             Expanded(
