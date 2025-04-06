@@ -41,10 +41,10 @@ class _TourPageState extends State<TourPage> {
                   });
                 },
                 children: [
-                  _buildFirstPage(l10n,screenWidth),
-                  _buildSecondPage(l10n,screenWidth),
-                  _buildThirdPage(l10n,screenWidth),
-                  _buildFourthPage(l10n,screenWidth),
+                  _buildFirstPage(l10n, screenWidth),
+                  _buildSecondPage(l10n, screenWidth),
+                  _buildThirdPage(l10n, screenWidth),
+                  _buildFourthPage(l10n, screenWidth),
                 ],
               ),
             ),
@@ -76,10 +76,8 @@ class _TourPageState extends State<TourPage> {
     );
   }
 
-
-
   // First page implementation from previous code
-  Widget _buildFirstPage(l10n,screenWidth) {
+  Widget _buildFirstPage(l10n, screenWidth) {
     // Implementation from the previous welcome page
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
@@ -150,7 +148,7 @@ class _TourPageState extends State<TourPage> {
     ); // Add the previous page implementation here
   }
 
-  Widget _buildSecondPage(l10n,screenWidth) {
+  Widget _buildSecondPage(l10n, screenWidth) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
       child: Column(
@@ -213,7 +211,7 @@ class _TourPageState extends State<TourPage> {
     );
   }
 
-  Widget _buildThirdPage(l10n,screenWidth) {
+  Widget _buildThirdPage(l10n, screenWidth) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
       child: Column(
@@ -276,8 +274,7 @@ class _TourPageState extends State<TourPage> {
     );
   }
 
-
-  Widget _buildFourthPage(l10n,screenWidth) {
+  Widget _buildFourthPage(l10n, screenWidth) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
       child: Column(
@@ -363,7 +360,6 @@ class _TourPageState extends State<TourPage> {
       ),
     );
   }
-
 
   @override
   void dispose() {

@@ -197,8 +197,7 @@ class _StatusPageState extends State<StatusPage> {
     totalSeconds = ((prefs.getDouble(_intervalKey) ?? 3) * 60 * 60).ceil();
 
     lastButtonPressTime =
-        prefs.getInt(_timestampKey) ??
-        DateTime.parse('2025-03-25 15:45:00').millisecondsSinceEpoch;
+        prefs.getInt(_timestampKey) ?? DateTime.now().millisecondsSinceEpoch;
 
     final currentTime = DateTime.now().millisecondsSinceEpoch;
     final elapsedSeconds = (currentTime - lastButtonPressTime!) ~/ 1000;
@@ -299,8 +298,16 @@ class _StatusPageState extends State<StatusPage> {
     final nextDoseDateTime = lastDoseDateTime.add(
       Duration(seconds: totalSeconds),
     );
-    final relativeNextDose = timeago.format(nextDoseDateTime, allowFromNow: true, locale: Localizations.localeOf(context).languageCode);
-    final relativeLastDose = timeago.format(lastDoseDateTime, allowFromNow: true, locale: Localizations.localeOf(context).languageCode);
+    final relativeNextDose = timeago.format(
+      nextDoseDateTime,
+      allowFromNow: true,
+      locale: Localizations.localeOf(context).languageCode,
+    );
+    final relativeLastDose = timeago.format(
+      lastDoseDateTime,
+      allowFromNow: true,
+      locale: Localizations.localeOf(context).languageCode,
+    );
 
     Color frontColor = _getTimeBasedFrontColor(minutes);
     Color backColor = _getTimeBasedBackColor(minutes);
@@ -338,9 +345,7 @@ class _StatusPageState extends State<StatusPage> {
           children: [
             DrawerHeader(
               decoration: BoxDecoration(color: AppColors.primary),
-              child: const BrandText(
-                color: Colors.white,
-              ),
+              child: const BrandText(color: Colors.white),
             ),
             ListTile(
               leading: const Icon(Icons.home),
