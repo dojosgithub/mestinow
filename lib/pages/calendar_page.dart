@@ -203,15 +203,18 @@ class _CalendarPageState extends State<CalendarPage> {
       return Card(
         margin: const EdgeInsets.only(bottom: 8),
         child: ListTile(
-          leading: iconPath != null
-              ? Image.asset(
-                  iconPath,
-                  width: 24,
-                  height: 24,
-                  color: AppColors.primary,
-                )
-              : Icon(Icons.warning_amber_rounded, color: AppColors.primary),
-          title: Text(event.eventType=='medMestinon'?'Mestinon':event.eventType),
+          leading:
+              iconPath != null
+                  ? Image.asset(
+                    iconPath,
+                    width: 24,
+                    height: 24,
+                    color: AppColors.primary,
+                  )
+                  : Icon(Icons.warning_amber_rounded, color: AppColors.primary),
+          title: Text(
+            event.eventType == 'medMestinon' ? 'Mestinon' : event.eventType,
+          ),
           subtitle: Text('${DateFormat('h:mm a').format(event.timestamp)} '),
         ),
       );

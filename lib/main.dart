@@ -13,13 +13,13 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 void main() async {
   tz.initializeTimeZones();
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Lock orientation to portrait only
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-  
+
   final db = await DatabaseService.create();
   runApp(Provider<DatabaseService>.value(value: db, child: const MyApp()));
 }

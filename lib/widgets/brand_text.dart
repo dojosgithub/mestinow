@@ -6,11 +6,7 @@ class BrandText extends StatelessWidget {
   final double? fontSize;
   final Color? color;
 
-  const BrandText({
-    super.key,
-    this.fontSize,
-    this.color,
-  });
+  const BrandText({super.key, this.fontSize, this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -24,4 +20,4 @@ class BrandText extends StatelessWidget {
       ),
     );
   }
-} 
+}

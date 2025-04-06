@@ -29,17 +29,11 @@ class SymptomButton extends StatelessWidget {
               shadowColor: AppColors.darkPrimary.withValues(alpha: 0.7),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
-                side: BorderSide(
-                  color: AppColors.lightPrimary,
-                  width: 0.5,
-                ),
+                side: BorderSide(color: AppColors.lightPrimary, width: 0.5),
               ),
               padding: EdgeInsets.all(6),
             ),
-            child: Image.asset(
-              iconPath,
-              color: Colors.white,
-            ),
+            child: Image.asset(iconPath, color: Colors.white),
           ),
         ),
         SizedBox(height: 4),
