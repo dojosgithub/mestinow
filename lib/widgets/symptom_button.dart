@@ -17,7 +17,6 @@ class SymptomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('symptom button size: $size');
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [

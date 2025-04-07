@@ -72,7 +72,6 @@ class _StatusPageState extends State<StatusPage> {
     remainingSeconds = totalSeconds;
     lastButtonPressTime = 0;
     super.initState();
-    _loadSavedTime();
     timer = Timer.periodic(Duration(seconds: 20), (timer) {
       setState(() {
         if (lastButtonPressTime != null) {
@@ -84,6 +83,14 @@ class _StatusPageState extends State<StatusPage> {
       });
     });
     initializeNotifications();
+  }
+
+  @override
+  didChangeDependencies() {
+    super.didChangeDependencies();
+    _loadSavedTime();
+    db = Provider.of<DatabaseService>(context);
+    _loadEvents();
   }
 
   Future<void> _saveMedIntake() async {
@@ -271,13 +278,14 @@ class _StatusPageState extends State<StatusPage> {
         itemBuilder: (context, index) {
           final symptom = symptoms[index];
           return SymptomButton(
-            size: screenWidth * 0.13,
+            size: screenHeight * 0.06,
             iconPath: symptom['icon']!,
             label: symptom['label']!,
             onPressed: () {
               setState(() {
                 final label = symptom['label']!;
                 db.logEvent(label);
+                _loadEvents();
               });
             },
           );
@@ -288,8 +296,6 @@ class _StatusPageState extends State<StatusPage> {
 
   @override
   Widget build(BuildContext context) {
-    db = Provider.of<DatabaseService>(context);
-    _loadEvents();
     final l10n = AppLocalizations.of(context)!;
 
     int minutes = remainingSeconds ~/ 60;
@@ -396,15 +402,20 @@ class _StatusPageState extends State<StatusPage> {
       ),
       body: Stack(
         children: [
+          // Main content column
           Padding(
-            padding: const EdgeInsets.only(
-              bottom: 350,
-            ), // Leave space for bottom panel
+            padding: EdgeInsets.only(
+              bottom: min(
+                screenWidth * 0.72,
+                screenHeight * 0.5,
+              ), // Match bottom panel height
+            ),
             child: Column(
               children: [
+                // Fixed symptom grid at the top
                 _buildSymptomGrid(screenWidth, screenHeight),
 
-                // Centered "Today" with underline
+                // Fixed "Today" text and divider
                 Padding(
                   padding: const EdgeInsets.only(top: 0, bottom: 0),
                   child: Column(
@@ -418,26 +429,30 @@ class _StatusPageState extends State<StatusPage> {
                         thickness: 1,
                         color: AppColors.lightGrey,
                         indent: 0,
-                        endIndent: 0, // light underline
+                        endIndent: 0,
                       ),
                     ],
                   ),
                 ),
 
-                // Scrollable List
+                // Scrollable ListView with proper constraints
                 Expanded(
                   child: ListView.separated(
                     itemCount: _events.length,
                     itemBuilder: (context, index) {
                       final event = _events[index];
                       String formattedTime =
-                          '${DateFormat('h:mm a').format(event.timestamp)} '; // e.g., 5:30 PM
-                      return ListTile(
-                        title: Text(
+                          '${DateFormat('h:mm a').format(event.timestamp)} ';
+                      return Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16.0,
+                          vertical: 10.0,
+                        ),
+                        child: Text(
                           '$formattedTime - ${event.eventType == 'medMestinon' ? 'Mestinon' : event.eventType}',
                           style: TextStyle(
                             fontFamily: _fontFamily,
-                            fontSize: 14,
+                            fontSize: screenHeight * 0.015,
                           ),
                         ),
                       );
@@ -446,21 +461,21 @@ class _StatusPageState extends State<StatusPage> {
                         (context, index) => Divider(
                           color: AppColors.lightGrey,
                           thickness: 1,
-                          height: 0, // tight spacing between items
+                          height: 0,
                           indent: 16,
                           endIndent: 16,
                         ),
                   ),
-                ), // Makes the ListView take up the remaining space
+                ),
               ],
             ),
           ),
+
           // Fixed bottom panel
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
-              // lower panel
-              height: min(screenWidth * 0.75, screenHeight * 0.5),
+              height: min(screenWidth * 0.72, screenHeight * 0.5),
               width: screenWidth,
               decoration: BoxDecoration(
                 color: backColor,
@@ -495,7 +510,6 @@ class _StatusPageState extends State<StatusPage> {
                         screenHeight,
                         l10n,
                       ),
-                      // SizedBox(height: 50),
                       Positioned(
                         bottom: 0,
                         right: 0,
