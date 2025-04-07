@@ -88,14 +88,9 @@ class _StatusPageState extends State<StatusPage> {
   }
 
   Future<void> _saveMedIntake() async {
-    // final prefs = await SharedPreferences.getInstance();
-    // final intervalHours = prefs.getDouble(_intervalKey) ?? 3.0;
 
     await db.logEvent(EventType.medMestinon.name);
-    // await _saveButtonPressTime();
-    // setState(() {
-    //   remainingSeconds = totalSeconds;
-    // });
+    _loadEvents();
   }
 
   Future<void> initializeNotifications() async {
