@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import '../theme/colors.dart';
 import '../models/event_log.dart';
 import '../services/database_service.dart';
+import '../models/event.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CalendarPage extends StatefulWidget {
   const CalendarPage({super.key});
@@ -17,6 +19,7 @@ class _CalendarPageState extends State<CalendarPage> {
   late DateTime _selectedDate;
   late DateTime _displayedMonth;
   late List<EventLog> _events = [];
+  late AppLocalizations l10n;
   final ScrollController _scrollController = ScrollController();
   bool _isInitialized = false;
 
@@ -51,6 +54,7 @@ class _CalendarPageState extends State<CalendarPage> {
       _loadEvents(); // Now safe to call
       _isInitialized = true;
     }
+    l10n = AppLocalizations.of(context)!;
   }
 
   void _scrollToSelectedDate() {
@@ -199,7 +203,8 @@ class _CalendarPageState extends State<CalendarPage> {
 
   List<Widget> _buildSymptomEvents() {
     return _events.map((event) {
-      final iconPath = _symptomIcons[event.eventType];
+      final displayableEvent = Event.findByCode(event.eventType);
+      final iconPath = displayableEvent?.icon ?? _symptomIcons[event.eventType];
       return Card(
         margin: const EdgeInsets.only(bottom: 8),
         child: ListTile(
@@ -213,7 +218,7 @@ class _CalendarPageState extends State<CalendarPage> {
                   )
                   : Icon(Icons.warning_amber_rounded, color: AppColors.primary),
           title: Text(
-            event.eventType == 'medMestinon' ? 'Mestinon' : event.eventType,
+            displayableEvent?.getDisplayName(l10n) ?? event.eventType,
           ),
           subtitle: Text('${DateFormat('h:mm a').format(event.timestamp)} '),
         ),

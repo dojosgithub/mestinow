@@ -18,6 +18,7 @@ import '../services/database_service.dart';
 import '../models/event_log.dart';
 import '../pages/calendar_page.dart';
 import '../pages/onboarding/tour_page.dart';
+import 'package:mestinow/models/event.dart';
 
 class StatusPage extends StatefulWidget {
   const StatusPage({super.key});
@@ -40,15 +41,8 @@ class _StatusPageState extends State<StatusPage> {
   final FlutterLocalNotificationsPlugin notificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
-  // Add symptom data
-  final List<Map<String, String>> symptoms = [
-    {'icon': 'assets/icons/ptosis.png', 'label': 'Ptosis'},
-    {'icon': 'assets/icons/vision.png', 'label': 'Vision'},
-    {'icon': 'assets/icons/weakness.png', 'label': 'Weakness'},
-    {'icon': 'assets/icons/neck.png', 'label': 'Neck'},
-    {'icon': 'assets/icons/breathing.png', 'label': 'Breathing'},
-    {'icon': 'assets/icons/walking.png', 'label': 'Walking'},
-  ];
+  // Use the Symptom model instead of hardcoded list
+  final List<Event> symptoms = Event.getSymptoms();
 
   Future<void> _loadEvents() async {
     // Load events for today
@@ -261,7 +255,7 @@ class _StatusPageState extends State<StatusPage> {
   }
 
   // Add this widget to your build method, before the CircularPercentIndicator
-  Widget _buildSymptomGrid(screenWidth, screenHeight) {
+  Widget _buildSymptomGrid(screenWidth, screenHeight, l10n) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30.0),
       child: GridView.builder(
@@ -279,11 +273,11 @@ class _StatusPageState extends State<StatusPage> {
           final symptom = symptoms[index];
           return SymptomButton(
             size: screenHeight * 0.06,
-            iconPath: symptom['icon']!,
-            label: symptom['label']!,
+            iconPath: symptom.icon,
+            label: symptom.getDisplayName(l10n),
             onPressed: () {
               setState(() {
-                final label = symptom['label']!;
+                final label = symptom.code;
                 db.logEvent(label);
                 _loadEvents();
               });
@@ -413,7 +407,7 @@ class _StatusPageState extends State<StatusPage> {
             child: Column(
               children: [
                 // Fixed symptom grid at the top
-                _buildSymptomGrid(screenWidth, screenHeight),
+                _buildSymptomGrid(screenWidth, screenHeight, l10n),
 
                 // Fixed "Today" text and divider
                 Padding(
@@ -441,6 +435,9 @@ class _StatusPageState extends State<StatusPage> {
                     itemCount: _events.length,
                     itemBuilder: (context, index) {
                       final event = _events[index];
+                      final displayableEvent = Event.findByCode(
+                        event.eventType,
+                      );
                       String formattedTime =
                           '${DateFormat('h:mm a').format(event.timestamp)} ';
                       return Container(
@@ -449,7 +446,7 @@ class _StatusPageState extends State<StatusPage> {
                           vertical: 10.0,
                         ),
                         child: Text(
-                          '$formattedTime - ${event.eventType == 'medMestinon' ? 'Mestinon' : event.eventType}',
+                          '$formattedTime - ${displayableEvent?.getDisplayName(l10n) ?? event.eventType}',
                           style: TextStyle(
                             fontFamily: _fontFamily,
                             fontSize: screenHeight * 0.015,
