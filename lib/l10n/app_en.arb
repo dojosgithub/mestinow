@@ -27,5 +27,11 @@
     "tour3_title": "Your data stays with you",
     "tour3_text": "mestiNow respects your privacy. All your information and tracking data is stored locally on your device and never shared with external servers.",
     "tour4_title": "Always free!",
-    "tour4_text": "mestiNow is free and open-source software, and it will always remain free—for the benefit of Myasthenia Gravis patients and anyone else who finds it helpful."
+    "tour4_text": "mestiNow is free and open-source software, and it will always remain free—for the benefit of Myasthenia Gravis patients and anyone else who finds it helpful.",
+    "symPtosis": "Ptosis",
+    "symVision": "Double Vision",
+    "symWeakness": "Weakness",
+    "symNeck": "Neck",
+    "symBreathing": "Breathing",
+    "symWalking": "Walking"
 } 

@@ -27,5 +27,11 @@
     "tour3_title": "Tus datos permanecen contigo",
     "tour3_text": "mestiNow respeta tu privacidad. Toda tu información y datos de seguimiento se almacenan localmente en tu dispositivo y nunca se comparten con servidores externos.",
     "tour4_title": "¡Siempre será gratis!",
-    "tour4_text": "mestiNow es un software libre y de código abierto, y siempre seguirá siendo gratuito—para el beneficio de los pacientes con Miastenia Grave y cualquier otra persona que lo encuentre útil."
+    "tour4_text": "mestiNow es un software libre y de código abierto, y siempre seguirá siendo gratuito—para el beneficio de los pacientes con Miastenia Grave y cualquier otra persona que lo encuentre útil.",
+    "symPtosis": "Ptosis",
+    "symVision": "Visión Doble",
+    "symWeakness": "Debilidad",
+    "symNeck": "Cuello",
+    "symBreathing": "Respiración",
+    "symWalking": "Caminar"
 } 
