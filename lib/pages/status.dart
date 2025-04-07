@@ -72,7 +72,6 @@ class _StatusPageState extends State<StatusPage> {
     remainingSeconds = totalSeconds;
     lastButtonPressTime = 0;
     super.initState();
-    _loadSavedTime();
     timer = Timer.periodic(Duration(seconds: 20), (timer) {
       setState(() {
         if (lastButtonPressTime != null) {
@@ -84,6 +83,14 @@ class _StatusPageState extends State<StatusPage> {
       });
     });
     initializeNotifications();
+  }
+
+  @override
+  didChangeDependencies() {
+    super.didChangeDependencies();
+    _loadSavedTime();
+    db = Provider.of<DatabaseService>(context);
+    _loadEvents();
   }
 
   Future<void> _saveMedIntake() async {
@@ -254,7 +261,7 @@ class _StatusPageState extends State<StatusPage> {
   }
 
   // Add this widget to your build method, before the CircularPercentIndicator
-  Widget _buildSymptomGrid() {
+  Widget _buildSymptomGrid(screenWidth, screenHeight) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30.0),
       child: GridView.builder(
@@ -263,7 +270,7 @@ class _StatusPageState extends State<StatusPage> {
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
           crossAxisSpacing: 1,
-          mainAxisExtent: 85.0,
+          mainAxisExtent: screenHeight * 0.1,
           mainAxisSpacing: 8,
           // childAspectRatio: 1.5,
         ),
@@ -271,12 +278,14 @@ class _StatusPageState extends State<StatusPage> {
         itemBuilder: (context, index) {
           final symptom = symptoms[index];
           return SymptomButton(
+            size: screenHeight * 0.06,
             iconPath: symptom['icon']!,
             label: symptom['label']!,
             onPressed: () {
               setState(() {
                 final label = symptom['label']!;
                 db.logEvent(label);
+                _loadEvents();
               });
             },
           );
@@ -287,8 +296,6 @@ class _StatusPageState extends State<StatusPage> {
 
   @override
   Widget build(BuildContext context) {
-    db = Provider.of<DatabaseService>(context);
-    _loadEvents();
     final l10n = AppLocalizations.of(context)!;
 
     int minutes = remainingSeconds ~/ 60;
@@ -312,6 +319,7 @@ class _StatusPageState extends State<StatusPage> {
     Color frontColor = _getTimeBasedFrontColor(minutes);
     Color backColor = _getTimeBasedBackColor(minutes);
     final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -394,15 +402,20 @@ class _StatusPageState extends State<StatusPage> {
       ),
       body: Stack(
         children: [
+          // Main content column
           Padding(
-            padding: const EdgeInsets.only(
-              bottom: 350,
-            ), // Leave space for bottom panel
+            padding: EdgeInsets.only(
+              bottom: min(
+                screenWidth * 0.72,
+                screenHeight * 0.5,
+              ), // Match bottom panel height
+            ),
             child: Column(
               children: [
-                _buildSymptomGrid(),
+                // Fixed symptom grid at the top
+                _buildSymptomGrid(screenWidth, screenHeight),
 
-                // Centered "Today" with underline
+                // Fixed "Today" text and divider
                 Padding(
                   padding: const EdgeInsets.only(top: 0, bottom: 0),
                   child: Column(
@@ -416,26 +429,30 @@ class _StatusPageState extends State<StatusPage> {
                         thickness: 1,
                         color: AppColors.lightGrey,
                         indent: 0,
-                        endIndent: 0, // light underline
+                        endIndent: 0,
                       ),
                     ],
                   ),
                 ),
 
-                // Scrollable List
+                // Scrollable ListView with proper constraints
                 Expanded(
                   child: ListView.separated(
                     itemCount: _events.length,
                     itemBuilder: (context, index) {
                       final event = _events[index];
                       String formattedTime =
-                          '${DateFormat('h:mm a').format(event.timestamp)} '; // e.g., 5:30 PM
-                      return ListTile(
-                        title: Text(
+                          '${DateFormat('h:mm a').format(event.timestamp)} ';
+                      return Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16.0,
+                          vertical: 10.0,
+                        ),
+                        child: Text(
                           '$formattedTime - ${event.eventType == 'medMestinon' ? 'Mestinon' : event.eventType}',
                           style: TextStyle(
                             fontFamily: _fontFamily,
-                            fontSize: 14,
+                            fontSize: screenHeight * 0.015,
                           ),
                         ),
                       );
@@ -444,21 +461,21 @@ class _StatusPageState extends State<StatusPage> {
                         (context, index) => Divider(
                           color: AppColors.lightGrey,
                           thickness: 1,
-                          height: 0, // tight spacing between items
+                          height: 0,
                           indent: 16,
                           endIndent: 16,
                         ),
                   ),
-                ), // Makes the ListView take up the remaining space
+                ),
               ],
             ),
           ),
+
           // Fixed bottom panel
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
-              // lower panel
-              height: screenWidth * 0.75,
+              height: min(screenWidth * 0.72, screenHeight * 0.5),
               width: screenWidth,
               decoration: BoxDecoration(
                 color: backColor,
@@ -469,9 +486,9 @@ class _StatusPageState extends State<StatusPage> {
               ),
               child: Column(
                 children: [
-                  SizedBox(height: screenWidth * 0.05),
+                  SizedBox(height: screenWidth * 0.045),
                   Container(
-                    width: MediaQuery.of(context).size.width,
+                    width: screenWidth,
                     child: Text(
                       '${l10n.lastDose}: $relativeLastDose ${l10n.at} ${_formatTime(lastDoseDateTime)}',
                       textAlign: TextAlign.center,
@@ -482,7 +499,7 @@ class _StatusPageState extends State<StatusPage> {
                       ),
                     ),
                   ),
-                  SizedBox(height: screenWidth * 0.05),
+                  SizedBox(height: screenWidth * 0.045),
                   Stack(
                     alignment: Alignment.center,
                     children: [
@@ -490,9 +507,9 @@ class _StatusPageState extends State<StatusPage> {
                         frontColor,
                         relativeNextDose,
                         screenWidth,
+                        screenHeight,
                         l10n,
                       ),
-                      // SizedBox(height: 50),
                       Positioned(
                         bottom: 0,
                         right: 0,
@@ -513,11 +530,12 @@ class _StatusPageState extends State<StatusPage> {
     leftColor,
     relativeNextDose,
     screenWidth,
+    screenHeight,
     l10n,
   ) {
     return CircularPercentIndicator(
-      radius: screenWidth * 0.25,
-      lineWidth: 13.0,
+      radius: min(screenWidth * 0.25, screenHeight * 0.15),
+      lineWidth: screenWidth * 0.02,
       circularStrokeCap: CircularStrokeCap.round,
       percent:
           remainingSeconds <= 0
@@ -529,7 +547,7 @@ class _StatusPageState extends State<StatusPage> {
           "${l10n.nextDose}\n$relativeNextDose",
           textAlign: TextAlign.center,
           style: TextStyle(
-            fontSize: screenWidth * 0.055,
+            fontSize: min(screenWidth * 0.055, screenHeight * 0.03),
             fontWeight: FontWeight.w900,
             color: Colors.white,
             fontFamily: _fontFamily,

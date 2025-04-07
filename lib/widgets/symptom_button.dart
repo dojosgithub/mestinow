@@ -5,9 +5,11 @@ class SymptomButton extends StatelessWidget {
   final String iconPath;
   final String label;
   final VoidCallback onPressed;
+  final double size;
 
   const SymptomButton({
     super.key,
+    required this.size,
     required this.iconPath,
     required this.label,
     required this.onPressed,
@@ -19,8 +21,8 @@ class SymptomButton extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          width: 60,
-          height: 60,
+          width: size,
+          height: size,
           child: ElevatedButton(
             onPressed: onPressed,
             style: ElevatedButton.styleFrom(
@@ -28,10 +30,10 @@ class SymptomButton extends StatelessWidget {
               elevation: 2,
               shadowColor: AppColors.darkPrimary.withValues(alpha: 0.7),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(size * 0.25),
                 side: BorderSide(color: AppColors.lightPrimary, width: 0.5),
               ),
-              padding: EdgeInsets.all(6),
+              padding: EdgeInsets.all(size * 0.1),
             ),
             child: Image.asset(iconPath, color: Colors.white),
           ),
@@ -40,7 +42,7 @@ class SymptomButton extends StatelessWidget {
         Text(
           label,
           style: TextStyle(
-            fontSize: 12,
+            fontSize: 10,
             fontWeight: FontWeight.w500,
             color: AppColors.darkPrimary,
           ),
