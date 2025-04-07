@@ -18,7 +18,7 @@ import '../services/database_service.dart';
 import '../models/event_log.dart';
 import '../pages/calendar_page.dart';
 import '../pages/onboarding/tour_page.dart';
-import 'package:mestinow/models/symptom.dart';
+import 'package:mestinow/models/event.dart';
 
 class StatusPage extends StatefulWidget {
   const StatusPage({super.key});
@@ -42,7 +42,7 @@ class _StatusPageState extends State<StatusPage> {
       FlutterLocalNotificationsPlugin();
 
   // Use the Symptom model instead of hardcoded list
-  final List<Symptom> symptoms = Symptom.allSymptoms;
+  final List<Event> symptoms = Event.getSymptoms();
 
   Future<void> _loadEvents() async {
     // Load events for today
@@ -435,6 +435,9 @@ class _StatusPageState extends State<StatusPage> {
                     itemCount: _events.length,
                     itemBuilder: (context, index) {
                       final event = _events[index];
+                      final displayableEvent = Event.findByCode(
+                        event.eventType,
+                      );
                       String formattedTime =
                           '${DateFormat('h:mm a').format(event.timestamp)} ';
                       return Container(
@@ -443,7 +446,7 @@ class _StatusPageState extends State<StatusPage> {
                           vertical: 10.0,
                         ),
                         child: Text(
-                          '$formattedTime - ${event.eventType == 'medMestinon' ? 'Mestinon' : event.eventType}',
+                          '$formattedTime - ${displayableEvent?.getDisplayName(l10n) ?? event.eventType}',
                           style: TextStyle(
                             fontFamily: _fontFamily,
                             fontSize: screenHeight * 0.015,
