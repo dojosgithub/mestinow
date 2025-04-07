@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../theme/colors.dart';
@@ -18,6 +19,7 @@ class _TourPageState extends State<TourPage> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
@@ -41,10 +43,10 @@ class _TourPageState extends State<TourPage> {
                   });
                 },
                 children: [
-                  _buildFirstPage(l10n, screenWidth),
-                  _buildSecondPage(l10n, screenWidth),
-                  _buildThirdPage(l10n, screenWidth),
-                  _buildFourthPage(l10n, screenWidth),
+                  _buildFirstPage(l10n, screenWidth, screenHeight),
+                  _buildSecondPage(l10n, screenWidth, screenHeight),
+                  _buildThirdPage(l10n, screenWidth, screenHeight),
+                  _buildFourthPage(l10n, screenWidth, screenHeight),
                 ],
               ),
             ),
@@ -77,7 +79,7 @@ class _TourPageState extends State<TourPage> {
   }
 
   // First page implementation from previous code
-  Widget _buildFirstPage(l10n, screenWidth) {
+  Widget _buildFirstPage(l10n, screenWidth, screenHeight) {
     // Implementation from the previous welcome page
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
@@ -86,42 +88,40 @@ class _TourPageState extends State<TourPage> {
         children: [
           // App Logo/Icon
           Container(
-            width: screenWidth * 0.7,
-            height: screenWidth * 0.7,
+            width: screenHeight * 0.3,
+            height: screenHeight * 0.3,
             decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.1),
+              color: AppColors.darkPrimary.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: Center(
               child: Image.asset(
                 'assets/images/welcome_illustration.webp',
-                width: screenWidth * 0.6,
-                height: screenWidth * 0.6,
+                width: screenHeight * 0.28,
+                height: screenHeight * 0.28,
                 fit: BoxFit.contain,
               ),
             ),
           ),
-          SizedBox(height: screenWidth * 0.1),
+          SizedBox(height: screenWidth * 0.05),
           _buildPageIndicator(_currentPage),
-          SizedBox(height: screenWidth * 0.1),
+          SizedBox(height: screenWidth * 0.05),
 
-          // Title
           Text(
             l10n.tour1_title,
             style: TextStyle(
-              fontSize: screenWidth * 0.06,
+              fontSize: min(screenWidth * 0.06, screenHeight * 0.03),
               fontWeight: FontWeight.bold,
               color: AppColors.darkPrimary,
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: screenWidth * 0.05),
 
-          // Subtitle
           Text(
             l10n.tour1_text,
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: screenWidth * 0.04,
+              fontSize: min(screenWidth * 0.04, screenHeight * 0.02),
               color: AppColors.darkPrimary,
               height: 1.5,
             ),
@@ -148,7 +148,7 @@ class _TourPageState extends State<TourPage> {
     ); // Add the previous page implementation here
   }
 
-  Widget _buildSecondPage(l10n, screenWidth) {
+  Widget _buildSecondPage(l10n, screenWidth, screenHeight) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
       child: Column(
@@ -156,23 +156,23 @@ class _TourPageState extends State<TourPage> {
         children: [
           // Illustration
           Container(
-            width: screenWidth * 0.7,
-            height: screenWidth * 0.5,
+            width: screenHeight * 0.3,
+            height: screenHeight * 0.3,
             child: Image.asset(
               'assets/images/medication_illustration.webp',
               fit: BoxFit.contain,
             ),
           ),
-          SizedBox(height: screenWidth * 0.1),
+          SizedBox(height: screenWidth * 0.05),
           _buildPageIndicator(_currentPage),
-          SizedBox(height: screenWidth * 0.1),
+          SizedBox(height: screenWidth * 0.05),
 
           // Title
           Text(
             l10n.tour2_title,
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: screenWidth * 0.06,
+              fontSize: min(screenWidth * 0.06, screenHeight * 0.03),
               fontWeight: FontWeight.bold,
               color: AppColors.darkPrimary,
               height: 1.2,
@@ -185,7 +185,7 @@ class _TourPageState extends State<TourPage> {
             l10n.tour2_text,
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: screenWidth * 0.04,
+              fontSize: min(screenWidth * 0.04, screenHeight * 0.02),
               color: AppColors.darkPrimary,
               height: 1.5,
             ),
@@ -211,7 +211,7 @@ class _TourPageState extends State<TourPage> {
     );
   }
 
-  Widget _buildThirdPage(l10n, screenWidth) {
+  Widget _buildThirdPage(l10n, screenWidth, screenHeight) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
       child: Column(
@@ -219,22 +219,22 @@ class _TourPageState extends State<TourPage> {
         children: [
           // Illustration
           Container(
-            width: screenWidth * 0.7,
-            height: screenWidth * 0.7,
+            width: screenHeight * 0.3,
+            height: screenHeight * 0.3,
             child: Image.asset(
               'assets/images/security_illustration.webp',
               fit: BoxFit.contain,
             ),
           ),
-          SizedBox(height: screenWidth * 0.1),
+          SizedBox(height: screenWidth * 0.05),
           _buildPageIndicator(_currentPage),
-          SizedBox(height: screenWidth * 0.1),
+          SizedBox(height: screenWidth * 0.05),
 
           // Title
           Text(
             l10n.tour3_title,
             style: TextStyle(
-              fontSize: screenWidth * 0.06,
+              fontSize: min(screenWidth * 0.06, screenHeight * 0.03),
               fontWeight: FontWeight.bold,
               color: AppColors.darkPrimary,
               height: 1.2,
@@ -247,7 +247,7 @@ class _TourPageState extends State<TourPage> {
             l10n.tour3_text,
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: screenWidth * 0.04,
+              fontSize: min(screenWidth * 0.04, screenHeight * 0.02),
               color: AppColors.darkPrimary,
               height: 1.5,
             ),
@@ -274,7 +274,7 @@ class _TourPageState extends State<TourPage> {
     );
   }
 
-  Widget _buildFourthPage(l10n, screenWidth) {
+  Widget _buildFourthPage(l10n, screenWidth, screenHeight) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
       child: Column(
@@ -282,22 +282,22 @@ class _TourPageState extends State<TourPage> {
         children: [
           // Illustration
           Container(
-            width: screenWidth * 0.6,
-            height: screenWidth * 0.6,
+            width: screenHeight * 0.3,
+            height: screenHeight * 0.3,
             child: Image.asset(
               'assets/images/open_pill.png',
               fit: BoxFit.contain,
             ),
           ),
-          SizedBox(height: screenWidth * 0.1),
+          SizedBox(height: screenWidth * 0.05),
           _buildPageIndicator(_currentPage),
-          SizedBox(height: screenWidth * 0.1),
+          SizedBox(height: screenWidth * 0.05),
 
           // Title
           Text(
             l10n.tour4_title,
             style: TextStyle(
-              fontSize: screenWidth * 0.06,
+              fontSize: min(screenWidth * 0.06, screenHeight * 0.03),
               fontWeight: FontWeight.bold,
               color: AppColors.darkPrimary,
               height: 1.2,
@@ -310,7 +310,7 @@ class _TourPageState extends State<TourPage> {
             l10n.tour4_text,
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: screenWidth * 0.04,
+              fontSize: min(screenWidth * 0.04, screenHeight * 0.02),
               color: AppColors.darkPrimary,
               height: 1.5,
             ),

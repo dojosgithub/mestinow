@@ -254,7 +254,7 @@ class _StatusPageState extends State<StatusPage> {
   }
 
   // Add this widget to your build method, before the CircularPercentIndicator
-  Widget _buildSymptomGrid() {
+  Widget _buildSymptomGrid(screenWidth, screenHeight) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30.0),
       child: GridView.builder(
@@ -263,7 +263,7 @@ class _StatusPageState extends State<StatusPage> {
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
           crossAxisSpacing: 1,
-          mainAxisExtent: 85.0,
+          mainAxisExtent: screenHeight * 0.1,
           mainAxisSpacing: 8,
           // childAspectRatio: 1.5,
         ),
@@ -271,6 +271,7 @@ class _StatusPageState extends State<StatusPage> {
         itemBuilder: (context, index) {
           final symptom = symptoms[index];
           return SymptomButton(
+            size: screenWidth * 0.13,
             iconPath: symptom['icon']!,
             label: symptom['label']!,
             onPressed: () {
@@ -312,6 +313,7 @@ class _StatusPageState extends State<StatusPage> {
     Color frontColor = _getTimeBasedFrontColor(minutes);
     Color backColor = _getTimeBasedBackColor(minutes);
     final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -400,7 +402,7 @@ class _StatusPageState extends State<StatusPage> {
             ), // Leave space for bottom panel
             child: Column(
               children: [
-                _buildSymptomGrid(),
+                _buildSymptomGrid(screenWidth, screenHeight),
 
                 // Centered "Today" with underline
                 Padding(
@@ -458,7 +460,7 @@ class _StatusPageState extends State<StatusPage> {
             alignment: Alignment.bottomCenter,
             child: Container(
               // lower panel
-              height: screenWidth * 0.75,
+              height: min(screenWidth * 0.75, screenHeight * 0.5),
               width: screenWidth,
               decoration: BoxDecoration(
                 color: backColor,
@@ -469,9 +471,9 @@ class _StatusPageState extends State<StatusPage> {
               ),
               child: Column(
                 children: [
-                  SizedBox(height: screenWidth * 0.05),
+                  SizedBox(height: screenWidth * 0.045),
                   Container(
-                    width: MediaQuery.of(context).size.width,
+                    width: screenWidth,
                     child: Text(
                       '${l10n.lastDose}: $relativeLastDose ${l10n.at} ${_formatTime(lastDoseDateTime)}',
                       textAlign: TextAlign.center,
@@ -482,7 +484,7 @@ class _StatusPageState extends State<StatusPage> {
                       ),
                     ),
                   ),
-                  SizedBox(height: screenWidth * 0.05),
+                  SizedBox(height: screenWidth * 0.045),
                   Stack(
                     alignment: Alignment.center,
                     children: [
@@ -490,6 +492,7 @@ class _StatusPageState extends State<StatusPage> {
                         frontColor,
                         relativeNextDose,
                         screenWidth,
+                        screenHeight,
                         l10n,
                       ),
                       // SizedBox(height: 50),
@@ -513,11 +516,12 @@ class _StatusPageState extends State<StatusPage> {
     leftColor,
     relativeNextDose,
     screenWidth,
+    screenHeight,
     l10n,
   ) {
     return CircularPercentIndicator(
-      radius: screenWidth * 0.25,
-      lineWidth: 13.0,
+      radius: min(screenWidth * 0.25, screenHeight * 0.15),
+      lineWidth: screenWidth * 0.02,
       circularStrokeCap: CircularStrokeCap.round,
       percent:
           remainingSeconds <= 0
@@ -529,7 +533,7 @@ class _StatusPageState extends State<StatusPage> {
           "${l10n.nextDose}\n$relativeNextDose",
           textAlign: TextAlign.center,
           style: TextStyle(
-            fontSize: screenWidth * 0.055,
+            fontSize: min(screenWidth * 0.055, screenHeight * 0.03),
             fontWeight: FontWeight.w900,
             color: Colors.white,
             fontFamily: _fontFamily,
