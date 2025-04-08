@@ -34,5 +34,6 @@
     "symWeakness": "Weakness",
     "symNeck": "Neck",
     "symBreathing": "Breathing",
-    "symWalking": "Walking"
+    "symWalking": "Walking",
+    "calendar_delete": "Are you sure you want to delete this event?"
 } 

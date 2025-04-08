@@ -94,8 +94,7 @@ class _CalendarPageState extends State<CalendarPage> {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text(l10n.tour), // Ideally, replace with l10n.delete or similar
-        content: const Text('Are you sure you want to delete this event?'),
+        title: Text(l10n.calendar_delete),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),

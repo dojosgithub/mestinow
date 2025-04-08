@@ -34,5 +34,6 @@
     "symWeakness": "Debilidad",
     "symNeck": "Cuello",
     "symBreathing": "Respiración",
-    "symWalking": "Caminar"
+    "symWalking": "Caminar",
+    "calendar_delete": "¿Estás seguro que deseas eliminar este evento?"
 } 
