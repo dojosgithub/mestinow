@@ -34,5 +34,7 @@
     "symWeakness": "Debilidad",
     "symNeck": "Cuello",
     "symBreathing": "Respiración",
-    "symWalking": "Caminar"
+    "symWalking": "Caminar",
+    "symChew": "Masticar",
+    "symSwallow": "Tragar"
 } 

@@ -34,5 +34,7 @@
     "symWeakness": "Weakness",
     "symNeck": "Neck",
     "symBreathing": "Breathing",
-    "symWalking": "Walking"
+    "symWalking": "Walking",
+    "symChew": "Chewing",
+    "symSwallow": "Swallowing"
 } 
