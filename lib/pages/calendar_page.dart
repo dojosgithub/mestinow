@@ -90,6 +90,31 @@ class _CalendarPageState extends State<CalendarPage> {
     }
   }
 
+  void _confirmDelete(EventLog event) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.tour), // Ideally, replace with l10n.delete or similar
+        content: const Text('Are you sure you want to delete this event?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      await db.deleteEvent(event.id); // Make sure this exists in your database service
+      await _loadEvents();
+    }
+  }
+
   Widget _buildMonthSelector() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -221,6 +246,10 @@ class _CalendarPageState extends State<CalendarPage> {
             displayableEvent?.getDisplayName(l10n) ?? event.eventType,
           ),
           subtitle: Text('${DateFormat('h:mm a').format(event.timestamp)} '),
+          trailing: IconButton(
+          icon: const Icon(Icons.delete_outline, color: Colors.red),
+          onPressed: () => _confirmDelete(event),
+        ),
         ),
       );
     }).toList();

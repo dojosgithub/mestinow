@@ -80,4 +80,8 @@ class DatabaseService {
     //   return lastIntake?.timestamp;
     // }
   }
+
+  Future<void> deleteEvent(int id) async {
+    eventLogBox.remove(id);
+  }
 }
