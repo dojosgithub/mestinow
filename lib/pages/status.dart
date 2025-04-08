@@ -88,7 +88,6 @@ class _StatusPageState extends State<StatusPage> {
   }
 
   Future<void> _saveMedIntake() async {
-
     await db.logEvent(EventType.medMestinon.name);
     _loadEvents();
   }
