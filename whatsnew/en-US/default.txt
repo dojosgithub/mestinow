@@ -1,1 +1,5 @@
-Calendar events now match the symptom icons
+1.0.1:
+
+- Fix display for when user has set very large font size in accessibility
+- Ability to delete an event from the Calendar page
+- Added chew and swallow symptoms
