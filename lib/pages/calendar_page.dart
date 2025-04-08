@@ -260,6 +260,7 @@ class _CalendarPageState extends State<CalendarPage> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
+        scrolledUnderElevation: 0,
         title: const Text(
           'Calendar',
           style: TextStyle(
