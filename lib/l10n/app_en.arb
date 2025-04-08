@@ -36,5 +36,6 @@
     "symBreathing": "Breathing",
     "symWalking": "Walking",
     "symChew": "Chewing",
-    "symSwallow": "Swallowing"
+    "symSwallow": "Swallowing",
+    "calendar_delete": "Are you sure you want to delete this event?"
 } 

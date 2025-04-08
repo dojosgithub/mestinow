@@ -36,5 +36,6 @@
     "symBreathing": "Respiración",
     "symWalking": "Caminar",
     "symChew": "Masticar",
-    "symSwallow": "Tragar"
+    "symSwallow": "Tragar",
+    "calendar_delete": "¿Estás seguro que deseas eliminar este evento?"
 } 

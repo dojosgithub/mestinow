@@ -387,12 +387,13 @@ class _StatusPageState extends State<StatusPage> {
             ListTile(
               leading: const Icon(Icons.calendar_month),
               title: Text(l10n.calendar),
-              onTap: () {
+              onTap: () async {
                 Navigator.pop(context); // Close the drawer
-                Navigator.push(
+                await Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const CalendarPage()),
                 );
+                _loadEvents();
               },
             ),
           ],
