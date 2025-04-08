@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
 import '../theme/colors.dart';
 
 class SymptomButton extends StatelessWidget {
@@ -42,7 +43,8 @@ class SymptomButton extends StatelessWidget {
         Text(
           label,
           style: TextStyle(
-            fontSize: 10,
+            fontSize:
+                10 / min(2.0, MediaQuery.of(context).textScaler.scale(1.0)),
             fontWeight: FontWeight.w500,
             color: AppColors.darkPrimary,
           ),

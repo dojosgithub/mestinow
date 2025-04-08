@@ -36,6 +36,7 @@ class _StatusPageState extends State<StatusPage> {
   late int? lastButtonPressTime;
   late List<EventLog> _events = [];
   final String _fontFamily = GoogleFonts.roboto().fontFamily!;
+  late double textScaleFactor = 1.0;
   Timer? timer;
 
   final FlutterLocalNotificationsPlugin notificationsPlugin =
@@ -85,6 +86,7 @@ class _StatusPageState extends State<StatusPage> {
     _loadSavedTime();
     db = Provider.of<DatabaseService>(context);
     _loadEvents();
+    textScaleFactor = MediaQuery.of(context).textScaler.scale(1.0);
   }
 
   Future<void> _saveMedIntake() async {
@@ -283,6 +285,14 @@ class _StatusPageState extends State<StatusPage> {
     );
   }
 
+  // Function to calculate responsive font size that accounts for text scaling
+  double getResponsiveFontSize(double baseSize, double textScaleFactor) {
+    // Adjust base size based on text scale factor
+    // We'll cap the maximum scaling to 2.0 to prevent extreme sizes
+    final adjustedScale = min(textScaleFactor, 2.0);
+    return baseSize / adjustedScale;
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -411,7 +421,12 @@ class _StatusPageState extends State<StatusPage> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Center(
-                        child: Text('Today', style: TextStyle(fontSize: 12)),
+                        child: Text(
+                          'Today',
+                          style: TextStyle(
+                            fontSize: 12 / min(2.0, textScaleFactor),
+                          ),
+                        ),
                       ),
                       SizedBox(height: 2),
                       Divider(
@@ -444,7 +459,10 @@ class _StatusPageState extends State<StatusPage> {
                           '$formattedTime - ${displayableEvent?.getDisplayName(l10n) ?? event.eventType}',
                           style: TextStyle(
                             fontFamily: _fontFamily,
-                            fontSize: screenHeight * 0.015,
+                            fontSize: getResponsiveFontSize(
+                              screenHeight * 0.015,
+                              textScaleFactor,
+                            ),
                           ),
                         ),
                       );
@@ -485,7 +503,10 @@ class _StatusPageState extends State<StatusPage> {
                       '${l10n.lastDose}: $relativeLastDose ${l10n.at} ${_formatTime(lastDoseDateTime)}',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: screenWidth * 0.04,
+                        fontSize: getResponsiveFontSize(
+                          screenWidth * 0.04,
+                          textScaleFactor,
+                        ),
                         color: AppColors.darkPrimary,
                         fontFamily: _fontFamily,
                       ),
@@ -539,7 +560,10 @@ class _StatusPageState extends State<StatusPage> {
           "${l10n.nextDose}\n$relativeNextDose",
           textAlign: TextAlign.center,
           style: TextStyle(
-            fontSize: min(screenWidth * 0.055, screenHeight * 0.03),
+            fontSize: getResponsiveFontSize(
+              min(screenWidth * 0.055, screenHeight * 0.03),
+              textScaleFactor,
+            ),
             fontWeight: FontWeight.w900,
             color: Colors.white,
             fontFamily: _fontFamily,
@@ -570,7 +594,7 @@ class _StatusPageState extends State<StatusPage> {
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontFamily: _fontFamily,
-            fontSize: 14,
+            fontSize: getResponsiveFontSize(14, textScaleFactor),
             color: Colors.white,
           ),
         ),
