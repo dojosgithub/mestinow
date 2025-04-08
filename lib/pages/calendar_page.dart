@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -109,7 +110,11 @@ class _CalendarPageState extends State<CalendarPage> {
           ),
           Text(
             DateFormat('MMMM yyyy').format(_displayedMonth),
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontSize:
+                  18 / min(2.0, MediaQuery.of(context).textScaler.scale(1.0)),
+              fontWeight: FontWeight.bold,
+            ),
           ),
           IconButton(
             icon: const Icon(Icons.chevron_right),
@@ -171,7 +176,12 @@ class _CalendarPageState extends State<CalendarPage> {
                     DateFormat('E').format(date).substring(0, 1),
                     style: TextStyle(
                       color: isSelected ? Colors.white : AppColors.darkPrimary,
-                      fontSize: 14,
+                      fontSize:
+                          14 /
+                          min(
+                            2.0,
+                            MediaQuery.of(context).textScaler.scale(1.0),
+                          ),
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -179,7 +189,12 @@ class _CalendarPageState extends State<CalendarPage> {
                     date.day.toString(),
                     style: TextStyle(
                       color: isSelected ? Colors.white : AppColors.darkPrimary,
-                      fontSize: 18,
+                      fontSize:
+                          18 /
+                          min(
+                            2.0,
+                            MediaQuery.of(context).textScaler.scale(1.0),
+                          ),
                       fontWeight: FontWeight.bold,
                     ),
                   ),

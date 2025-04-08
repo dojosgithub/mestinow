@@ -16,6 +16,14 @@ class _TourPageState extends State<TourPage> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
   bool _neverShowAgain = false;
+  late double textScaleFactor = 1.0;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    textScaleFactor = MediaQuery.of(context).textScaler.scale(1.0);
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -110,7 +118,9 @@ class _TourPageState extends State<TourPage> {
           Text(
             l10n.tour1_title,
             style: TextStyle(
-              fontSize: min(screenWidth * 0.06, screenHeight * 0.03),
+              fontSize:
+                  min(screenWidth * 0.06, screenHeight * 0.03) /
+                  min(2.0, textScaleFactor),
               fontWeight: FontWeight.bold,
               color: AppColors.darkPrimary,
             ),
@@ -121,7 +131,9 @@ class _TourPageState extends State<TourPage> {
             l10n.tour1_text,
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: min(screenWidth * 0.04, screenHeight * 0.02),
+              fontSize:
+                  min(screenWidth * 0.04, screenHeight * 0.02) /
+                  min(2.0, textScaleFactor),
               color: AppColors.darkPrimary,
               height: 1.5,
             ),
@@ -134,11 +146,11 @@ class _TourPageState extends State<TourPage> {
               // Navigate to main app
               Navigator.pushReplacementNamed(context, '/home');
             },
-            child: const Text(
+            child: Text(
               'Skip Tour',
               style: TextStyle(
                 color: AppColors.primary,
-                fontSize: 16,
+                fontSize: 16 / min(2.0, textScaleFactor),
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -172,7 +184,9 @@ class _TourPageState extends State<TourPage> {
             l10n.tour2_title,
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: min(screenWidth * 0.06, screenHeight * 0.03),
+              fontSize:
+                  min(screenWidth * 0.06, screenHeight * 0.03) /
+                  min(2.0, textScaleFactor),
               fontWeight: FontWeight.bold,
               color: AppColors.darkPrimary,
               height: 1.2,
@@ -185,7 +199,9 @@ class _TourPageState extends State<TourPage> {
             l10n.tour2_text,
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: min(screenWidth * 0.04, screenHeight * 0.02),
+              fontSize:
+                  min(screenWidth * 0.04, screenHeight * 0.02) /
+                  min(2.0, textScaleFactor),
               color: AppColors.darkPrimary,
               height: 1.5,
             ),
@@ -201,7 +217,7 @@ class _TourPageState extends State<TourPage> {
               'Skip Tour',
               style: TextStyle(
                 color: AppColors.primary,
-                fontSize: 16,
+                fontSize: 16 / min(2.0, textScaleFactor),
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -234,7 +250,9 @@ class _TourPageState extends State<TourPage> {
           Text(
             l10n.tour3_title,
             style: TextStyle(
-              fontSize: min(screenWidth * 0.06, screenHeight * 0.03),
+              fontSize:
+                  min(screenWidth * 0.06, screenHeight * 0.03) /
+                  min(2.0, textScaleFactor),
               fontWeight: FontWeight.bold,
               color: AppColors.darkPrimary,
               height: 1.2,
@@ -247,7 +265,9 @@ class _TourPageState extends State<TourPage> {
             l10n.tour3_text,
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: min(screenWidth * 0.04, screenHeight * 0.02),
+              fontSize:
+                  min(screenWidth * 0.04, screenHeight * 0.02) /
+                  min(2.0, textScaleFactor),
               color: AppColors.darkPrimary,
               height: 1.5,
             ),
@@ -264,7 +284,7 @@ class _TourPageState extends State<TourPage> {
               'Skip Tour',
               style: TextStyle(
                 color: AppColors.primary,
-                fontSize: 16,
+                fontSize: 16 / min(2.0, textScaleFactor),
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -297,7 +317,9 @@ class _TourPageState extends State<TourPage> {
           Text(
             l10n.tour4_title,
             style: TextStyle(
-              fontSize: min(screenWidth * 0.06, screenHeight * 0.03),
+              fontSize:
+                  min(screenWidth * 0.06, screenHeight * 0.03) /
+                  min(2.0, textScaleFactor),
               fontWeight: FontWeight.bold,
               color: AppColors.darkPrimary,
               height: 1.2,
@@ -310,7 +332,9 @@ class _TourPageState extends State<TourPage> {
             l10n.tour4_text,
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: min(screenWidth * 0.04, screenHeight * 0.02),
+              fontSize:
+                  min(screenWidth * 0.04, screenHeight * 0.02) /
+                  min(2.0, textScaleFactor),
               color: AppColors.darkPrimary,
               height: 1.5,
             ),
@@ -332,7 +356,10 @@ class _TourPageState extends State<TourPage> {
               ),
               Text(
                 'Don\'t show tour again',
-                style: TextStyle(color: AppColors.primary, fontSize: 14),
+                style: TextStyle(
+                  color: AppColors.primary,
+                  fontSize: 14 / min(2.0, textScaleFactor),
+                ),
               ),
             ],
           ),
@@ -351,7 +378,7 @@ class _TourPageState extends State<TourPage> {
               'End Tour',
               style: TextStyle(
                 color: AppColors.primary,
-                fontSize: 16,
+                fontSize: 16 / min(2.0, textScaleFactor),
                 fontWeight: FontWeight.w500,
               ),
             ),
