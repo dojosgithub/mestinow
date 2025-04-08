@@ -85,6 +85,8 @@ flutter:
     - assets/icons/neck.png
     - assets/icons/breathing.png
     - assets/icons/walking.png
+    - assets/icons/chewing.png
+    - assets/icons/swallowing.png
     - assets/images/welcome_illustration.webp
     - assets/images/medication_illustration.webp
     - assets/images/security_illustration.webp

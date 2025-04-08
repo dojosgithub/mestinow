@@ -27,6 +27,10 @@ class Event {
         return l10n.symWalking;
       case 'medMestinon':
         return l10n.medMestinon;
+      case 'symChew':
+        return l10n.symChew;
+      case 'symSwallow':
+        return l10n.symSwallow;
       default:
         return code;
     }
@@ -64,5 +68,7 @@ class Event {
       type: 'sym',
     ),
     Event(code: 'symWalking', icon: 'assets/icons/walking.png', type: 'sym'),
+    Event(code: 'symChew', icon: 'assets/icons/chewing.png', type: 'sym'),
+    Event(code: 'symSwallow', icon: 'assets/icons/swallowing.png', type: 'sym'),
   ];
 }

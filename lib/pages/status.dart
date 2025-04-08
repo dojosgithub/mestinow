@@ -258,7 +258,7 @@ class _StatusPageState extends State<StatusPage> {
         shrinkWrap: true,
         physics: NeverScrollableScrollPhysics(),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
+          crossAxisCount: 4,
           crossAxisSpacing: 1,
           mainAxisExtent: screenHeight * 0.1,
           mainAxisSpacing: 8,
