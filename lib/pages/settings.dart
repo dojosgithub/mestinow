@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:share_plus/share_plus.dart';
+import 'dart:io';
 import '../theme/colors.dart';
+import '../services/database_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -16,6 +21,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   late double _intervalHours;
   late DateTime _lastTakenTime;
+  late DatabaseService _db;
 
   @override
   void initState() {
@@ -23,6 +29,12 @@ class _SettingsPageState extends State<SettingsPage> {
     _lastTakenTime = DateTime.now();
     super.initState();
     _loadSettings();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _db = Provider.of<DatabaseService>(context);
   }
 
   Future<void> _loadSettings() async {
@@ -69,6 +81,69 @@ class _SettingsPageState extends State<SettingsPage> {
         time.minute,
       );
       await _saveLastTakenTime(newDateTime);
+    }
+  }
+
+  Future<void> _exportDatabase() async {
+    try {
+
+      final box = context.findRenderObject() as RenderBox;
+
+      final exportFile = await _db.exportDatabase();
+      await Share.shareXFiles([XFile(exportFile.path)], text: 'Mestinow Database Backup',        sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size,
+);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error exporting database: $e')),
+        );
+      }
+    }
+  }
+
+  Future<void> _importDatabase() async {
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['db'],
+      );
+
+      if (result != null && result.files.isNotEmpty) {
+        final file = File(result.files.first.path!);
+        
+        final confirm = await showDialog<bool>(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: const Text('Confirm Import'),
+            content: const Text('This will replace your current database. Are you sure?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(false),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(true),
+                child: const Text('Import'),
+              ),
+            ],
+          ),
+        );
+
+        if (confirm == true) {
+          await _db.importDatabase(file);
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Database imported successfully')),
+            );
+          }
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error importing database: $e')),
+        );
+      }
     }
   }
 
@@ -143,6 +218,41 @@ class _SettingsPageState extends State<SettingsPage> {
                   ],
                 ),
               ),
+            ),
+            const SizedBox(height: 32),
+            Text(
+              'Data Management',
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: _exportDatabase,
+                    icon: const Icon(Icons.upload),
+                    label: const Text('Export Database'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: _importDatabase,
+                    icon: const Icon(Icons.download),
+                    label: const Text('Import Database'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),

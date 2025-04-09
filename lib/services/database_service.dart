@@ -2,11 +2,13 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import '../objectbox.g.dart';
 import '../models/event_log.dart';
+import 'dart:io';
 // import 'package:objectbox/objectbox.dart';
 
 class DatabaseService {
   late final Store store;
   late final Box<EventLog> eventLogBox;
+  late final String dbPath;
   // static Future<void> initialize() async {
   //   final dir = await getApplicationDocumentsDirectory();
   //   isar = await Isar.open(
@@ -15,17 +17,46 @@ class DatabaseService {
   //   );
   // }
 
-  DatabaseService._create(this.store) {
+  DatabaseService._create(this.store, this.dbPath) {
     // TODO: Initialize the database
     eventLogBox = store.box<EventLog>();
   }
 
   static Future<DatabaseService> create() async {
     final dir = await getApplicationDocumentsDirectory();
+    final dbDirectory = p.join(dir.path, "mestinow.db");
     final store = await openStore(
-      directory: p.join(dir.path, "mestinow.db"),
+      directory: dbDirectory,
     ); //ObjectBox.create(getObjectBoxModel(), directory: dir.path);
-    return DatabaseService._create(store);
+    return DatabaseService._create(store, dbDirectory);
+  }
+
+  // Export database to a file
+  Future<File> exportDatabase() async {
+    final dir = await getApplicationDocumentsDirectory();
+    final exportPath = p.join(dir.path, 'mestinow_export.db');
+    
+    // Copy the database file
+    final sourceFile = File(p.join(dbPath, 'data.mdb'));
+    final targetFile = File(exportPath);
+    
+    await sourceFile.copy(targetFile.path);
+    return targetFile;
+  }
+
+  // Import database from a file
+  Future<void> importDatabase(File sourceFile) async {
+    // Close the current store
+    store.close();
+    
+    // Copy the imported file to the database location
+    final targetFile = File(p.join(dbPath, 'data.mdb'));
+    await sourceFile.copy(targetFile.path);
+    
+    // Reopen the store
+    final newStore = await openStore(directory: dbPath);
+    store = newStore;
+    eventLogBox = store.box<EventLog>();
   }
 
   // Symptom logging methods
