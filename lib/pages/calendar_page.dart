@@ -91,6 +91,36 @@ class _CalendarPageState extends State<CalendarPage> {
     }
   }
 
+  Future<void> _showTimePicker(EventLog event) async {
+    final TimeOfDay? time = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(event.timestamp),
+    );
+
+    if (time != null) {
+      final now = DateTime.now();
+
+      final newDateTime = DateTime(
+        now.year,
+        now.month,
+        now.day,
+        time.hour,
+        time.minute,
+      );
+
+      await _updateEventTime(event, newDateTime);
+    }
+  }
+
+  Future<void> _updateEventTime(EventLog event, DateTime newTime) async {
+    try {
+      await db.updateEventTime(event.id, newTime);
+      await _loadEvents();
+    } catch (e) {
+      print("Error updating event time: $e");
+    }
+  }
+
   void _confirmDelete(EventLog event) async {
     final confirm = await showDialog<bool>(
       context: context,
@@ -263,9 +293,20 @@ class _CalendarPageState extends State<CalendarPage> {
             displayableEvent?.getDisplayName(l10n) ?? event.eventType,
           ),
           subtitle: Text('${DateFormat('h:mm a').format(event.timestamp)} '),
-          trailing: IconButton(
-            icon: const Icon(Icons.delete_outline, color: Colors.red),
-            onPressed: () => _confirmDelete(event),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.edit, color: Colors.blue),
+                onPressed: () async {
+                  await _showTimePicker(event);
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.delete_outline, color: Colors.red),
+                onPressed: () => _confirmDelete(event),
+              ),
+            ],
           ),
         ),
       );

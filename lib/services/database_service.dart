@@ -81,6 +81,14 @@ class DatabaseService {
     // }
   }
 
+  Future<void> updateEventTime(int eventId, DateTime newTime) async {
+    final eventLog = eventLogBox.get(eventId);
+    if (eventLog != null) {
+      eventLog.timestamp = newTime;
+      eventLogBox.put(eventLog);
+    }
+  }
+
   Future<void> deleteEvent(int id) async {
     eventLogBox.remove(id);
   }
