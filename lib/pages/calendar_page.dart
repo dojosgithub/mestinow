@@ -267,8 +267,9 @@ class _CalendarPageState extends State<CalendarPage> {
       return Card(
         margin: const EdgeInsets.only(bottom: 8),
         child: ListTile(
-          leading: displayableEvent != null
-                ? Image.asset(
+          leading:
+              displayableEvent != null
+                  ? Image.asset(
                     displayableEvent.icon,
                     width: 24,
                     height: 24,
