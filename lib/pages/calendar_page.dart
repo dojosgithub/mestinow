@@ -24,17 +24,6 @@ class _CalendarPageState extends State<CalendarPage> {
   final ScrollController _scrollController = ScrollController();
   bool _isInitialized = false;
 
-  // Add symptom icon mapping
-  final Map<String, String> _symptomIcons = {
-    'Ptosis': 'assets/icons/ptosis.png',
-    'Vision': 'assets/icons/vision.png',
-    'Weakness': 'assets/icons/weakness.png',
-    'Neck': 'assets/icons/neck.png',
-    'Breathing': 'assets/icons/breathing.png',
-    'Walking': 'assets/icons/walking.png',
-    'medMestinon': 'assets/icons/medMestinon.png',
-  };
-
   @override
   void initState() {
     super.initState();
@@ -274,14 +263,13 @@ class _CalendarPageState extends State<CalendarPage> {
   List<Widget> _buildSymptomEvents() {
     return _events.map((event) {
       final displayableEvent = Event.findByCode(event.eventType);
-      final iconPath = displayableEvent?.icon ?? _symptomIcons[event.eventType];
+
       return Card(
         margin: const EdgeInsets.only(bottom: 8),
         child: ListTile(
-          leading:
-              iconPath != null
-                  ? Image.asset(
-                    iconPath,
+          leading: displayableEvent != null
+                ? Image.asset(
+                    displayableEvent.icon,
                     width: 24,
                     height: 24,
                     color: AppColors.primary,
