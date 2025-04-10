@@ -98,12 +98,10 @@ class _CalendarPageState extends State<CalendarPage> {
     );
 
     if (time != null) {
-      final now = DateTime.now();
-
       final newDateTime = DateTime(
-        now.year,
-        now.month,
-        now.day,
+        event.timestamp.year,
+        event.timestamp.month,
+        event.timestamp.day,
         time.hour,
         time.minute,
       );
