@@ -197,7 +197,8 @@ class _StatusPageState extends State<StatusPage> {
 
     totalSeconds = ((prefs.getDouble(_intervalKey) ?? 3) * 60 * 60).ceil();
 
-    lastButtonPressTime = await getLastMedIntake() ?? DateTime.now().millisecondsSinceEpoch;
+    lastButtonPressTime =
+        await getLastMedIntake() ?? DateTime.now().millisecondsSinceEpoch;
 
     final currentTime = DateTime.now().millisecondsSinceEpoch;
     final elapsedSeconds = (currentTime - lastButtonPressTime!) ~/ 1000;
