@@ -395,6 +395,7 @@ class _StatusPageState extends State<StatusPage> {
                   context,
                   MaterialPageRoute(builder: (context) => const CalendarPage()),
                 );
+                _loadSavedTime();
                 _loadEvents();
               },
             ),
