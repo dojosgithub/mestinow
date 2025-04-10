@@ -1,5 +1,9 @@
-1.0.1:
+1.0.2:
+- Editar la hora de eventos
+- Implementar Respaldo/Restauración/Exportar
 
+
+1.0.1:
 - Arregla el aspecto cuando el usuario ha escogido las fuentes muy grandes por accesibilidad
 - Agrega la capacidad de borrar eventos en el Calendario
 - Agrega los síntomas de masticar y tragar

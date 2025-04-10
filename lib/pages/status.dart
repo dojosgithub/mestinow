@@ -376,14 +376,14 @@ class _StatusPageState extends State<StatusPage> {
             ListTile(
               leading: const Icon(Icons.settings),
               title: Text(l10n.settings),
-              onTap: () {
+              onTap: () async {
                 Navigator.pop(context); // Close the drawer
-                Navigator.push(
+                await Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const SettingsPage()),
-                ).then(
-                  (_) => _loadSavedTime(),
-                ); // Reload settings when returning
+                );
+                _loadSavedTime();
+                _loadEvents();
               },
             ),
             ListTile(
