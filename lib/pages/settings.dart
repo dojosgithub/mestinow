@@ -196,9 +196,7 @@ class _SettingsPageState extends State<SettingsPage> {
           builder:
               (ctx) => AlertDialog(
                 title: Text(l10n.confirm),
-                content: Text(
-                  l10n.confirmOverwrite,
-                ),
+                content: Text(l10n.confirmOverwrite),
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.of(ctx).pop(false),
@@ -215,9 +213,9 @@ class _SettingsPageState extends State<SettingsPage> {
         if (confirm == true) {
           await _db.restoreDatabase(file);
           if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(l10n.backupSuccess)),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(l10n.backupSuccess)));
           }
         }
       }
