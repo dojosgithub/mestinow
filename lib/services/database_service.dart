@@ -131,14 +131,25 @@ class DatabaseService {
     final results = query.find();
     query.close();
     return results;
+  }
 
-    // static Future<DateTime?> getLastMedIntake() async {
-    //   final lastIntake = await isar.eventLogs
-    //       .filter()
-    //       .sortByTimestampDesc()
-    //       .findFirst();
-    //   return lastIntake?.timestamp;
-    // }
+  Future<EventLog?> getLastMedIntake() async {
+    final query =
+        eventLogBox
+            .query(EventLog_.eventType.equals('medMestinon'))
+            .order(EventLog_.timestamp, flags: Order.descending)
+            .build();
+    final results = query.findFirst();
+    query.close();
+    return results;
+  }
+
+  Future<void> updateEventTime(int eventId, DateTime newTime) async {
+    final eventLog = eventLogBox.get(eventId);
+    if (eventLog != null) {
+      eventLog.timestamp = newTime;
+      eventLogBox.put(eventLog);
+    }
   }
 
   Future<void> deleteEvent(int id) async {

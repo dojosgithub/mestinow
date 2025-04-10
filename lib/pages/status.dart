@@ -30,7 +30,6 @@ class StatusPage extends StatefulWidget {
 class _StatusPageState extends State<StatusPage> {
   late DatabaseService db;
   late int totalSeconds = 3 * 60 * 60;
-  static const String _timestampKey = 'last_button_press_time';
   static const String _intervalKey = 'mestinon_interval_hours';
   late int remainingSeconds;
   late int? lastButtonPressTime;
@@ -186,6 +185,11 @@ class _StatusPageState extends State<StatusPage> {
     );
   }
 
+  Future<int?> getLastMedIntake() async {
+    final event = await db.getLastMedIntake();
+    return event?.timestamp.millisecondsSinceEpoch;
+  }
+
   Future<void> _loadSavedTime() async {
     await notificationsPlugin.cancelAll();
 
@@ -194,7 +198,7 @@ class _StatusPageState extends State<StatusPage> {
     totalSeconds = ((prefs.getDouble(_intervalKey) ?? 3) * 60 * 60).ceil();
 
     lastButtonPressTime =
-        prefs.getInt(_timestampKey) ?? DateTime.now().millisecondsSinceEpoch;
+        await getLastMedIntake() ?? DateTime.now().millisecondsSinceEpoch;
 
     final currentTime = DateTime.now().millisecondsSinceEpoch;
     final elapsedSeconds = (currentTime - lastButtonPressTime!) ~/ 1000;
@@ -214,9 +218,7 @@ class _StatusPageState extends State<StatusPage> {
   }
 
   Future<void> _saveButtonPressTime() async {
-    final prefs = await SharedPreferences.getInstance();
     lastButtonPressTime = DateTime.now().millisecondsSinceEpoch;
-    await prefs.setInt(_timestampKey, lastButtonPressTime!);
     await _saveMedIntake();
 
     final scheduledTime = DateTime.fromMillisecondsSinceEpoch(
