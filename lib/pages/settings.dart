@@ -7,6 +7,9 @@ import 'dart:io';
 import '../theme/colors.dart';
 import '../services/database_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
+import 'package:intl/intl.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -22,6 +25,7 @@ class _SettingsPageState extends State<SettingsPage> {
   late double _intervalHours;
   late DateTime _lastTakenTime;
   late DatabaseService _db;
+  late AppLocalizations l10n;
 
   @override
   void initState() {
@@ -35,6 +39,7 @@ class _SettingsPageState extends State<SettingsPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _db = Provider.of<DatabaseService>(context);
+    l10n = AppLocalizations.of(context)!;
   }
 
   Future<void> _loadSettings() async {
@@ -84,73 +89,182 @@ class _SettingsPageState extends State<SettingsPage> {
     }
   }
 
-  Future<void> _exportDatabase() async {
+  Future<void> _exportData() async {
     try {
+      final exportFile = await _db.exportToCSV();
 
-      final box = context.findRenderObject() as RenderBox;
+      // Show a dialog with options to share or save
+      if (mounted) {
+        final result = await showDialog<String>(
+          context: context,
+          builder:
+              (ctx) => AlertDialog(
+                title: Text(l10n.exportData),
+                content: Text(l10n.exportDataDescription),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(ctx).pop('share'),
+                    child: Text(l10n.share),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.of(ctx).pop('save'),
+                    child: Text(l10n.save),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.of(ctx).pop('cancel'),
+                    child: Text(l10n.cancel),
+                  ),
+                ],
+              ),
+        );
 
-      final exportFile = await _db.exportDatabase();
-      await Share.shareXFiles([XFile(exportFile.path)], text: 'Mestinow Database Backup',        sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size,
-);
+        if (result == 'share') {
+          final box = context.findRenderObject() as RenderBox;
+          await Share.shareXFiles(
+            [XFile(exportFile.path)],
+            text: l10n.exportData,
+            sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size,
+          );
+        } else if (result == 'save') {
+          // Get the directory for saving the file
+          final directory = await FilePicker.platform.getDirectoryPath();
+          final dateStr = DateFormat('yyyy_MM_dd').format(DateTime.now());
+          final savePath = p.join(directory!, 'mestinow_backup_$dateStr.db');
+
+          // Copy the export file to a known location
+          await exportFile.copy(savePath);
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('${l10n.exportedTo}: $savePath')),
+          );
+        }
+      }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error exporting database: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('${l10n.errorExporting}: $e')));
       }
     }
   }
 
-  Future<void> _importDatabase() async {
+  Future<void> _backupDatabase() async {
     try {
+      final exportFile = await _db.backupDatabase();
+
+      // Show a dialog with options to share or save
+      if (mounted) {
+        final result = await showDialog<String>(
+          context: context,
+          builder:
+              (ctx) => AlertDialog(
+                title: Text(l10n.backup),
+                content: Text(l10n.backupDescription),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(ctx).pop('share'),
+                    child: Text(l10n.share),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.of(ctx).pop('save'),
+                    child: Text(l10n.save),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.of(ctx).pop('cancel'),
+                    child: Text(l10n.cancel),
+                  ),
+                ],
+              ),
+        );
+
+        if (result == 'share') {
+          final box = context.findRenderObject() as RenderBox;
+          await Share.shareXFiles(
+            [XFile(exportFile.path)],
+            text: l10n.backup,
+            sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size,
+          );
+        } else if (result == 'save') {
+          // Get the directory for saving the file
+          final directory = await FilePicker.platform.getDirectoryPath();
+          final dateStr = DateFormat('yyyy_MM_dd').format(DateTime.now());
+          final savePath = p.join(directory!, 'mestinow_backup_$dateStr.db');
+
+          // Copy the export file to a known location
+          await exportFile.copy(savePath);
+
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('${l10n.savedTo}: $savePath')));
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('${l10n.errorBackup}: $e')));
+      }
+    }
+  }
+
+  Future<void> _restoreDatabase() async {
+    try {
+      final directory = await getApplicationDocumentsDirectory();
       final result = await FilePicker.platform.pickFiles(
-        type: FileType.custom,
-        allowedExtensions: ['db'],
+        initialDirectory: directory.path,
+        type: FileType.any,
+        dialogTitle: l10n.selectBackup,
       );
 
       if (result != null && result.files.isNotEmpty) {
         final file = File(result.files.first.path!);
-        
+
+        // Verify the file is a valid database backup
+        if (!await file.exists()) {
+          throw Exception(l10n.fileDoesNotExist);
+        }
+
         final confirm = await showDialog<bool>(
           context: context,
-          builder: (ctx) => AlertDialog(
-            title: const Text('Confirm Import'),
-            content: const Text('This will replace your current database. Are you sure?'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(ctx).pop(false),
-                child: const Text('Cancel'),
+          builder:
+              (ctx) => AlertDialog(
+                title: Text(l10n.confirm),
+                content: Text(
+                  l10n.confirmOverwrite,
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(ctx).pop(false),
+                    child: const Text('Cancel'),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.of(ctx).pop(true),
+                    child: const Text('Import'),
+                  ),
+                ],
               ),
-              TextButton(
-                onPressed: () => Navigator.of(ctx).pop(true),
-                child: const Text('Import'),
-              ),
-            ],
-          ),
         );
 
         if (confirm == true) {
-          await _db.importDatabase(file);
+          await _db.restoreDatabase(file);
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Database imported successfully')),
+              SnackBar(content: Text(l10n.backupSuccess)),
             );
           }
         }
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error importing database: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(l10n.backupFailure)));
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.settings),
@@ -221,7 +335,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             const SizedBox(height: 32),
             Text(
-              'Data Management',
+              l10n.dataManagement,
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
@@ -229,26 +343,43 @@ class _SettingsPageState extends State<SettingsPage> {
               children: [
                 Expanded(
                   child: ElevatedButton.icon(
-                    onPressed: _exportDatabase,
+                    onPressed: _backupDatabase,
                     icon: const Icon(Icons.upload),
-                    label: const Text('Export Database'),
+                    label: Text(l10n.backup),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
                       foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      padding: const EdgeInsets.symmetric(vertical: 8),
                     ),
                   ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: ElevatedButton.icon(
-                    onPressed: _importDatabase,
+                    onPressed: _restoreDatabase,
                     icon: const Icon(Icons.download),
-                    label: const Text('Import Database'),
+                    label: Text(l10n.restore),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
                       foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                // const SizedBox(width: 16),
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: _exportData,
+                    icon: const Icon(Icons.backup),
+                    label: Text(l10n.exportData),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 8),
                     ),
                   ),
                 ),

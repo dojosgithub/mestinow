@@ -3,20 +3,15 @@ import 'package:path_provider/path_provider.dart';
 import '../objectbox.g.dart';
 import '../models/event_log.dart';
 import 'dart:io';
+import 'package:intl/intl.dart';
+
 // import 'package:objectbox/objectbox.dart';
 
 class DatabaseService {
-  late final Store store;
-  late final Box<EventLog> eventLogBox;
+  late Store store;
+  late Box<EventLog> eventLogBox;
   late final String dbPath;
-  // static Future<void> initialize() async {
-  //   final dir = await getApplicationDocumentsDirectory();
-  //   isar = await Isar.open(
-  //     [EventLogSchema],
-  //     directory: dir.path,
-  //   );
-  // }
-
+  final _dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
   DatabaseService._create(this.store, this.dbPath) {
     // TODO: Initialize the database
     eventLogBox = store.box<EventLog>();
@@ -31,28 +26,62 @@ class DatabaseService {
     return DatabaseService._create(store, dbDirectory);
   }
 
-  // Export database to a file
-  Future<File> exportDatabase() async {
+  // Export data to CSV format
+  Future<File> exportToCSV() async {
+    // Get all events
+    final query =
+        eventLogBox
+            .query()
+            .order(EventLog_.timestamp, flags: Order.descending)
+            .build();
+    final events = query.find();
+    query.close();
+
+    // Create CSV content
+    final csvContent = StringBuffer();
+
+    // Add header
+    csvContent.writeln('Timestamp,Event Type');
+
+    // Add data rows
+    for (final event in events) {
+      final timestamp = _dateFormat.format(event.timestamp);
+      final eventType = event.eventType;
+      csvContent.writeln('$timestamp,$eventType');
+    }
+
+    // Save to file
+    final dir = await getApplicationDocumentsDirectory();
+    final dateStr = DateFormat('yyyy_MM_dd').format(DateTime.now());
+    final csvPath = p.join(dir.path, 'mestinow_data_$dateStr.csv');
+    final file = File(csvPath);
+    await file.writeAsString(csvContent.toString());
+
+    return file;
+  }
+
+  // Backup database to a file
+  Future<File> backupDatabase() async {
     final dir = await getApplicationDocumentsDirectory();
     final exportPath = p.join(dir.path, 'mestinow_export.db');
-    
+
     // Copy the database file
     final sourceFile = File(p.join(dbPath, 'data.mdb'));
     final targetFile = File(exportPath);
-    
+
     await sourceFile.copy(targetFile.path);
     return targetFile;
   }
 
-  // Import database from a file
-  Future<void> importDatabase(File sourceFile) async {
+  // Restore database from a file
+  Future<void> restoreDatabase(File sourceFile) async {
     // Close the current store
     store.close();
-    
+
     // Copy the imported file to the database location
     final targetFile = File(p.join(dbPath, 'data.mdb'));
     await sourceFile.copy(targetFile.path);
-    
+
     // Reopen the store
     final newStore = await openStore(directory: dbPath);
     store = newStore;
