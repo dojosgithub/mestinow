@@ -45,5 +45,15 @@
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 	</array>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app does not use the photo library.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>This app does not use the camera.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app does not use the microphone.</string>
+	<key>NSDocumentsFolderUsageDescription</key>
+	<string>This app needs access to documents to let you share them.</string>
+	<key>NSDownloadsFolderUsageDescription</key>
+	<string>This app needs access to downloads to let you share files.</string>
 </dict>
 </plist>
