@@ -298,18 +298,18 @@ class _CalendarPageState extends State<CalendarPage> {
         selectedColor: Colors.white,
         fillColor: AppColors.primary,
         color: AppColors.darkPrimary,
-        children: const [
+        children: [
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 12),
-            child: Text('All'),
+            child: Text(l10n.filteredAll),
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 12),
-            child: Text('Symptoms'),
+            child: Text(l10n.filteredSymptoms),
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 12),
-            child: Text('Medicine'),
+            child: Text(l10n.filteredMedicine),
           ),
         ],
       ),
