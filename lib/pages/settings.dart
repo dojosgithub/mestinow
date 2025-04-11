@@ -10,6 +10,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart';
+import 'package:mestinow/pages/symptom_preferences_page.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -282,6 +283,23 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                 ),
               ],
+            ),
+            const SizedBox(height: 32),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(
+                l10n.symptomPreferences,
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => SymptomPreferencesPage(),
+                  ),
+                );
+              },
             ),
             const SizedBox(height: 32),
             Text(
