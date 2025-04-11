@@ -59,5 +59,12 @@
     "backupFailure": "Error restaurando la base de datos",
     "filteredAll": "Todos",
     "filteredSymptoms": "Síntomas",
-    "filteredMedicine": "Medicina"
+    "filteredMedicine": "Medicina",
+    "other": "Otro",
+    "enterNote": "Escribe una nota",
+    "describeSymptom": "Describe su síntoma...",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "symptomPreferences": "Preferencias de síntomas",
+    "symptomLimitMessage": "Solo puedes seleccionar hasta 7 síntomas preferidos."
 } 
