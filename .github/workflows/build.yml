@@ -27,7 +27,7 @@ jobs:
       - name: Inject Build Number
         run: |
           BUILD_NUMBER=${{ github.run_number }}
-          sed -i "s/version: 1.0.2/version: 1.0.2+$BUILD_NUMBER/g" pubspec.yaml
+          sed -i "s/version: 1.0.3/version: 1.0.3+$BUILD_NUMBER/g" pubspec.yaml
 
       - name: Get dependencies
         run: flutter pub get

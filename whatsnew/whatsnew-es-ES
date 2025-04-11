@@ -1,3 +1,7 @@
+1.0.3:
+
+- Filtrar eventos en el calendario
+
 1.0.2:
 - Editar la hora de eventos
 - Implementar Respaldo/Restauración/Exportar
