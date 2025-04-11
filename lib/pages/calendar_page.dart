@@ -16,6 +16,7 @@ class CalendarPage extends StatefulWidget {
 }
 
 enum EventFilter { all, symptom, medicine }
+
 EventFilter _selectedFilter = EventFilter.all;
 
 class _CalendarPageState extends State<CalendarPage> {
@@ -79,17 +80,19 @@ class _CalendarPageState extends State<CalendarPage> {
 
       switch (_selectedFilter) {
         case EventFilter.symptom:
-          filteredEvents = events.where((e) {
-            final eventMeta = Event.findByCode(e.eventType);
-            return eventMeta?.type == 'sym';
-          }).toList();
+          filteredEvents =
+              events.where((e) {
+                final eventMeta = Event.findByCode(e.eventType);
+                return eventMeta?.type == 'sym';
+              }).toList();
           break;
 
         case EventFilter.medicine:
-          filteredEvents = events.where((e) {
-            final eventMeta = Event.findByCode(e.eventType);
-            return eventMeta?.type == 'med';
-          }).toList();
+          filteredEvents =
+              events.where((e) {
+                final eventMeta = Event.findByCode(e.eventType);
+                return eventMeta?.type == 'med';
+              }).toList();
           break;
 
         case EventFilter.all:
@@ -312,7 +315,6 @@ class _CalendarPageState extends State<CalendarPage> {
       ),
     );
   }
-
 
   Widget _buildEventsList() {
     return Expanded(
