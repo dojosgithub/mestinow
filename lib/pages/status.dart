@@ -149,6 +149,42 @@ class _StatusPageState extends State<StatusPage> {
     //   MaterialPageRoute<void>(builder: (context) => SecondScreen(payload)),
     // );
   }
+  void _showOtherNoteDialog(BuildContext context) {
+    final TextEditingController _controller = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(AppLocalizations.of(context)!.enterNote),
+        content: TextField(
+          controller: _controller,
+          autofocus: true,
+          decoration: InputDecoration(
+            hintText: AppLocalizations.of(context)!.describeSymptom,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); // Close the dialog
+            },
+            child: Text(AppLocalizations.of(context)!.cancel),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              final note = _controller.text.trim();
+              if (note.isNotEmpty) {
+                await db.logEvent(note);
+                _loadEvents();
+              }
+              Navigator.of(context).pop(); // Close dialog
+            },
+            child: Text(AppLocalizations.of(context)!.save),
+          ),
+        ],
+      ),
+    );
+  }
 
   Future<void> scheduleNextDoseNotification(DateTime scheduledTime) async {
     await notificationsPlugin.cancelAll(); // cancel previous notifications
@@ -273,6 +309,8 @@ class _StatusPageState extends State<StatusPage> {
 
   // Add this widget to your build method, before the CircularPercentIndicator
   Widget _buildSymptomGrid(screenWidth, screenHeight, l10n) {
+    final limitedSymptoms = symptoms.take(7).toList();
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30.0),
       child: GridView.builder(
@@ -285,21 +323,30 @@ class _StatusPageState extends State<StatusPage> {
           mainAxisSpacing: 8,
           // childAspectRatio: 1.5,
         ),
-        itemCount: symptoms.length,
+        itemCount: 8,
         itemBuilder: (context, index) {
-          final symptom = symptoms[index];
-          return SymptomButton(
-            size: screenHeight * 0.06,
-            iconPath: symptom.icon,
-            label: symptom.getDisplayName(l10n),
-            onPressed: () {
-              setState(() {
-                final label = symptom.code;
-                db.logEvent(label);
-                _loadEvents();
-              });
-            },
-          );
+          if (index < 7) {
+            final symptom = limitedSymptoms[index];
+            return SymptomButton(
+              size: screenHeight * 0.06,
+              iconPath: symptom.icon,
+              label: symptom.getDisplayName(l10n),
+              onPressed: () {
+                setState(() {
+                  db.logEvent(symptom.code);
+                  _loadEvents();
+                });
+              },
+            );
+          } else {
+            // 8th button is "Other"
+            return SymptomButton(
+              size: screenHeight * 0.06,
+              iconPath: '',
+              label: l10n.other,
+              onPressed: () => _showOtherNoteDialog(context),
+            );
+          }
         },
       ),
     );
