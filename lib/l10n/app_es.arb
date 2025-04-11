@@ -56,5 +56,8 @@
     "confirm": "Confirmar",
     "confirmOverwrite": "Esto va a reemplazar tu base de datos. ¿Estás seguro?",
     "backupSuccess": "Base de datos restaurada exitosamente",
-    "backupFailure": "Error restaurando la base de datos"
+    "backupFailure": "Error restaurando la base de datos",
+    "filteredAll": "Todos",
+    "filteredSymptoms": "Síntomas",
+    "filteredMedicine": "Medicina"
 } 
