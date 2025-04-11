@@ -15,6 +15,10 @@ class CalendarPage extends StatefulWidget {
   _CalendarPageState createState() => _CalendarPageState();
 }
 
+enum EventFilter { all, symptom, medicine }
+
+EventFilter _selectedFilter = EventFilter.all;
+
 class _CalendarPageState extends State<CalendarPage> {
   late DatabaseService db;
   late DateTime _selectedDate;
@@ -72,8 +76,32 @@ class _CalendarPageState extends State<CalendarPage> {
     try {
       final events = await db.getEventsForDateRange(startOfDay, endOfDay);
 
+      List<EventLog> filteredEvents;
+
+      switch (_selectedFilter) {
+        case EventFilter.symptom:
+          filteredEvents =
+              events.where((e) {
+                final eventMeta = Event.findByCode(e.eventType);
+                return eventMeta?.type == 'sym';
+              }).toList();
+          break;
+
+        case EventFilter.medicine:
+          filteredEvents =
+              events.where((e) {
+                final eventMeta = Event.findByCode(e.eventType);
+                return eventMeta?.type == 'med';
+              }).toList();
+          break;
+
+        case EventFilter.all:
+        default:
+          filteredEvents = events;
+      }
+
       setState(() {
-        _events = events;
+        _events = filteredEvents;
       });
     } catch (e) {
       print(e);
@@ -251,6 +279,43 @@ class _CalendarPageState extends State<CalendarPage> {
     );
   }
 
+  Widget _buildFilterButtons() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: ToggleButtons(
+        isSelected: [
+          _selectedFilter == EventFilter.all,
+          _selectedFilter == EventFilter.symptom,
+          _selectedFilter == EventFilter.medicine,
+        ],
+        onPressed: (index) {
+          setState(() {
+            _selectedFilter = EventFilter.values[index];
+            _loadEvents();
+          });
+        },
+        borderRadius: BorderRadius.circular(8),
+        selectedColor: Colors.white,
+        fillColor: AppColors.primary,
+        color: AppColors.darkPrimary,
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 12),
+            child: Text(l10n.filteredAll),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 12),
+            child: Text(l10n.filteredSymptoms),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 12),
+            child: Text(l10n.filteredMedicine),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildEventsList() {
     return Expanded(
       child: ListView(
@@ -320,6 +385,7 @@ class _CalendarPageState extends State<CalendarPage> {
         children: [
           _buildMonthSelector(),
           _buildDaySelector(),
+          _buildFilterButtons(),
           const Divider(),
           _buildEventsList(),
         ],
