@@ -64,5 +64,6 @@
     "enterNote": "Escribe una nota",
     "describeSymptom": "Describe su síntoma...",
     "cancel": "Cancelar",
-    "save": "Guardar"
+    "save": "Guardar",
+    "symptomPreferences": "Preferencias de síntomas"
 } 
