@@ -28,10 +28,19 @@ class _SymptomPreferencesPageState extends State<SymptomPreferencesPage> {
   }
 
   void _toggleSymptom(String code, bool? selected) {
+    final l10n = AppLocalizations.of(context)!;
+
     setState(() {
       if (selected == true) {
         if (selectedCodes.length < 7 && !selectedCodes.contains(code)) {
           selectedCodes.add(code);
+        } else if (selectedCodes.length >= 7) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(l10n.symptomLimitMessage), // Add to .arb
+              duration: const Duration(seconds: 2),
+            ),
+          );
         }
       } else {
         selectedCodes.remove(code);
@@ -50,7 +59,17 @@ class _SymptomPreferencesPageState extends State<SymptomPreferencesPage> {
         children: allSymptoms.map((symptom) {
           final code = symptom.code;
           return CheckboxListTile(
-            title: Text(symptom.getDisplayName(l10n)),
+            title: Row(
+              children:[
+                Image.asset(
+                  symptom.icon, 
+                  width: 32,
+                  height: 32,
+                  ),
+                const SizedBox(width: 12),
+                Expanded(child: Text(symptom.getDisplayName(l10n))),
+              ],
+            ),
             value: selectedCodes.contains(code),
             onChanged: (selected) => _toggleSymptom(code, selected),
           );
