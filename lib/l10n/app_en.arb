@@ -66,5 +66,7 @@
     "cancel": "Cancel",
     "save": "Save",
     "symptomPreferences": "Symptom Preferences",
-    "symptomLimitMessage": "You can only select up to 7 preferred symptoms."
+    "symptomLimitMessage": "You can only select up to 7 preferred symptoms.",
+    "chooseSymptom": "Choose a symptom",
+    "otherSymptomSelect": "Select a Symptom"
 } 
