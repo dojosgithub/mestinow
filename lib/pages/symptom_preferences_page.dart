@@ -79,7 +79,11 @@ class _SymptomPreferencesPageState extends State<SymptomPreferencesPage> {
         final aSelected = selectedCodes.contains(a.code);
         final bSelected = selectedCodes.contains(b.code);
 
-        return (bSelected ? 1 : 0) - (aSelected ? 1 : 0);
+        if (aSelected != bSelected){
+          return (bSelected ? 1 : 0) - (aSelected ? 1 : 0);
+        }
+
+        return a.getDisplayName(l10n).compareTo(b.getDisplayName(l10n));
       });
 
     return Scaffold(
