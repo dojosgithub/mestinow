@@ -41,11 +41,13 @@ class _StatusPageState extends State<StatusPage> {
   late double textScaleFactor = 1.0;
   Timer? timer;
 
+  List<Event> symptoms = [];
+  List<Event> rearrangedSymptoms = [];
+  final int maxSymptoms = 7;
+
   final FlutterLocalNotificationsPlugin notificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
-  // Use the Symptom model instead of hardcoded list
-  final List<Event> symptoms = Event.getSymptoms();
 
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
@@ -79,6 +81,7 @@ class _StatusPageState extends State<StatusPage> {
     });
     initializeNotifications();
     _loadSettings();
+    _loadSymptoms();
   }
 
   @override
@@ -90,22 +93,50 @@ class _StatusPageState extends State<StatusPage> {
     textScaleFactor = MediaQuery.of(context).textScaler.scale(1.0);
   }
 
+  // Load symptoms from your preferences or defaults
+  Future<void> _loadSymptoms() async {
+    final loadedSymptoms = await _loadSymptomsToDisplay();
+    setState(() {
+      symptoms = loadedSymptoms;
+      rearrangedSymptoms = List.from(symptoms);
+    });
+  }
+
+  // Load symptoms based on preferences or default list
   Future<List<Event>> _loadSymptomsToDisplay() async {
     final prefs = await SharedPreferences.getInstance();
     final preferredCodes = prefs.getStringList('preferred_symptoms') ?? [];
 
     final allSymptoms = Event.getSymptoms();
 
-    final preferredSymptoms = allSymptoms
-        .where((event) => preferredCodes.contains(event.code))
-        .toList();
+    final preferredSymptoms =
+        allSymptoms
+            .where((event) => preferredCodes.contains(event.code))
+            .toList();
 
-    final fallbackSymptoms = allSymptoms
-        .where((event) => !preferredCodes.contains(event.code))
-        .take(7 - preferredSymptoms.length)
-        .toList();
+    final fallbackSymptoms =
+        allSymptoms
+            .where((event) => !preferredCodes.contains(event.code))
+            .take(7 - preferredSymptoms.length)
+            .toList();
 
     return [...preferredSymptoms, ...fallbackSymptoms];
+  }
+
+  // Handle reordering of symptoms
+  void _rearrangeSymptoms(int oldIndex, int newIndex) {
+    setState(() {
+      final moved = rearrangedSymptoms.removeAt(oldIndex);
+      rearrangedSymptoms.insert(newIndex, moved);
+    });
+  }
+
+  // Save the rearranged order to SharedPreferences
+  Future<void> _saveReorderedSymptoms() async {
+    final prefs = await SharedPreferences.getInstance();
+    final reorderedCodes =
+        rearrangedSymptoms.map((symptom) => symptom.code).toList();
+    prefs.setStringList('preferred_symptoms', reorderedCodes);
   }
 
   Future<void> _loadEvents() async {
@@ -336,7 +367,11 @@ class _StatusPageState extends State<StatusPage> {
           return const Center(child: CircularProgressIndicator());
         }
 
-        final limitedSymptoms = snapshot.data!;
+        final loadedSymptoms = snapshot.data!;
+
+        if (rearrangedSymptoms.isEmpty) {
+          rearrangedSymptoms = List.from(loadedSymptoms);
+        }
 
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30.0),
@@ -350,20 +385,44 @@ class _StatusPageState extends State<StatusPage> {
               mainAxisSpacing: 8,
               // childAspectRatio: 1.5,
             ),
-            itemCount: 8,
+            itemCount: maxSymptoms + 1,
             itemBuilder: (context, index) {
-              if (index < 7) {
-                final symptom = limitedSymptoms[index];
-                return SymptomButton(
-                  size: screenHeight * 0.06,
-                  iconPath: symptom.icon,
-                  label: symptom.getDisplayName(l10n),
-                  onPressed: () {
-                    setState(() {
-                      db.logEvent(symptom.code);
-                      _loadEvents();
-                    });
-                  },
+              if (index < rearrangedSymptoms.length) {
+                final symptom = rearrangedSymptoms[index];
+                return LongPressDraggable<Event>(
+                  data: symptom,
+                  feedback: Material(
+                    color: Colors.transparent,
+                    child: SymptomButton(
+                      size: screenHeight * 0.06,
+                      iconPath: symptom.icon,
+                      label: symptom.getDisplayName(l10n),
+                      onPressed: () {},
+                    ),
+                  ),
+                  childWhenDragging: const SizedBox.shrink(),
+                  child: DragTarget<Event>(
+                    onAccept: (draggedSymptom) {
+                      final fromIndex = rearrangedSymptoms.indexOf(
+                        draggedSymptom,
+                      );
+                      _rearrangeSymptoms(fromIndex, index);
+                      _saveReorderedSymptoms();
+                    },
+                    builder: (context, candidateData, rejectedData) {
+                      return SymptomButton(
+                        size: screenHeight * 0.06,
+                        iconPath: symptom.icon,
+                        label: symptom.getDisplayName(l10n),
+                        onPressed: () {
+                          setState(() {
+                            db.logEvent(symptom.code);
+                            _loadEvents();
+                          });
+                        },
+                      );
+                    },
+                  ),
                 );
               } else {
                 // 8th button is "Other"
