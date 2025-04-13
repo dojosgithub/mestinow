@@ -62,23 +62,6 @@ class _StatusPageState extends State<StatusPage> {
     return events.where((e) => e.eventType == EventType.medMestinon.name).length;
   }
 
-  Future<void> _loadEvents() async {
-    // Load events for today
-    final today = DateTime.now();
-    final startOfDay = DateTime(today.year, today.month, today.day);
-    final endOfDay = startOfDay.add(const Duration(days: 1));
-
-    try {
-      final events = await db.getEventsForDateRange(startOfDay, endOfDay);
-
-      setState(() {
-        _events = events;
-      });
-    } catch (e) {
-      print(e);
-    }
-  }
-
   @override
   void initState() {
     remainingSeconds = totalSeconds;
@@ -105,6 +88,41 @@ class _StatusPageState extends State<StatusPage> {
     db = Provider.of<DatabaseService>(context);
     _loadEvents();
     textScaleFactor = MediaQuery.of(context).textScaler.scale(1.0);
+  }
+
+  Future<List<Event>> _loadSymptomsToDisplay() async {
+    final prefs = await SharedPreferences.getInstance();
+    final preferredCodes = prefs.getStringList('preferred_symptoms') ?? [];
+
+    final allSymptoms = Event.getSymptoms();
+
+    final preferredSymptoms = allSymptoms
+        .where((event) => preferredCodes.contains(event.code))
+        .toList();
+
+    final fallbackSymptoms = allSymptoms
+        .where((event) => !preferredCodes.contains(event.code))
+        .take(7 - preferredSymptoms.length)
+        .toList();
+
+    return [...preferredSymptoms, ...fallbackSymptoms];
+  }
+
+  Future<void> _loadEvents() async {
+    // Load events for today
+    final today = DateTime.now();
+    final startOfDay = DateTime(today.year, today.month, today.day);
+    final endOfDay = startOfDay.add(const Duration(days: 1));
+
+    try {
+      final events = await db.getEventsForDateRange(startOfDay, endOfDay);
+
+      setState(() {
+        _events = events;
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future<void> _saveMedIntake() async {
@@ -311,46 +329,55 @@ class _StatusPageState extends State<StatusPage> {
 
   // Add this widget to your build method, before the CircularPercentIndicator
   Widget _buildSymptomGrid(screenWidth, screenHeight, l10n) {
-    final limitedSymptoms = symptoms.take(7).toList();
+    return FutureBuilder<List<Event>>(
+      future: _loadSymptomsToDisplay(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30.0),
-      child: GridView.builder(
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 4,
-          crossAxisSpacing: 1,
-          mainAxisExtent: screenHeight * 0.1,
-          mainAxisSpacing: 8,
-          // childAspectRatio: 1.5,
-        ),
-        itemCount: 8,
-        itemBuilder: (context, index) {
-          if (index < 7) {
-            final symptom = limitedSymptoms[index];
-            return SymptomButton(
-              size: screenHeight * 0.06,
-              iconPath: symptom.icon,
-              label: symptom.getDisplayName(l10n),
-              onPressed: () {
-                setState(() {
-                  db.logEvent(symptom.code);
-                  _loadEvents();
-                });
-              },
-            );
-          } else {
-            // 8th button is "Other"
-            return SymptomButton(
-              size: screenHeight * 0.06,
-              iconPath: '',
-              label: l10n.other,
-              onPressed: () => _showOtherNoteDialog(context),
-            );
-          }
-        },
-      ),
+        final limitedSymptoms = snapshot.data!;
+
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 30.0),
+          child: GridView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4,
+              crossAxisSpacing: 1,
+              mainAxisExtent: screenHeight * 0.1,
+              mainAxisSpacing: 8,
+              // childAspectRatio: 1.5,
+            ),
+            itemCount: 8,
+            itemBuilder: (context, index) {
+              if (index < 7) {
+                final symptom = limitedSymptoms[index];
+                return SymptomButton(
+                  size: screenHeight * 0.06,
+                  iconPath: symptom.icon,
+                  label: symptom.getDisplayName(l10n),
+                  onPressed: () {
+                    setState(() {
+                      db.logEvent(symptom.code);
+                      _loadEvents();
+                    });
+                  },
+                );
+              } else {
+                // 8th button is "Other"
+                return SymptomButton(
+                  size: screenHeight * 0.06,
+                  iconPath: '',
+                  label: l10n.other,
+                  onPressed: () => _showOtherNoteDialog(context),
+                );
+              }
+            },
+          ),
+        );
+      },
     );
   }
 
