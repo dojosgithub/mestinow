@@ -130,40 +130,42 @@ class _StatusPageState extends State<StatusPage> {
     //   MaterialPageRoute<void>(builder: (context) => SecondScreen(payload)),
     // );
   }
+
   void _showOtherNoteDialog(BuildContext context) {
     final TextEditingController _controller = TextEditingController();
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(AppLocalizations.of(context)!.enterNote),
-        content: TextField(
-          controller: _controller,
-          autofocus: true,
-          decoration: InputDecoration(
-            hintText: AppLocalizations.of(context)!.describeSymptom,
+      builder:
+          (context) => AlertDialog(
+            title: Text(AppLocalizations.of(context)!.enterNote),
+            content: TextField(
+              controller: _controller,
+              autofocus: true,
+              decoration: InputDecoration(
+                hintText: AppLocalizations.of(context)!.describeSymptom,
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+                child: Text(AppLocalizations.of(context)!.cancel),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  final note = _controller.text.trim();
+                  if (note.isNotEmpty) {
+                    await db.logEvent(note);
+                    _loadEvents();
+                  }
+                  Navigator.of(context).pop(); // Close dialog
+                },
+                child: Text(AppLocalizations.of(context)!.save),
+              ),
+            ],
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(); // Close the dialog
-            },
-            child: Text(AppLocalizations.of(context)!.cancel),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              final note = _controller.text.trim();
-              if (note.isNotEmpty) {
-                await db.logEvent(note);
-                _loadEvents();
-              }
-              Navigator.of(context).pop(); // Close dialog
-            },
-            child: Text(AppLocalizations.of(context)!.save),
-          ),
-        ],
-      ),
     );
   }
 
