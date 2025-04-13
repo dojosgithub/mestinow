@@ -13,11 +13,32 @@ class _SymptomPreferencesPageState extends State<SymptomPreferencesPage> {
   List<String> selectedCodes = [];
   final List<Event> allSymptoms = Event.getSymptoms();
   SharedPreferences? _prefs;
+  
+  final ScrollController _scrollController = ScrollController();
+  bool _showBackToTopButton = false;
 
   @override
   void initState() {
     super.initState();
     _initPrefs();
+
+    _scrollController.addListener(() {
+      if (_scrollController.offset > 200) {
+        if (!_showBackToTopButton) {
+          setState(() => _showBackToTopButton = true);
+        }
+      } else {
+        if (_showBackToTopButton) {
+          setState(() => _showBackToTopButton = false);
+        }
+      }
+    });
+  }
+  
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   Future<void> _initPrefs() async {
@@ -53,10 +74,19 @@ class _SymptomPreferencesPageState extends State<SymptomPreferencesPage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
+    final List<Event> sortedSymptoms = [...allSymptoms]
+      ..sort((a,b) {
+        final aSelected = selectedCodes.contains(a.code);
+        final bSelected = selectedCodes.contains(b.code);
+
+        return (bSelected ? 1 : 0) - (aSelected ? 1 : 0);
+      });
+
     return Scaffold(
       appBar: AppBar(title: Text(l10n.symptomPreferences)),
       body: ListView(
-        children: allSymptoms.map((symptom) {
+        controller: _scrollController,
+        children: sortedSymptoms.map((symptom) {
           final code = symptom.code;
           return CheckboxListTile(
             title: Row(
@@ -75,6 +105,19 @@ class _SymptomPreferencesPageState extends State<SymptomPreferencesPage> {
           );
         }).toList(),
       ),
+      floatingActionButton: _showBackToTopButton
+        ? FloatingActionButton(
+          onPressed: () {
+            _scrollController.animateTo(
+              0,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeOut,
+            );
+          },
+          child: const Icon(Icons.arrow_upward),
+          tooltip: 'l10n.backToTop',
+          )
+        : null,
     );
   }
 }
