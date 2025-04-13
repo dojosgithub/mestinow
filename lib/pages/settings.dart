@@ -289,15 +289,16 @@ class _SettingsPageState extends State<SettingsPage> {
               contentPadding: EdgeInsets.zero,
               title: Text(
                 l10n.symptomPreferences,
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => SymptomPreferencesPage(),
-                  ),
+                  MaterialPageRoute(builder: (_) => SymptomPreferencesPage()),
                 );
               },
             ),
