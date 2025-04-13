@@ -114,13 +114,25 @@ class _StatusPageState extends State<StatusPage> {
             .where((event) => preferredCodes.contains(event.code))
             .toList();
 
+    preferredSymptoms.sort(
+      (a, b) => preferredCodes
+          .indexOf(a.code)
+          .compareTo(preferredCodes.indexOf(b.code)),
+    );
+
     final fallbackSymptoms =
         allSymptoms
             .where((event) => !preferredCodes.contains(event.code))
             .take(7 - preferredSymptoms.length)
             .toList();
 
-    return [...preferredSymptoms, ...fallbackSymptoms];
+    final loadedSymptoms = [...preferredSymptoms, ...fallbackSymptoms];
+
+    setState(() {
+      rearrangedSymptoms = [...loadedSymptoms];
+    });
+
+    return loadedSymptoms;
   }
 
   // Handle reordering of symptoms
@@ -234,6 +246,85 @@ class _StatusPageState extends State<StatusPage> {
               ),
             ],
           ),
+    );
+  }
+
+  void _showOtherSymptomDialog(
+    BuildContext context,
+    List<Event> nonDisplayedSymptoms,
+    AppLocalizations l10n,
+  ) {
+    Event? selectedSymptom;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(l10n.otherSymptomSelect),
+          content: StatefulBuilder(
+            builder: (context, setState) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  DropdownButtonFormField<Event>(
+                    isExpanded: true,
+                    value: selectedSymptom,
+                    hint: Text(l10n.chooseSymptom),
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 10.0,
+                        horizontal: 10.0,
+                      ),
+                      border: OutlineInputBorder(),
+                    ),
+                    items: [
+                      ...nonDisplayedSymptoms.map(
+                        (sym) => DropdownMenuItem<Event>(
+                          value: sym,
+                          child: Row(
+                            children: [
+                              Image.asset(sym.icon, width: 24, height: 24),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(sym.getDisplayName(l10n)),
+                              ), // Fixed this line
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      DropdownMenuItem<Event>(
+                        value: null,
+                        child: Row(
+                          children: [
+                            const Icon(Icons.edit_note, size: 24),
+                            const SizedBox(width: 8),
+                            Text(l10n.other), // This opens the note dialog
+                          ],
+                        ),
+                      ),
+                    ],
+                    onChanged: (value) {
+                      Navigator.of(context).pop();
+
+                      if (value == null) {
+                        // User picked "Other" — open note dialog
+                        _showOtherNoteDialog(context);
+                      } else {
+                        // Log the selected symptom
+                        setState(() {
+                          db.logEvent(value.code);
+                          _loadEvents();
+                        });
+                      }
+                    },
+                  ),
+                ],
+              );
+            },
+          ),
+        );
+      },
     );
   }
 
@@ -367,11 +458,11 @@ class _StatusPageState extends State<StatusPage> {
           return const Center(child: CircularProgressIndicator());
         }
 
-        final loadedSymptoms = snapshot.data!;
-
-        if (rearrangedSymptoms.isEmpty) {
-          rearrangedSymptoms = List.from(loadedSymptoms);
-        }
+        final displayedSymptoms = snapshot.data!;
+        final allSymptoms = Event.getSymptoms();
+        final displayedCodes = displayedSymptoms.map((e) => e.code).toSet();
+        final nonDisplayedSymptoms =
+            allSymptoms.where((s) => !displayedCodes.contains(s.code)).toList();
 
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30.0),
@@ -387,8 +478,8 @@ class _StatusPageState extends State<StatusPage> {
             ),
             itemCount: maxSymptoms + 1,
             itemBuilder: (context, index) {
-              if (index < rearrangedSymptoms.length) {
-                final symptom = rearrangedSymptoms[index];
+              if (index < displayedSymptoms.length) {
+                final symptom = displayedSymptoms[index];
                 return LongPressDraggable<Event>(
                   data: symptom,
                   feedback: Material(
@@ -430,7 +521,12 @@ class _StatusPageState extends State<StatusPage> {
                   size: screenHeight * 0.06,
                   iconPath: '',
                   label: l10n.other,
-                  onPressed: () => _showOtherNoteDialog(context),
+                  onPressed:
+                      () => _showOtherSymptomDialog(
+                        context,
+                        nonDisplayedSymptoms,
+                        l10n,
+                      ),
                 );
               }
             },

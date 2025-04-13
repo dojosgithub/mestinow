@@ -88,5 +88,7 @@
     "cautionaryMedicationsInfo": "Esta lista contiene medicamentos que pueden afectar los síntomas de la Miastenia Gravis (MG). Está basada en las recomendaciones de la Myasthenia Gravis Foundation of America (MGFA). Siempre consulte con su proveedor de atención médica antes de comenzar o suspender cualquier medicamento.",
     "importantInformation": "Información Importante",
     "visitMGFAWebsite": "Visite el Website de la MGFA",
-    "searchMedications": "Buscar Medicamentos..."
+    "searchMedications": "Buscar Medicamentos...",
+    "chooseSymptom": "Elige un síntoma",
+    "otherSymptomSelect": "Selecciona un síntoma"
 } 
