@@ -868,12 +868,28 @@ class _StatusPageState extends State<StatusPage> {
             if (mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('${l10n.dailyDoseLimit}!'),
+                  content: Text(
+                    '${l10n.dailyDoseLimit}!',
+                    style: TextStyle(color: AppColors.darkPrimary),
+                  ),
                   backgroundColor: AppColors.error,
                 ),
               );
             }
             return;
+          }
+          if (todayDoses == _dailyLimit - 1) {
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    '${l10n.dailyDoseLimit}!',
+                    style: TextStyle(color: AppColors.darkPrimary),
+                  ),
+                  backgroundColor: AppColors.lighterPrimary,
+                ),
+              );
+            }
           }
           await _saveButtonPressTime();
           setState(() {
