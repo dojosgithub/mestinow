@@ -31,6 +31,14 @@ class Event {
         return l10n.symChew;
       case 'symSwallow':
         return l10n.symSwallow;
+      case 'symSpeech':
+        return l10n.symSpeech;
+      case 'symFacial':
+        return l10n.symFacial;
+      case 'symArm':
+        return l10n.symArm;
+      case 'symHand':
+        return l10n.symHand;
       default:
         return code;
     }
@@ -70,5 +78,9 @@ class Event {
     Event(code: 'symWalking', icon: 'assets/icons/walking.png', type: 'sym'),
     Event(code: 'symChew', icon: 'assets/icons/chewing.png', type: 'sym'),
     Event(code: 'symSwallow', icon: 'assets/icons/swallowing.png', type: 'sym'),
+    Event(code: 'symSpeech', icon: 'assets/icons/speech.png', type: 'sym'),
+    Event(code: 'symFacial', icon: 'assets/icons/facial.png', type: 'sym'),
+    Event(code: 'symArm', icon: 'assets/icons/arm.png', type: 'sym'),
+    Event(code: 'symHand', icon: 'assets/icons/hand.png', type: 'sym'),
   ];
 }
