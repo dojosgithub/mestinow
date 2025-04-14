@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/event.dart';
+import '../theme/colors.dart';
 
 class SymptomPreferencesPage extends StatefulWidget {
   @override
@@ -97,7 +98,7 @@ class _SymptomPreferencesPageState extends State<SymptomPreferencesPage> {
               return CheckboxListTile(
                 title: Row(
                   children: [
-                    Image.asset(symptom.icon, width: 32, height: 32),
+                    Image.asset(symptom.icon, color: AppColors.darkPrimary, width: 32, height: 32),
                     const SizedBox(width: 12),
                     Expanded(child: Text(symptom.getDisplayName(l10n))),
                   ],
