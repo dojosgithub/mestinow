@@ -7,6 +7,8 @@
     "logDoseNow": "Registrar Dosis",
     "tour": "Recorrido",
     "medicationInterval": "Intervalo de medicación",
+    "dailyDoseLimit": "Límite de Dosis Diaria",
+    "doses": "Dosis",
     "lastDoseTime": "Hora de la última dosis",
     "language": "Idioma",
     "english": "Inglés",

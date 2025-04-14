@@ -20,14 +20,17 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   static const String _intervalKey = 'mestinon_interval_hours';
+  static const String _dailyLimitKey = 'mestinon_daily_limit';
 
   late double _intervalHours;
+  late int _dailyLimit;
   late DatabaseService _db;
   late AppLocalizations l10n;
 
   @override
   void initState() {
     _intervalHours = 3.0;
+    _dailyLimit = 6;
     super.initState();
     _loadSettings();
   }
@@ -42,9 +45,11 @@ class _SettingsPageState extends State<SettingsPage> {
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
     final interval = prefs.getDouble(_intervalKey) ?? 3.0;
+    final limit = prefs.getInt(_dailyLimitKey) ?? 6;
 
     setState(() {
       _intervalHours = interval;
+      _dailyLimit = limit;
     });
   }
 
@@ -53,6 +58,14 @@ class _SettingsPageState extends State<SettingsPage> {
     await prefs.setDouble(_intervalKey, hours);
     setState(() {
       _intervalHours = hours;
+    });
+  }
+
+  Future<void> _saveDailyLimit(int limit) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_dailyLimitKey, limit);
+    setState(() {
+      _dailyLimit = limit;
     });
   }
 
@@ -262,6 +275,37 @@ class _SettingsPageState extends State<SettingsPage> {
                   width: 60,
                   child: Text(
                     '${_intervalHours.toStringAsFixed(1)}h',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 32),
+            Text(
+              l10n.dailyDoseLimit,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Expanded(
+                  child: Slider(
+                    value: _dailyLimit.toDouble(),
+                    min: 2,
+                    max: 8,
+                    divisions: 6,
+                    label: '$_dailyLimit ${l10n.doses}',
+                    onChanged: (value) => _saveDailyLimit(value.toInt()),
+                    activeColor: AppColors.primary,
+                  ),
+                ),
+                SizedBox(
+                  width: 60,
+                  child: Text(
+                    '$_dailyLimit',
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
