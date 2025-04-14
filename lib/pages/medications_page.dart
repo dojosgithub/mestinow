@@ -17,18 +17,22 @@ class _MedicationsPageState extends State<MedicationsPage> {
 
   void _filterMedications(String query) {
     setState(() {
-      _filteredMedications = Medication.medications.where((med) {
-        return med.name.toLowerCase().contains(query.toLowerCase()) ||
-            med.examples.any(
-              (example) => example.toLowerCase().contains(query.toLowerCase()),
-            ) ||
-            med.category.toLowerCase().contains(query.toLowerCase());
-      }).toList();
+      _filteredMedications =
+          Medication.medications.where((med) {
+            return med.name.toLowerCase().contains(query.toLowerCase()) ||
+                med.examples.any(
+                  (example) =>
+                      example.toLowerCase().contains(query.toLowerCase()),
+                ) ||
+                med.category.toLowerCase().contains(query.toLowerCase());
+          }).toList();
     });
   }
 
   Future<void> _launchUrl() async {
-    final Uri url = Uri.parse('https://myasthenia.org/living-with-mg/mg-emergency-preparedness/cautionary-drugs/');
+    final Uri url = Uri.parse(
+      'https://myasthenia.org/living-with-mg/mg-emergency-preparedness/cautionary-drugs/',
+    );
     if (!await launchUrl(url)) {
       throw Exception('Could not launch $url');
     }
@@ -66,12 +70,13 @@ class _MedicationsPageState extends State<MedicationsPage> {
                   children: [
                     Text(
                       l10n.importantInformation,
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const SizedBox(height: 8),
-                    Text(
-                      l10n.cautionaryMedicationsInfo,
-                    ),
+                    Text(l10n.cautionaryMedicationsInfo),
                     const SizedBox(height: 16),
                     Row(
                       children: [
@@ -84,7 +89,8 @@ class _MedicationsPageState extends State<MedicationsPage> {
                         ),
                         const SizedBox(width: 16),
                         QrImageView(
-                          data: 'https://myasthenia.org/living-with-mg/mg-emergency-preparedness/cautionary-drugs/',
+                          data:
+                              'https://myasthenia.org/living-with-mg/mg-emergency-preparedness/cautionary-drugs/',
                           version: QrVersions.auto,
                           size: 100.0,
                         ),
@@ -95,48 +101,41 @@ class _MedicationsPageState extends State<MedicationsPage> {
               ),
             ),
           ),
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 16),
-          ),
-          MedicationSearchBar(
-            onSearchChanged: _filterMedications,
-          ),
+          const SliverToBoxAdapter(child: SizedBox(height: 16)),
+          MedicationSearchBar(onSearchChanged: _filterMedications),
           SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                final medication = _filteredMedications[index];
-                return Card(
-                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: ListTile(
-                    leading: Container(
-                      width: 4,
-                      color: _getSeverityColor(medication.severity),
-                    ),
-                    title: Text(medication.name),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          medication.category,
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          medication.examples.join(', '),
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          medication.warning,
-                          style: Theme.of(context).textTheme.labelMedium,
-                        ),
-                      ],
-                    ),
+            delegate: SliverChildBuilderDelegate((context, index) {
+              final medication = _filteredMedications[index];
+              return Card(
+                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: ListTile(
+                  leading: Container(
+                    width: 4,
+                    color: _getSeverityColor(medication.severity),
                   ),
-                );
-              },
-              childCount: _filteredMedications.length,
-            ),
+                  title: Text(medication.name),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        medication.category,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        medication.examples.join(', '),
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        medication.warning,
+                        style: Theme.of(context).textTheme.labelMedium,
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }, childCount: _filteredMedications.length),
           ),
         ],
       ),

@@ -4,10 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class MedicationSearchBar extends StatelessWidget {
   final Function(String) onSearchChanged;
 
-  const MedicationSearchBar({
-    super.key,
-    required this.onSearchChanged,
-  });
+  const MedicationSearchBar({super.key, required this.onSearchChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +17,7 @@ class MedicationSearchBar extends StatelessWidget {
             color: Theme.of(context).scaffoldBackgroundColor,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                color: Colors.black.withValues(alpha: 0.1),
                 blurRadius: 4,
                 offset: const Offset(0, 2),
               ),
@@ -54,7 +51,11 @@ class _SearchBarDelegate extends SliverPersistentHeaderDelegate {
   double get maxExtent => 80.0;
 
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
     return child;
   }
 
