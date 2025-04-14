@@ -79,8 +79,7 @@
     "other": "Otro",
     "enterNote": "Escribe una nota",
     "describeSymptom": "Describe su síntoma...",
-    "cancel": "Cancelar",
-    "save": "Guardar",
     "symptomPreferences": "Preferencias de síntomas",
-    "symptomLimitMessage": "Solo puedes seleccionar hasta 7 síntomas preferidos."
+    "symptomLimitMessage": "Solo puedes seleccionar hasta 7 síntomas preferidos.",
+    "medications": "Medicamentos"
 } 

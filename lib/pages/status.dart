@@ -402,7 +402,7 @@ class _StatusPageState extends State<StatusPage> {
             ),
             ListTile(
               leading: const Icon(Icons.medication),
-              title: const Text('Medications'),
+              title: Text(l10n.medications),
               onTap: () {
                 Navigator.pop(context); // Close the drawer
                 Navigator.push(
