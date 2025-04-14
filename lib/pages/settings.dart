@@ -394,12 +394,7 @@ class _SettingsPageState extends State<SettingsPage> {
             const SizedBox(height: 16),
             ListTile(
               contentPadding: EdgeInsets.zero,
-              title: Text(
-                l10n.aboutApp,
-                style: const TextStyle(
-                  fontSize: 16,
-                ),
-              ),
+              title: Text(l10n.aboutApp, style: const TextStyle(fontSize: 16)),
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
                 Navigator.push(

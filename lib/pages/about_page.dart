@@ -9,11 +9,9 @@ class AboutPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.aboutApp),
-      ),
+      appBar: AppBar(title: Text(l10n.aboutApp)),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -29,29 +27,20 @@ class AboutPage extends StatelessWidget {
             const SizedBox(height: 24),
             Text(
               l10n.aboutTitle,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
             Text(
               l10n.aboutOverview,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(l10n.aboutOverviewText),
             const SizedBox(height: 24),
             Text(
               l10n.aboutFeatures,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             _FeatureItem(
@@ -73,17 +62,16 @@ class AboutPage extends StatelessWidget {
             const SizedBox(height: 24),
             Text(
               l10n.aboutPrivacy,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(l10n.aboutPrivacyText),
             const SizedBox(height: 8),
             TextButton(
               onPressed: () async {
-                final Uri url = Uri.parse('https://github.com/dojosgithub/mestinow/wiki/Privacy-Policy');
+                final Uri url = Uri.parse(
+                  'https://github.com/dojosgithub/mestinow/wiki/Privacy-Policy',
+                );
                 if (await canLaunchUrl(url)) {
                   await launchUrl(url);
                 }
@@ -93,10 +81,7 @@ class AboutPage extends StatelessWidget {
             const SizedBox(height: 24),
             Text(
               l10n.aboutDisclaimer,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(
@@ -106,13 +91,22 @@ class AboutPage extends StatelessWidget {
             const SizedBox(height: 24),
             Text(
               l10n.aboutSupport,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(l10n.aboutSupportText),
+            const SizedBox(height: 8),
+            TextButton(
+              onPressed: () async {
+                final Uri url = Uri.parse(
+                  'https://github.com/dojosgithub/mestinow',
+                );
+                if (await canLaunchUrl(url)) {
+                  await launchUrl(url);
+                }
+              },
+              child: const Text('https://github.com/dojosgithub/mestinow'),
+            ),
           ],
         ),
       ),
@@ -124,10 +118,7 @@ class _FeatureItem extends StatelessWidget {
   final String title;
   final String description;
 
-  const _FeatureItem({
-    required this.title,
-    required this.description,
-  });
+  const _FeatureItem({required this.title, required this.description});
 
   @override
   Widget build(BuildContext context) {
@@ -138,10 +129,7 @@ class _FeatureItem extends StatelessWidget {
         children: [
           Text(
             title,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           ),
           const SizedBox(height: 4),
           Text(description),
@@ -149,4 +137,4 @@ class _FeatureItem extends StatelessWidget {
       ),
     );
   }
-} 
+}
