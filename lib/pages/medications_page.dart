@@ -2,11 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../widgets/medication_list.dart';
+import '../widgets/medication_search_bar.dart';
 import '../models/medication.dart';
 
-class MedicationsPage extends StatelessWidget {
+class MedicationsPage extends StatefulWidget {
   const MedicationsPage({super.key});
+
+  @override
+  State<MedicationsPage> createState() => _MedicationsPageState();
+}
+
+class _MedicationsPageState extends State<MedicationsPage> {
+  List<Medication> _filteredMedications = Medication.medications;
+
+  void _filterMedications(String query) {
+    setState(() {
+      _filteredMedications = Medication.medications.where((med) {
+        return med.name.toLowerCase().contains(query.toLowerCase()) ||
+            med.examples.any(
+              (example) => example.toLowerCase().contains(query.toLowerCase()),
+            ) ||
+            med.category.toLowerCase().contains(query.toLowerCase());
+      }).toList();
+    });
+  }
 
   Future<void> _launchUrl() async {
     final Uri url = Uri.parse('https://myasthenia.org/living-with-mg/mg-emergency-preparedness/cautionary-drugs/');
@@ -47,7 +66,7 @@ class MedicationsPage extends StatelessWidget {
                   children: [
                     Text(
                       l10n.importantInformation,
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
                     Text(
@@ -79,11 +98,13 @@ class MedicationsPage extends StatelessWidget {
           const SliverToBoxAdapter(
             child: SizedBox(height: 16),
           ),
-          const MedicationList(),
+          MedicationSearchBar(
+            onSearchChanged: _filterMedications,
+          ),
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) {
-                final medication = Medication.medications[index];
+                final medication = _filteredMedications[index];
                 return Card(
                   margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: ListTile(
@@ -114,7 +135,7 @@ class MedicationsPage extends StatelessWidget {
                   ),
                 );
               },
-              childCount: Medication.medications.length,
+              childCount: _filteredMedications.length,
             ),
           ),
         ],

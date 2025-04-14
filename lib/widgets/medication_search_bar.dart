@@ -1,53 +1,13 @@
 import 'package:flutter/material.dart';
-import '../models/medication.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-class MedicationList extends StatefulWidget {
-  const MedicationList({super.key});
 
-  @override
-  State<MedicationList> createState() => _MedicationListState();
-}
+class MedicationSearchBar extends StatelessWidget {
+  final Function(String) onSearchChanged;
 
-class _MedicationListState extends State<MedicationList> {
-  final TextEditingController _searchController = TextEditingController();
-  List<Medication> _filteredMedications = Medication.medications;
-
-  @override
-  void initState() {
-    super.initState();
-    _searchController.addListener(_filterMedications);
-  }
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
-  }
-
-  void _filterMedications() {
-    final query = _searchController.text.toLowerCase();
-    setState(() {
-      _filteredMedications =
-          Medication.medications.where((med) {
-            return med.name.toLowerCase().contains(query) ||
-                med.examples.any(
-                  (example) => example.toLowerCase().contains(query),
-                ) ||
-                med.category.toLowerCase().contains(query);
-          }).toList();
-    });
-  }
-
-  Color _getSeverityColor(MedicationSeverity severity) {
-    switch (severity) {
-      case MedicationSeverity.high:
-        return Colors.red;
-      case MedicationSeverity.medium:
-        return Colors.orange;
-      case MedicationSeverity.low:
-        return Colors.green;
-    }
-  }
+  const MedicationSearchBar({
+    super.key,
+    required this.onSearchChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +29,7 @@ class _MedicationListState extends State<MedicationList> {
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: TextField(
-              controller: _searchController,
+              onChanged: onSearchChanged,
               decoration: InputDecoration(
                 labelText: l10n?.searchMedications ?? 'Search medications...',
                 prefixIcon: const Icon(Icons.search),
