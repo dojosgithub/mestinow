@@ -10,6 +10,7 @@ import './pages/onboarding/tour_page.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import './pages/medications_page.dart';
+import './pages/about_page.dart';
 
 void main() async {
   tz.initializeTimeZones();
@@ -74,6 +75,7 @@ class MyApp extends StatelessWidget {
         '/tour': (context) => const TourPage(),
         '/home': (context) => const StatusPage(),
         '/medications': (context) => const MedicationsPage(),
+        '/about': (context) => const AboutPage(),
         // ... other routes ...
       },
       localizationsDelegates: const [

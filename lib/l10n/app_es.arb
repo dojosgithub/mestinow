@@ -90,5 +90,7 @@
     "visitMGFAWebsite": "Visite el Website de la MGFA",
     "searchMedications": "Buscar Medicamentos...",
     "chooseSymptom": "Elige un síntoma",
-    "otherSymptomSelect": "Selecciona un síntoma"
+    "otherSymptomSelect": "Selecciona un síntoma",
+    "about": "Acerca de",
+    "aboutApp": "Acerca de mestiNow"
 } 
