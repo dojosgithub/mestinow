@@ -19,6 +19,7 @@ import '../models/event_log.dart';
 import '../pages/calendar_page.dart';
 import '../pages/onboarding/tour_page.dart';
 import 'package:mestinow/models/event.dart';
+import '../pages/medications_page.dart';
 
 class StatusPage extends StatefulWidget {
   const StatusPage({super.key});
@@ -397,6 +398,19 @@ class _StatusPageState extends State<StatusPage> {
                 );
                 _loadSavedTime();
                 _loadEvents();
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.medication),
+              title: Text(l10n.medications),
+              onTap: () {
+                Navigator.pop(context); // Close the drawer
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MedicationsPage(),
+                  ),
+                );
               },
             ),
           ],
