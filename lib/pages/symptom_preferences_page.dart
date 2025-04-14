@@ -98,7 +98,12 @@ class _SymptomPreferencesPageState extends State<SymptomPreferencesPage> {
               return CheckboxListTile(
                 title: Row(
                   children: [
-                    Image.asset(symptom.icon, color: AppColors.darkPrimary, width: 32, height: 32),
+                    Image.asset(
+                      symptom.icon,
+                      color: AppColors.darkPrimary,
+                      width: 32,
+                      height: 32,
+                    ),
                     const SizedBox(width: 12),
                     Expanded(child: Text(symptom.getDisplayName(l10n))),
                   ],

@@ -48,7 +48,6 @@ class _StatusPageState extends State<StatusPage> {
   final FlutterLocalNotificationsPlugin notificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
-
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -61,7 +60,9 @@ class _StatusPageState extends State<StatusPage> {
     final startOfDay = DateTime(today.year, today.month, today.day);
     final endOfDay = startOfDay.add(const Duration(days: 1));
     final events = await db.getEventsForDateRange(startOfDay, endOfDay);
-    return events.where((e) => e.eventType == EventType.medMestinon.name).length;
+    return events
+        .where((e) => e.eventType == EventType.medMestinon.name)
+        .length;
   }
 
   @override
