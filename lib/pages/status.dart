@@ -41,11 +41,12 @@ class _StatusPageState extends State<StatusPage> {
   late double textScaleFactor = 1.0;
   Timer? timer;
 
+  List<Event> symptoms = [];
+  List<Event> rearrangedSymptoms = [];
+  final int maxSymptoms = 7;
+
   final FlutterLocalNotificationsPlugin notificationsPlugin =
       FlutterLocalNotificationsPlugin();
-
-  // Use the Symptom model instead of hardcoded list
-  final List<Event> symptoms = Event.getSymptoms();
 
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
@@ -59,24 +60,9 @@ class _StatusPageState extends State<StatusPage> {
     final startOfDay = DateTime(today.year, today.month, today.day);
     final endOfDay = startOfDay.add(const Duration(days: 1));
     final events = await db.getEventsForDateRange(startOfDay, endOfDay);
-    return events.where((e) => e.eventType == EventType.medMestinon.name).length;
-  }
-
-  Future<void> _loadEvents() async {
-    // Load events for today
-    final today = DateTime.now();
-    final startOfDay = DateTime(today.year, today.month, today.day);
-    final endOfDay = startOfDay.add(const Duration(days: 1));
-
-    try {
-      final events = await db.getEventsForDateRange(startOfDay, endOfDay);
-
-      setState(() {
-        _events = events;
-      });
-    } catch (e) {
-      print(e);
-    }
+    return events
+        .where((e) => e.eventType == EventType.medMestinon.name)
+        .length;
   }
 
   @override
@@ -96,6 +82,7 @@ class _StatusPageState extends State<StatusPage> {
     });
     initializeNotifications();
     _loadSettings();
+    _loadSymptoms();
   }
 
   @override
@@ -105,6 +92,81 @@ class _StatusPageState extends State<StatusPage> {
     db = Provider.of<DatabaseService>(context);
     _loadEvents();
     textScaleFactor = MediaQuery.of(context).textScaler.scale(1.0);
+  }
+
+  // Load symptoms from your preferences or defaults
+  Future<void> _loadSymptoms() async {
+    final loadedSymptoms = await _loadSymptomsToDisplay();
+    setState(() {
+      symptoms = loadedSymptoms;
+      rearrangedSymptoms = List.from(symptoms);
+    });
+  }
+
+  // Load symptoms based on preferences or default list
+  Future<List<Event>> _loadSymptomsToDisplay() async {
+    final prefs = await SharedPreferences.getInstance();
+    final preferredCodes = prefs.getStringList('preferred_symptoms') ?? [];
+
+    final allSymptoms = Event.getSymptoms();
+
+    final preferredSymptoms =
+        allSymptoms
+            .where((event) => preferredCodes.contains(event.code))
+            .toList();
+
+    preferredSymptoms.sort(
+      (a, b) => preferredCodes
+          .indexOf(a.code)
+          .compareTo(preferredCodes.indexOf(b.code)),
+    );
+
+    final fallbackSymptoms =
+        allSymptoms
+            .where((event) => !preferredCodes.contains(event.code))
+            .take(7 - preferredSymptoms.length)
+            .toList();
+
+    final loadedSymptoms = [...preferredSymptoms, ...fallbackSymptoms];
+
+    setState(() {
+      rearrangedSymptoms = [...loadedSymptoms];
+    });
+
+    return loadedSymptoms;
+  }
+
+  // Handle reordering of symptoms
+  void _rearrangeSymptoms(int oldIndex, int newIndex) {
+    setState(() {
+      final moved = rearrangedSymptoms.removeAt(oldIndex);
+      rearrangedSymptoms.insert(newIndex, moved);
+    });
+  }
+
+  // Save the rearranged order to SharedPreferences
+  Future<void> _saveReorderedSymptoms() async {
+    final prefs = await SharedPreferences.getInstance();
+    final reorderedCodes =
+        rearrangedSymptoms.map((symptom) => symptom.code).toList();
+    prefs.setStringList('preferred_symptoms', reorderedCodes);
+  }
+
+  Future<void> _loadEvents() async {
+    // Load events for today
+    final today = DateTime.now();
+    final startOfDay = DateTime(today.year, today.month, today.day);
+    final endOfDay = startOfDay.add(const Duration(days: 1));
+
+    try {
+      final events = await db.getEventsForDateRange(startOfDay, endOfDay);
+
+      setState(() {
+        _events = events;
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future<void> _saveMedIntake() async {
@@ -148,6 +210,123 @@ class _StatusPageState extends State<StatusPage> {
     //   context,
     //   MaterialPageRoute<void>(builder: (context) => SecondScreen(payload)),
     // );
+  }
+
+  void _showOtherNoteDialog(BuildContext context) {
+    final TextEditingController _controller = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: Text(AppLocalizations.of(context)!.enterNote),
+            content: TextField(
+              controller: _controller,
+              autofocus: true,
+              decoration: InputDecoration(
+                hintText: AppLocalizations.of(context)!.describeSymptom,
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+                child: Text(AppLocalizations.of(context)!.cancel),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  final note = _controller.text.trim();
+                  if (note.isNotEmpty) {
+                    await db.logEvent(note);
+                    _loadEvents();
+                  }
+                  Navigator.of(context).pop(); // Close dialog
+                },
+                child: Text(AppLocalizations.of(context)!.save),
+              ),
+            ],
+          ),
+    );
+  }
+
+  void _showOtherSymptomDialog(
+    BuildContext context,
+    List<Event> nonDisplayedSymptoms,
+    AppLocalizations l10n,
+  ) {
+    Event? selectedSymptom;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(l10n.otherSymptomSelect),
+          content: StatefulBuilder(
+            builder: (context, setState) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  DropdownButtonFormField<Event>(
+                    isExpanded: true,
+                    value: selectedSymptom,
+                    hint: Text(l10n.chooseSymptom),
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 10.0,
+                        horizontal: 10.0,
+                      ),
+                      border: OutlineInputBorder(),
+                    ),
+                    items: [
+                      ...nonDisplayedSymptoms.map(
+                        (sym) => DropdownMenuItem<Event>(
+                          value: sym,
+                          child: Row(
+                            children: [
+                              Image.asset(sym.icon, width: 24, height: 24),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(sym.getDisplayName(l10n)),
+                              ), // Fixed this line
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      DropdownMenuItem<Event>(
+                        value: null,
+                        child: Row(
+                          children: [
+                            const Icon(Icons.edit_note, size: 24),
+                            const SizedBox(width: 8),
+                            Text(l10n.other), // This opens the note dialog
+                          ],
+                        ),
+                      ),
+                    ],
+                    onChanged: (value) {
+                      Navigator.of(context).pop();
+
+                      if (value == null) {
+                        // User picked "Other" — open note dialog
+                        _showOtherNoteDialog(context);
+                      } else {
+                        // Log the selected symptom
+                        setState(() {
+                          db.logEvent(value.code);
+                          _loadEvents();
+                        });
+                      }
+                    },
+                  ),
+                ],
+              );
+            },
+          ),
+        );
+      },
+    );
   }
 
   Future<void> scheduleNextDoseNotification(DateTime scheduledTime) async {
@@ -273,35 +452,88 @@ class _StatusPageState extends State<StatusPage> {
 
   // Add this widget to your build method, before the CircularPercentIndicator
   Widget _buildSymptomGrid(screenWidth, screenHeight, l10n) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30.0),
-      child: GridView.builder(
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 4,
-          crossAxisSpacing: 1,
-          mainAxisExtent: screenHeight * 0.1,
-          mainAxisSpacing: 8,
-          // childAspectRatio: 1.5,
-        ),
-        itemCount: symptoms.length,
-        itemBuilder: (context, index) {
-          final symptom = symptoms[index];
-          return SymptomButton(
-            size: screenHeight * 0.06,
-            iconPath: symptom.icon,
-            label: symptom.getDisplayName(l10n),
-            onPressed: () {
-              setState(() {
-                final label = symptom.code;
-                db.logEvent(label);
-                _loadEvents();
-              });
+    return FutureBuilder<List<Event>>(
+      future: _loadSymptomsToDisplay(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        final displayedSymptoms = snapshot.data!;
+        final allSymptoms = Event.getSymptoms();
+        final displayedCodes = displayedSymptoms.map((e) => e.code).toSet();
+        final nonDisplayedSymptoms =
+            allSymptoms.where((s) => !displayedCodes.contains(s.code)).toList();
+
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 30.0),
+          child: GridView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4,
+              crossAxisSpacing: 1,
+              mainAxisExtent: screenHeight * 0.1,
+              mainAxisSpacing: 8,
+              // childAspectRatio: 1.5,
+            ),
+            itemCount: maxSymptoms + 1,
+            itemBuilder: (context, index) {
+              if (index < displayedSymptoms.length) {
+                final symptom = displayedSymptoms[index];
+                return LongPressDraggable<Event>(
+                  data: symptom,
+                  feedback: Material(
+                    color: Colors.transparent,
+                    child: SymptomButton(
+                      size: screenHeight * 0.06,
+                      iconPath: symptom.icon,
+                      label: symptom.getDisplayName(l10n),
+                      onPressed: () {},
+                    ),
+                  ),
+                  childWhenDragging: const SizedBox.shrink(),
+                  child: DragTarget<Event>(
+                    onAccept: (draggedSymptom) {
+                      final fromIndex = rearrangedSymptoms.indexOf(
+                        draggedSymptom,
+                      );
+                      _rearrangeSymptoms(fromIndex, index);
+                      _saveReorderedSymptoms();
+                    },
+                    builder: (context, candidateData, rejectedData) {
+                      return SymptomButton(
+                        size: screenHeight * 0.06,
+                        iconPath: symptom.icon,
+                        label: symptom.getDisplayName(l10n),
+                        onPressed: () {
+                          setState(() {
+                            db.logEvent(symptom.code);
+                            _loadEvents();
+                          });
+                        },
+                      );
+                    },
+                  ),
+                );
+              } else {
+                // 8th button is "Other"
+                return SymptomButton(
+                  size: screenHeight * 0.06,
+                  iconPath: '',
+                  label: l10n.other,
+                  onPressed:
+                      () => _showOtherSymptomDialog(
+                        context,
+                        nonDisplayedSymptoms,
+                        l10n,
+                      ),
+                );
+              }
             },
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 
