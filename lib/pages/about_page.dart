@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../theme/colors.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AboutPage extends StatelessWidget {
   const AboutPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Scaffold(
       appBar: AppBar(
-        title: const Text('About mestiNow'),
+        title: Text(l10n.aboutApp),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -24,63 +27,59 @@ class AboutPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            const Text(
-              'mestiNow - Your Personal Mestinon® & MG Symptom Tracker',
-              style: TextStyle(
+            Text(
+              l10n.aboutTitle,
+              style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
-            const Text(
-              'Overview',
-              style: TextStyle(
+            Text(
+              l10n.aboutOverview,
+              style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'mestiNow is a mobile application specifically designed to help individuals with Myasthenia Gravis (MG) manage their Mestinon® (Pyridostigmine Bromide) medication intake and track their symptoms effectively. This app was created out of a personal need for a more flexible and accurate way to schedule and log medication doses, taking into account the immediate and time-sensitive nature of the medication\'s effects.',
+            Text(l10n.aboutOverviewText),
+            const SizedBox(height: 24),
+            Text(
+              l10n.aboutFeatures,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8),
+            _FeatureItem(
+              title: l10n.aboutFeatureMedication,
+              description: l10n.aboutFeatureMedicationDesc,
+            ),
+            _FeatureItem(
+              title: l10n.aboutFeatureSymptom,
+              description: l10n.aboutFeatureSymptomDesc,
+            ),
+            _FeatureItem(
+              title: l10n.aboutFeatureHistory,
+              description: l10n.aboutFeatureHistoryDesc,
+            ),
+            _FeatureItem(
+              title: l10n.aboutFeatureAccessibility,
+              description: l10n.aboutFeatureAccessibilityDesc,
             ),
             const SizedBox(height: 24),
-            const Text(
-              'Key Features',
-              style: TextStyle(
+            Text(
+              l10n.aboutPrivacy,
+              style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 8),
-            const _FeatureItem(
-              title: 'Intelligent Medication Tracking',
-              description: 'Dynamically calculates and displays time since last dose and time until next recommended dose. Features visual countdown timer and customizable reminders.',
-            ),
-            const _FeatureItem(
-              title: 'Comprehensive Symptom Tracking',
-              description: 'Easy-to-use interface for logging key MG symptoms including muscle strength, eye drooping, fatigue level, and more.',
-            ),
-            const _FeatureItem(
-              title: 'Detailed History and Insights',
-              description: 'Calendar view for medication and symptom history, with summary charts and data export capabilities.',
-            ),
-            const _FeatureItem(
-              title: 'Enhanced Accessibility',
-              description: 'Font scaling, high-contrast visuals, and clear indicators for medication timing.',
-            ),
-            const SizedBox(height: 24),
-            const Text(
-              'Privacy and Security',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'Your privacy is our priority. All data is stored locally on your device with encryption. We do not collect or transmit your personal data to any external servers.',
-            ),
+            Text(l10n.aboutPrivacyText),
             const SizedBox(height: 8),
             TextButton(
               onPressed: () async {
@@ -89,33 +88,31 @@ class AboutPage extends StatelessWidget {
                   await launchUrl(url);
                 }
               },
-              child: const Text('View Privacy Policy'),
+              child: Text(l10n.aboutPrivacyPolicy),
             ),
             const SizedBox(height: 24),
-            const Text(
-              'Disclaimer',
-              style: TextStyle(
+            Text(
+              l10n.aboutDisclaimer,
+              style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Mestinon® is a registered trademark of Bausch Health Companies Inc. mestiNow is not affiliated with, endorsed, sponsored, or supported by Bausch Health Companies Inc. This application is provided solely for the convenience of patients.',
-              style: TextStyle(fontStyle: FontStyle.italic),
+            Text(
+              l10n.aboutDisclaimerText,
+              style: const TextStyle(fontStyle: FontStyle.italic),
             ),
             const SizedBox(height: 24),
-            const Text(
-              'Support',
-              style: TextStyle(
+            Text(
+              l10n.aboutSupport,
+              style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'For additional support or questions about the app\'s functionality, please refer to the settings page within the app or contact the app developer through the provided channels.',
-            ),
+            Text(l10n.aboutSupportText),
           ],
         ),
       ),
