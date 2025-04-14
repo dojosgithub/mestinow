@@ -7,6 +7,8 @@
     "logDoseNow": "Log Dose Now",
     "tour": "Tour",
     "medicationInterval": "Medication Interval",
+    "dailyDoseLimit": "Daily Dose Limit",
+    "doses": "Doses",
     "lastDoseTime": "Last Dose Time",
     "language": "Language",
     "english": "English",

@@ -32,9 +32,11 @@ class _StatusPageState extends State<StatusPage> {
   late DatabaseService db;
   late int totalSeconds = 3 * 60 * 60;
   static const String _intervalKey = 'mestinon_interval_hours';
+  static const String _dailyLimitKey = 'mestinon_daily_limit';
   late int remainingSeconds;
   late int? lastButtonPressTime;
   late List<EventLog> _events = [];
+  late int _dailyLimit = 6;
   final String _fontFamily = GoogleFonts.roboto().fontFamily!;
   late double textScaleFactor = 1.0;
   Timer? timer;
@@ -44,6 +46,21 @@ class _StatusPageState extends State<StatusPage> {
 
   // Use the Symptom model instead of hardcoded list
   final List<Event> symptoms = Event.getSymptoms();
+
+  Future<void> _loadSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _dailyLimit = prefs.getInt(_dailyLimitKey) ?? 6;
+    });
+  }
+
+  Future<int> _getTodayDoseCount() async {
+    final today = DateTime.now();
+    final startOfDay = DateTime(today.year, today.month, today.day);
+    final endOfDay = startOfDay.add(const Duration(days: 1));
+    final events = await db.getEventsForDateRange(startOfDay, endOfDay);
+    return events.where((e) => e.eventType == EventType.medMestinon.name).length;
+  }
 
   Future<void> _loadEvents() async {
     // Load events for today
@@ -78,6 +95,7 @@ class _StatusPageState extends State<StatusPage> {
       });
     });
     initializeNotifications();
+    _loadSettings();
   }
 
   @override
@@ -599,8 +617,19 @@ class _StatusPageState extends State<StatusPage> {
         borderRadius: BorderRadius.circular(30),
       ),
       child: TextButton(
-        // backgroundColor: Color(0xff016367),
         onPressed: () async {
+          final todayDoses = await _getTodayDoseCount();
+          if (todayDoses >= _dailyLimit) {
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('${l10n.dailyDoseLimit}!'),
+                  backgroundColor: AppColors.error,
+                ),
+              );
+            }
+            return;
+          }
           await _saveButtonPressTime();
           setState(() {
             remainingSeconds = totalSeconds;

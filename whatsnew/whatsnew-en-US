@@ -1,6 +1,8 @@
 1.0.3:
 
 - Filter events on the calendar
+- List of Cautionary Medications recommended by the MGFA
+- Set a maximum dosis per day
 
 1.0.2:
 - Edit event timestamp
