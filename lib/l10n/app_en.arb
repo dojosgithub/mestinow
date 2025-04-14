@@ -81,5 +81,10 @@
     "describeSymptom": "Describe your symptom...",
     "symptomPreferences": "Symptom Preferences",
     "symptomLimitMessage": "You can select up to 7 preferred symptoms",
-    "medications": "Medications"
+    "medications": "Medications",
+    "mgCautionaryMedications": "MG Cautionary Medications",
+    "cautionaryMedicationsInfo": "This list contains medications that may affect Myasthenia Gravis (MG) symptoms. It is based on recommendations from the Myasthenia Gravis Foundation of America (MGFA). Always consult with your healthcare provider before starting or stopping any medication.",
+    "importantInformation": "Important Information",
+    "visitMGFAWebsite": "Visit MGFA Website",
+    "searchMedications": "Search medications..."
 } 

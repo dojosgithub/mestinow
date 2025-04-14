@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/medication.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class MedicationList extends StatefulWidget {
   const MedicationList({super.key});
 
@@ -51,6 +51,7 @@ class _MedicationListState extends State<MedicationList> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return SliverPersistentHeader(
       pinned: true,
       delegate: _SearchBarDelegate(
@@ -69,10 +70,10 @@ class _MedicationListState extends State<MedicationList> {
             padding: const EdgeInsets.all(16.0),
             child: TextField(
               controller: _searchController,
-              decoration: const InputDecoration(
-                labelText: 'Search medications...',
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: l10n?.searchMedications ?? 'Search medications...',
+                prefixIcon: const Icon(Icons.search),
+                border: const OutlineInputBorder(),
               ),
             ),
           ),

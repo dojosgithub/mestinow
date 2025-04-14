@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../widgets/medication_list.dart';
 import '../models/medication.dart';
 
@@ -27,11 +28,12 @@ class MedicationsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            title: const Text('MG Cautionary Medications'),
+            title: Text(l10n.mgCautionaryMedications),
             pinned: true,
             floating: false,
           ),
@@ -43,13 +45,13 @@ class MedicationsPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Important Information',
+                    Text(
+                      l10n.importantInformation,
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8),
-                    const Text(
-                      'This list contains medications that may affect Myasthenia Gravis (MG) symptoms. It is based on recommendations from the Myasthenia Gravis Foundation of America (MGFA). Always consult with your healthcare provider before starting or stopping any medication.',
+                    Text(
+                      l10n.cautionaryMedicationsInfo,
                     ),
                     const SizedBox(height: 16),
                     Row(
@@ -58,7 +60,7 @@ class MedicationsPage extends StatelessWidget {
                           child: ElevatedButton.icon(
                             onPressed: _launchUrl,
                             icon: const Icon(Icons.open_in_new),
-                            label: const Text('Visit MGFA Website'),
+                            label: Text(l10n.visitMGFAWebsite),
                           ),
                         ),
                         const SizedBox(width: 16),
