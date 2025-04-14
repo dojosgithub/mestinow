@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class Event {
   final String code;
   final String icon;
@@ -44,11 +46,11 @@ class Event {
     }
   }
 
-  static Event? findByCode(String code) {
+  static Event findByCode(String code) {
     try {
       return allEvents.firstWhere((symptom) => symptom.code == code);
     } catch (e) {
-      return null;
+      return Event(code: code, icon: 'assets/icons/custom.png', type: 'sym');
     }
   }
 

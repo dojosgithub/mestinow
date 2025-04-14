@@ -96,6 +96,8 @@ flutter:
     - assets/icons/arm.png
     - assets/icons/hand.png
     - assets/icon/mestinow.png
+    - assets/icons/more.png
+    - assets/icons/custom.png
     - assets/images/welcome_illustration.webp
     - assets/images/medication_illustration.webp
     - assets/images/security_illustration.webp

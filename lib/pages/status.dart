@@ -521,7 +521,7 @@ class _StatusPageState extends State<StatusPage> {
                 // 8th button is "Other"
                 return SymptomButton(
                   size: screenHeight * 0.06,
-                  iconPath: '',
+                  iconPath: 'assets/icons/more.png',
                   label: l10n.other,
                   onPressed:
                       () => _showOtherSymptomDialog(
