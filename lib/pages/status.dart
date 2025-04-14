@@ -633,6 +633,7 @@ class _StatusPageState extends State<StatusPage> {
                   context,
                   MaterialPageRoute(builder: (context) => const SettingsPage()),
                 );
+                _loadSettings();
                 _loadSavedTime();
                 _loadEvents();
               },
