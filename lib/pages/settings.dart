@@ -10,6 +10,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart';
+import 'package:mestinow/pages/symptom_preferences_page.dart';
+import 'package:mestinow/pages/about_page.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -248,125 +250,177 @@ class _SettingsPageState extends State<SettingsPage> {
         title: Text(l10n.settings),
         backgroundColor: AppColors.primary,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              l10n.medicationInterval,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Expanded(
-                  child: Slider(
-                    value: _intervalHours,
-                    min: 3,
-                    max: 6,
-                    divisions: 6,
-                    label: '${_intervalHours.toStringAsFixed(1)} hours',
-                    onChanged: (value) => _saveInterval(value),
-                    activeColor: AppColors.primary,
-                  ),
-                ),
-                SizedBox(
-                  width: 60,
-                  child: Text(
-                    '${_intervalHours.toStringAsFixed(1)}h',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildSection(
+                title: l10n.medicationInterval,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Slider(
+                        value: _intervalHours,
+                        min: 3,
+                        max: 6,
+                        divisions: 6,
+                        label: '${_intervalHours.toStringAsFixed(1)} hours',
+                        onChanged: (value) => _saveInterval(value),
+                        activeColor: AppColors.primary,
+                      ),
                     ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 32),
-            Text(
-              l10n.dailyDoseLimit,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Expanded(
-                  child: Slider(
-                    value: _dailyLimit.toDouble(),
-                    min: 2,
-                    max: 8,
-                    divisions: 6,
-                    label: '$_dailyLimit ${l10n.doses}',
-                    onChanged: (value) => _saveDailyLimit(value.toInt()),
-                    activeColor: AppColors.primary,
-                  ),
-                ),
-                SizedBox(
-                  width: 60,
-                  child: Text(
-                    '$_dailyLimit',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                    SizedBox(
+                      width: 60,
+                      child: Text(
+                        '${_intervalHours.toStringAsFixed(1)}h',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
-            const SizedBox(height: 32),
-            Text(
-              l10n.dataManagement,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: _backupDatabase,
-                    icon: const Icon(Icons.upload),
-                    label: Text(l10n.backup),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 8),
+              ),
+              _buildSection(
+                title: l10n.dailyDoseLimit,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Slider(
+                        value: _dailyLimit.toDouble(),
+                        min: 2,
+                        max: 8,
+                        divisions: 6,
+                        label: '$_dailyLimit ${l10n.doses}',
+                        onChanged: (value) => _saveDailyLimit(value.toInt()),
+                        activeColor: AppColors.primary,
+                      ),
                     ),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: _restoreDatabase,
-                    icon: const Icon(Icons.download),
-                    label: Text(l10n.restore),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 8),
+                    SizedBox(
+                      width: 60,
+                      child: Text(
+                        '$_dailyLimit',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
-            Row(
-              children: [
-                // const SizedBox(width: 16),
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: _exportData,
-                    icon: const Icon(Icons.backup),
-                    label: Text(l10n.exportData),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 8),
+              ),
+              _buildSection(
+                title: l10n.symptomPreferences,
+                child: ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(
+                    l10n.symptomPreferences,
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => SymptomPreferencesPage()),
+                    );
+                  },
+                ),
+              ),
+              _buildSection(
+                title: l10n.dataManagement,
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildActionButton(
+                            icon: Icons.upload,
+                            label: l10n.backup,
+                            onPressed: _backupDatabase,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: _buildActionButton(
+                            icon: Icons.download,
+                            label: l10n.restore,
+                            onPressed: _restoreDatabase,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children:[ Expanded( child: _buildActionButton(
+                        icon: Icons.backup,
+                        label: l10n.exportData,
+                        onPressed: _exportData,
+                      ),)]
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ],
+              ),
+              _buildSection(
+                title: l10n.about,
+                child: ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(l10n.aboutApp, style: const TextStyle(fontSize: 16)),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const AboutPage()),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSection({
+    required String title,
+    required Widget child,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: AppColors.primary,
+          ),
+        ),
+        const SizedBox(height: 8),
+        child,
+        const SizedBox(height: 24),
+      ],
+    );
+  }
+
+  Widget _buildActionButton({
+    required IconData icon,
+    required String label,
+    required VoidCallback onPressed,
+  }) {
+    return ElevatedButton.icon(
+      onPressed: onPressed,
+      icon: Icon(icon),
+      label: Text(label),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: AppColors.primary,
+        foregroundColor: Colors.white,
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
         ),
       ),
     );

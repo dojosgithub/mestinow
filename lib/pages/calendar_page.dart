@@ -83,7 +83,7 @@ class _CalendarPageState extends State<CalendarPage> {
           filteredEvents =
               events.where((e) {
                 final eventMeta = Event.findByCode(e.eventType);
-                return eventMeta?.type == 'sym';
+                return eventMeta.type == 'sym';
               }).toList();
           break;
 
@@ -91,7 +91,7 @@ class _CalendarPageState extends State<CalendarPage> {
           filteredEvents =
               events.where((e) {
                 final eventMeta = Event.findByCode(e.eventType);
-                return eventMeta?.type == 'med';
+                return eventMeta.type == 'med';
               }).toList();
           break;
 

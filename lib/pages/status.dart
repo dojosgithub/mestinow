@@ -20,6 +20,7 @@ import '../pages/calendar_page.dart';
 import '../pages/onboarding/tour_page.dart';
 import 'package:mestinow/models/event.dart';
 import '../pages/medications_page.dart';
+import '../pages/about_page.dart';
 
 class StatusPage extends StatefulWidget {
   const StatusPage({super.key});
@@ -41,6 +42,10 @@ class _StatusPageState extends State<StatusPage> {
   late double textScaleFactor = 1.0;
   Timer? timer;
   bool showOtherSymptoms = false;
+
+  List<Event> symptoms = [];
+  List<Event> rearrangedSymptoms = [];
+  final int maxSymptoms = 7;
 
   List<Event> symptoms = [];
   List<Event> rearrangedSymptoms = [];
@@ -615,6 +620,7 @@ class _StatusPageState extends State<StatusPage> {
                   context,
                   MaterialPageRoute(builder: (context) => const SettingsPage()),
                 );
+                _loadSettings();
                 _loadSavedTime();
                 _loadEvents();
               },
@@ -642,6 +648,17 @@ class _StatusPageState extends State<StatusPage> {
                   MaterialPageRoute(
                     builder: (context) => const MedicationsPage(),
                   ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.info_outline),
+              title: Text(l10n.about),
+              onTap: () {
+                Navigator.pop(context); // Close the drawer
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AboutPage()),
                 );
               },
             ),
@@ -837,12 +854,28 @@ class _StatusPageState extends State<StatusPage> {
             if (mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('${l10n.dailyDoseLimit}!'),
+                  content: Text(
+                    '${l10n.dailyDoseLimit}!',
+                    style: TextStyle(color: AppColors.darkPrimary),
+                  ),
                   backgroundColor: AppColors.error,
                 ),
               );
             }
             return;
+          }
+          if (todayDoses == _dailyLimit - 1) {
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    '${l10n.dailyDoseLimit}!',
+                    style: TextStyle(color: AppColors.darkPrimary),
+                  ),
+                  backgroundColor: AppColors.lighterPrimary,
+                ),
+              );
+            }
           }
           await _saveButtonPressTime();
           setState(() {
