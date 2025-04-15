@@ -787,7 +787,7 @@ class _StatusPageState extends State<StatusPage> {
                           screenWidth * 0.04,
                           textScaleFactor,
                         ),
-                        color: AppColors.darkPrimary,
+                        color: Colors.black,
                         fontFamily: _fontFamily,
                       ),
                     ),

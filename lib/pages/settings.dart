@@ -249,6 +249,7 @@ class _SettingsPageState extends State<SettingsPage> {
       appBar: AppBar(
         title: Text(l10n.settings),
         backgroundColor: AppColors.primary,
+        foregroundColor: AppColors.lightGrey,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -416,8 +417,8 @@ class _SettingsPageState extends State<SettingsPage> {
       icon: Icon(icon),
       label: Text(label),
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.primary,
-        foregroundColor: Colors.white,
+        backgroundColor: AppColors.lighterPrimary,
+        foregroundColor: AppColors.darkPrimary,
         padding: const EdgeInsets.symmetric(vertical: 12),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),

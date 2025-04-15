@@ -4,7 +4,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../widgets/medication_search_bar.dart';
 import '../models/medication.dart';
-
+import '../theme/colors.dart';
 class MedicationsPage extends StatefulWidget {
   const MedicationsPage({super.key});
 
@@ -41,11 +41,11 @@ class _MedicationsPageState extends State<MedicationsPage> {
   Color _getSeverityColor(MedicationSeverity severity) {
     switch (severity) {
       case MedicationSeverity.high:
-        return Colors.red;
+        return AppColors.error;
       case MedicationSeverity.medium:
-        return Colors.orange;
+        return AppColors.warning;
       case MedicationSeverity.low:
-        return Colors.green;
+        return AppColors.lightPrimary;
     }
   }
 
