@@ -41,6 +41,7 @@ class _StatusPageState extends State<StatusPage> {
   final String _fontFamily = GoogleFonts.roboto().fontFamily!;
   late double textScaleFactor = 1.0;
   Timer? timer;
+  bool showOtherSymptoms = false;
 
   List<Event> symptoms = [];
   List<Event> rearrangedSymptoms = [];
@@ -213,121 +214,51 @@ class _StatusPageState extends State<StatusPage> {
     // );
   }
 
-  void _showOtherNoteDialog(BuildContext context) {
+  Future<bool> _showOtherNoteDialog(BuildContext context) async {
     final TextEditingController _controller = TextEditingController();
 
-    showDialog(
+    final result = await showDialog<bool>(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: Text(AppLocalizations.of(context)!.enterNote),
-            content: TextField(
-              controller: _controller,
-              autofocus: true,
-              decoration: InputDecoration(
-                hintText: AppLocalizations.of(context)!.describeSymptom,
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(); // Close the dialog
-                },
-                child: Text(AppLocalizations.of(context)!.cancel),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  final note = _controller.text.trim();
-                  if (note.isNotEmpty) {
-                    await db.logEvent(note);
-                    _loadEvents();
-                  }
-                  Navigator.of(context).pop(); // Close dialog
-                },
-                child: Text(AppLocalizations.of(context)!.save),
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        title: Text(AppLocalizations.of(context)!.enterNote),
+        content: TextField(
+          controller: _controller,
+          autofocus: true,
+          decoration: InputDecoration(
+            hintText: AppLocalizations.of(context)!.describeSymptom,
           ),
-    );
-  }
-
-  void _showOtherSymptomDialog(
-    BuildContext context,
-    List<Event> nonDisplayedSymptoms,
-    AppLocalizations l10n,
-  ) {
-    Event? selectedSymptom;
-
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(l10n.otherSymptomSelect),
-          content: StatefulBuilder(
-            builder: (context, setState) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  DropdownButtonFormField<Event>(
-                    isExpanded: true,
-                    value: selectedSymptom,
-                    hint: Text(l10n.chooseSymptom),
-                    decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.symmetric(
-                        vertical: 10.0,
-                        horizontal: 10.0,
-                      ),
-                      border: OutlineInputBorder(),
-                    ),
-                    items: [
-                      ...nonDisplayedSymptoms.map(
-                        (sym) => DropdownMenuItem<Event>(
-                          value: sym,
-                          child: Row(
-                            children: [
-                              Image.asset(sym.icon, width: 24, height: 24),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: Text(sym.getDisplayName(l10n)),
-                              ), // Fixed this line
-                            ],
-                          ),
-                        ),
-                      ),
-
-                      DropdownMenuItem<Event>(
-                        value: null,
-                        child: Row(
-                          children: [
-                            const Icon(Icons.edit_note, size: 24),
-                            const SizedBox(width: 8),
-                            Text(l10n.other), // This opens the note dialog
-                          ],
-                        ),
-                      ),
-                    ],
-                    onChanged: (value) {
-                      Navigator.of(context).pop();
-
-                      if (value == null) {
-                        // User picked "Other" — open note dialog
-                        _showOtherNoteDialog(context);
-                      } else {
-                        // Log the selected symptom
-                        setState(() {
-                          db.logEvent(value.code);
-                          _loadEvents();
-                        });
-                      }
-                    },
-                  ),
-                ],
-              );
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(false);
             },
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
-        );
-      },
+          ElevatedButton(
+            onPressed: () async {
+              final note = _controller.text.trim();
+              if (note.isNotEmpty) {
+                final formattedNote = note
+                    .split(' ')
+                    .map((word) => word.isNotEmpty
+                        ? '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}'
+                        : '')
+                    .join(' ');
+                await db.logEvent(formattedNote);
+                _loadEvents();
+                Navigator.of(context).pop(true);
+              } else {
+                Navigator.of(context).pop(false);
+              }
+            },
+            child: Text(AppLocalizations.of(context)!.save),
+          ),
+        ],
+      ),
     );
+
+    return result ?? false;
   }
 
   Future<void> scheduleNextDoseNotification(DateTime scheduledTime) async {
@@ -463,46 +394,95 @@ class _StatusPageState extends State<StatusPage> {
         final displayedSymptoms = snapshot.data!;
         final allSymptoms = Event.getSymptoms();
         final displayedCodes = displayedSymptoms.map((e) => e.code).toSet();
-        final nonDisplayedSymptoms =
-            allSymptoms.where((s) => !displayedCodes.contains(s.code)).toList();
+        final nonDisplayedSymptoms =allSymptoms
+            .where((s) => !displayedCodes.contains(s.code))
+            .toList();
+
+        nonDisplayedSymptoms.sort((a, b) =>
+          a.getDisplayName(l10n).toLowerCase().compareTo(
+            b.getDisplayName(l10n).toLowerCase()
+          )
+        );
 
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30.0),
-          child: GridView.builder(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 4,
-              crossAxisSpacing: 1,
-              mainAxisExtent: screenHeight * 0.1,
-              mainAxisSpacing: 8,
-              // childAspectRatio: 1.5,
-            ),
-            itemCount: maxSymptoms + 1,
-            itemBuilder: (context, index) {
-              if (index < displayedSymptoms.length) {
-                final symptom = displayedSymptoms[index];
-                return LongPressDraggable<Event>(
-                  data: symptom,
-                  feedback: Material(
-                    color: Colors.transparent,
-                    child: SymptomButton(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              GridView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 4,
+                  crossAxisSpacing: 1,
+                  mainAxisExtent: screenHeight * 0.1,
+                  mainAxisSpacing: 8,
+                  // childAspectRatio: 1.5,
+                ),
+                itemCount: maxSymptoms + 1,
+                itemBuilder: (context, index) {
+                  if (index < displayedSymptoms.length) {
+                    final symptom = displayedSymptoms[index];
+                    return LongPressDraggable<Event>(
+                      data: symptom,
+                      feedback: Material(
+                        color: Colors.transparent,
+                        child: SymptomButton(
+                          size: screenHeight * 0.06,
+                          iconPath: symptom.icon,
+                          label: symptom.getDisplayName(l10n),
+                          onPressed: () {},
+                        ),
+                      ),
+                      childWhenDragging: const SizedBox.shrink(),
+                      child: DragTarget<Event>(
+                        onAccept: (draggedSymptom) {
+                          final fromIndex = rearrangedSymptoms.indexOf(
+                            draggedSymptom,
+                          );
+                          _rearrangeSymptoms(fromIndex, index);
+                          _saveReorderedSymptoms();
+                        },
+                        builder: (context, candidateData, rejectedData) {
+                          return SymptomButton(
+                            size: screenHeight * 0.06,
+                            iconPath: symptom.icon,
+                            label: symptom.getDisplayName(l10n),
+                            onPressed: () {
+                              setState(() {
+                                db.logEvent(symptom.code);
+                                _loadEvents();
+                              });
+                            },
+                          );
+                        },
+                      ),
+                    );
+                  } else {
+                    // 8th button is "Other"
+                    return SymptomButton(
                       size: screenHeight * 0.06,
-                      iconPath: symptom.icon,
-                      label: symptom.getDisplayName(l10n),
-                      onPressed: () {},
-                    ),
-                  ),
-                  childWhenDragging: const SizedBox.shrink(),
-                  child: DragTarget<Event>(
-                    onAccept: (draggedSymptom) {
-                      final fromIndex = rearrangedSymptoms.indexOf(
-                        draggedSymptom,
-                      );
-                      _rearrangeSymptoms(fromIndex, index);
-                      _saveReorderedSymptoms();
-                    },
-                    builder: (context, candidateData, rejectedData) {
+                       iconPath: '',
+                      label: l10n.other,
+                      onPressed: () {
+                        setState(() {
+                          showOtherSymptoms = !showOtherSymptoms;
+                        });
+                      },
+                    );
+                  }
+                },
+              ),
+              if (showOtherSymptoms) ...[
+                SizedBox(
+                  height: screenHeight * 0.2,
+                  child: GridView.count(
+                    crossAxisCount: 4,
+                    crossAxisSpacing: 1,
+                    mainAxisSpacing: 8,
+                    padding: const EdgeInsets.only(bottom: 8),
+                    childAspectRatio: (screenWidth / 4) / (screenHeight * 0.1),
+                    children: nonDisplayedSymptoms.map((symptom) {
                       return SymptomButton(
                         size: screenHeight * 0.06,
                         iconPath: symptom.icon,
@@ -511,27 +491,29 @@ class _StatusPageState extends State<StatusPage> {
                           setState(() {
                             db.logEvent(symptom.code);
                             _loadEvents();
+                            showOtherSymptoms = false;
                           });
                         },
                       );
-                    },
+                      }).toList(),
                   ),
-                );
-              } else {
-                // 8th button is "Other"
-                return SymptomButton(
-                  size: screenHeight * 0.06,
-                  iconPath: 'assets/icons/more.png',
-                  label: l10n.other,
-                  onPressed:
-                      () => _showOtherSymptomDialog(
-                        context,
-                        nonDisplayedSymptoms,
-                        l10n,
-                      ),
-                );
-              }
-            },
+                ),
+                const SizedBox(height: 12),
+                Center(
+                  child: TextButton.icon(
+                    onPressed: () async {
+                      final shouldClose = await _showOtherNoteDialog(context);
+                      if (shouldClose) {
+                        setState(() {
+                          showOtherSymptoms = false;
+                        });
+                      }
+                    },
+                    label: Text(l10n.enterNote),
+                  ),
+                ),
+              ]
+            ],
           ),
         );
       },
