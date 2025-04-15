@@ -286,24 +286,6 @@ class _SettingsPageState extends State<SettingsPage> {
               ],
             ),
             const SizedBox(height: 32),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(
-                l10n.symptomPreferences,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => SymptomPreferencesPage()),
-                );
-              },
-            ),
-            const SizedBox(height: 32),
             Text(
               l10n.dailyDoseLimit,
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -333,6 +315,24 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                 ),
               ],
+            ),
+            const SizedBox(height: 32),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(
+                l10n.symptomPreferences,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => SymptomPreferencesPage()),
+                );
+              },
             ),
             const SizedBox(height: 32),
             Text(
