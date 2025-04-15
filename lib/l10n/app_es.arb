@@ -79,7 +79,7 @@
     "filteredSymptoms": "Síntomas",
     "filteredMedicine": "Medicina",
     "other": "Otro",
-    "enterNote": "Escribe una nota",
+    "enterNote": "Agregar síntoma",
     "describeSymptom": "Describe su síntoma...",
     "symptomPreferences": "Preferencias de síntomas",
     "symptomLimitMessage": "Solo puedes seleccionar hasta 7 síntomas preferidos.",
