@@ -85,6 +85,7 @@
     "describeSymptom": "Describe su síntoma...",
     "symptomPreferences": "Preferencias de síntomas",
     "symptomLimitMessage": "Solo puedes seleccionar hasta 7 síntomas preferidos.",
+    "quickButton": "Botón Rápido",
     "medications": "Medicamentos",
     "mgCautionaryMedications": "Medicamentos de precaución",
     "cautionaryMedicationsInfo": "Esta lista contiene medicamentos que pueden afectar los síntomas de la Miastenia Gravis (MG). Está basada en las recomendaciones de la Myasthenia Gravis Foundation of America (MGFA). Siempre consulte con su proveedor de atención médica antes de comenzar o suspender cualquier medicamento.",
