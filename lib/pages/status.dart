@@ -475,7 +475,7 @@ class _StatusPageState extends State<StatusPage> {
               ),
               if (showOtherSymptoms) ...[
                 SizedBox(
-                  height: screenHeight * 0.2,
+                  height: screenHeight / 5,
                   child: GridView.count(
                     crossAxisCount: 4,
                     crossAxisSpacing: 1,
@@ -677,6 +677,7 @@ class _StatusPageState extends State<StatusPage> {
                 _buildSymptomGrid(screenWidth, screenHeight, l10n),
 
                 // Fixed "Today" text and divider
+                if(!showOtherSymptoms)
                 Padding(
                   padding: const EdgeInsets.only(top: 0, bottom: 0),
                   child: Column(
@@ -702,6 +703,7 @@ class _StatusPageState extends State<StatusPage> {
                 ),
 
                 // Scrollable ListView with proper constraints
+                if(!showOtherSymptoms)
                 Expanded(
                   child: ListView.separated(
                     itemCount: _events.length,
@@ -742,7 +744,6 @@ class _StatusPageState extends State<StatusPage> {
               ],
             ),
           ),
-
           // Fixed bottom panel
           Align(
             alignment: Alignment.bottomCenter,
