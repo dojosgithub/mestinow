@@ -55,6 +55,8 @@
     "descFacial": "Debilidad de los músculos faciales, incapacidad para sonreír, fruncir el ceño o hacer otras expresiones",
     "descArm": "Debilidad en los brazos - Dificultad para levantar, peinarse o sostener objetos",
     "descHand": "Debilidad en las manos - Dejar caer objetos, dificultad con tareas de motricidad fina",
+    "symPhoto": "Fotofobia",
+    "descPhoto": "Sensitividad a la luz",
     "calendar_delete": "¿Estás seguro que deseas eliminar este evento?",
     "dataManagement": "Manejo de Datos",
     "backup": "Crear Respaldo",

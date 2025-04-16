@@ -98,6 +98,7 @@ flutter:
     - assets/icon/mestinow.png
     - assets/icons/more.png
     - assets/icons/custom.png
+    - assets/icons/photophobia.png
     - assets/images/welcome_illustration.webp
     - assets/images/medication_illustration.webp
     - assets/images/security_illustration.webp

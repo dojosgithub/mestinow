@@ -55,6 +55,8 @@
     "descFacial": "Facial Muscle Weakness, inability to smile, frown, or make other facial expressions",
     "descArm": "Arm Weakness - Difficulty with lifting, combing hair, or holding objects",
     "descHand": "Hand Weakness - Dropping objects, difficulty with fine motor tasks",
+    "symPhoto": "Photophobia",
+    "descPhoto": "Light Sensitivity",
     "calendar_delete": "Are you sure you want to delete this event?",
     "dataManagement": "Data Management",
     "backup": "Create Backup",
