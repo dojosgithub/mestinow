@@ -105,6 +105,8 @@ class _SymptomPreferencesPageState extends State<SymptomPreferencesPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.symptomPreferences),
+        backgroundColor: AppColors.primary,
+        foregroundColor: AppColors.lightGrey,
         scrolledUnderElevation: 0,
       ),
       body: ListView(
