@@ -21,53 +21,61 @@ export 'package:objectbox/objectbox.dart'; // so that callers only have to impor
 
 final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
-      id: const obx_int.IdUid(1, 357687408149282457),
-      name: 'EventLog',
-      lastPropertyId: const obx_int.IdUid(3, 5442489098422157755),
-      flags: 0,
-      properties: <obx_int.ModelProperty>[
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(1, 9160254408701531920),
-            name: 'id',
-            type: 6,
-            flags: 1),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(2, 3427884253337184606),
-            name: 'timestamp',
-            type: 10,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(3, 5442489098422157755),
-            name: 'eventType',
-            type: 9,
-            flags: 0)
-      ],
-      relations: <obx_int.ModelRelation>[],
-      backlinks: <obx_int.ModelBacklink>[]),
+    id: const obx_int.IdUid(1, 357687408149282457),
+    name: 'EventLog',
+    lastPropertyId: const obx_int.IdUid(3, 5442489098422157755),
+    flags: 0,
+    properties: <obx_int.ModelProperty>[
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(1, 9160254408701531920),
+        name: 'id',
+        type: 6,
+        flags: 1,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(2, 3427884253337184606),
+        name: 'timestamp',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(3, 5442489098422157755),
+        name: 'eventType',
+        type: 9,
+        flags: 0,
+      ),
+    ],
+    relations: <obx_int.ModelRelation>[],
+    backlinks: <obx_int.ModelBacklink>[],
+  ),
   obx_int.ModelEntity(
-      id: const obx_int.IdUid(2, 3268872656353208659),
-      name: 'CustomSymptom',
-      lastPropertyId: const obx_int.IdUid(4, 7984326825720376508),
-      flags: 0,
-      properties: <obx_int.ModelProperty>[
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(1, 2009326365929472183),
-            name: 'id',
-            type: 6,
-            flags: 1),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(2, 825968822116406319),
-            name: 'name',
-            type: 9,
-            flags: 0),
-        obx_int.ModelProperty(
-            id: const obx_int.IdUid(4, 7984326825720376508),
-            name: 'createdAt',
-            type: 10,
-            flags: 0)
-      ],
-      relations: <obx_int.ModelRelation>[],
-      backlinks: <obx_int.ModelBacklink>[])
+    id: const obx_int.IdUid(2, 3268872656353208659),
+    name: 'CustomSymptom',
+    lastPropertyId: const obx_int.IdUid(4, 7984326825720376508),
+    flags: 0,
+    properties: <obx_int.ModelProperty>[
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(1, 2009326365929472183),
+        name: 'id',
+        type: 6,
+        flags: 1,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(2, 825968822116406319),
+        name: 'name',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(4, 7984326825720376508),
+        name: 'createdAt',
+        type: 10,
+        flags: 0,
+      ),
+    ],
+    relations: <obx_int.ModelRelation>[],
+    backlinks: <obx_int.ModelBacklink>[],
+  ),
 ];
 
 /// Shortcut for [obx.Store.new] that passes [getObjectBoxModel] and for Flutter
@@ -81,103 +89,113 @@ final _entities = <obx_int.ModelEntity>[
 /// For Flutter apps, also calls `loadObjectBoxLibraryAndroidCompat()` from
 /// the ObjectBox Flutter library to fix loading the native ObjectBox library
 /// on Android 6 and older.
-Future<obx.Store> openStore(
-    {String? directory,
-    int? maxDBSizeInKB,
-    int? maxDataSizeInKB,
-    int? fileMode,
-    int? maxReaders,
-    bool queriesCaseSensitiveDefault = true,
-    String? macosApplicationGroup}) async {
+Future<obx.Store> openStore({
+  String? directory,
+  int? maxDBSizeInKB,
+  int? maxDataSizeInKB,
+  int? fileMode,
+  int? maxReaders,
+  bool queriesCaseSensitiveDefault = true,
+  String? macosApplicationGroup,
+}) async {
   await loadObjectBoxLibraryAndroidCompat();
-  return obx.Store(getObjectBoxModel(),
-      directory: directory ?? (await defaultStoreDirectory()).path,
-      maxDBSizeInKB: maxDBSizeInKB,
-      maxDataSizeInKB: maxDataSizeInKB,
-      fileMode: fileMode,
-      maxReaders: maxReaders,
-      queriesCaseSensitiveDefault: queriesCaseSensitiveDefault,
-      macosApplicationGroup: macosApplicationGroup);
+  return obx.Store(
+    getObjectBoxModel(),
+    directory: directory ?? (await defaultStoreDirectory()).path,
+    maxDBSizeInKB: maxDBSizeInKB,
+    maxDataSizeInKB: maxDataSizeInKB,
+    fileMode: fileMode,
+    maxReaders: maxReaders,
+    queriesCaseSensitiveDefault: queriesCaseSensitiveDefault,
+    macosApplicationGroup: macosApplicationGroup,
+  );
 }
 
 /// Returns the ObjectBox model definition for this project for use with
 /// [obx.Store.new].
 obx_int.ModelDefinition getObjectBoxModel() {
   final model = obx_int.ModelInfo(
-      entities: _entities,
-      lastEntityId: const obx_int.IdUid(2, 3268872656353208659),
-      lastIndexId: const obx_int.IdUid(1, 4767020904293015987),
-      lastRelationId: const obx_int.IdUid(0, 0),
-      lastSequenceId: const obx_int.IdUid(0, 0),
-      retiredEntityUids: const [],
-      retiredIndexUids: const [4767020904293015987],
-      retiredPropertyUids: const [8789806293339444904],
-      retiredRelationUids: const [],
-      modelVersion: 5,
-      modelVersionParserMinimum: 5,
-      version: 1);
+    entities: _entities,
+    lastEntityId: const obx_int.IdUid(2, 3268872656353208659),
+    lastIndexId: const obx_int.IdUid(1, 4767020904293015987),
+    lastRelationId: const obx_int.IdUid(0, 0),
+    lastSequenceId: const obx_int.IdUid(0, 0),
+    retiredEntityUids: const [],
+    retiredIndexUids: const [4767020904293015987],
+    retiredPropertyUids: const [8789806293339444904],
+    retiredRelationUids: const [],
+    modelVersion: 5,
+    modelVersionParserMinimum: 5,
+    version: 1,
+  );
 
   final bindings = <Type, obx_int.EntityDefinition>{
     EventLog: obx_int.EntityDefinition<EventLog>(
-        model: _entities[0],
-        toOneRelations: (EventLog object) => [],
-        toManyRelations: (EventLog object) => {},
-        getId: (EventLog object) => object.id,
-        setId: (EventLog object, int id) {
-          object.id = id;
-        },
-        objectToFB: (EventLog object, fb.Builder fbb) {
-          final eventTypeOffset = fbb.writeString(object.eventType);
-          fbb.startTable(4);
-          fbb.addInt64(0, object.id);
-          fbb.addInt64(1, object.timestamp.millisecondsSinceEpoch);
-          fbb.addOffset(2, eventTypeOffset);
-          fbb.finish(fbb.endTable());
-          return object.id;
-        },
-        objectFromFB: (obx.Store store, ByteData fbData) {
-          final buffer = fb.BufferContext(fbData);
-          final rootOffset = buffer.derefObject(0);
-          final timestampParam = DateTime.fromMillisecondsSinceEpoch(
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 6, 0));
-          final eventTypeParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGet(buffer, rootOffset, 8, '');
-          final object = EventLog(
-              timestamp: timestampParam, eventType: eventTypeParam)
-            ..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+      model: _entities[0],
+      toOneRelations: (EventLog object) => [],
+      toManyRelations: (EventLog object) => {},
+      getId: (EventLog object) => object.id,
+      setId: (EventLog object, int id) {
+        object.id = id;
+      },
+      objectToFB: (EventLog object, fb.Builder fbb) {
+        final eventTypeOffset = fbb.writeString(object.eventType);
+        fbb.startTable(4);
+        fbb.addInt64(0, object.id);
+        fbb.addInt64(1, object.timestamp.millisecondsSinceEpoch);
+        fbb.addOffset(2, eventTypeOffset);
+        fbb.finish(fbb.endTable());
+        return object.id;
+      },
+      objectFromFB: (obx.Store store, ByteData fbData) {
+        final buffer = fb.BufferContext(fbData);
+        final rootOffset = buffer.derefObject(0);
+        final timestampParam = DateTime.fromMillisecondsSinceEpoch(
+          const fb.Int64Reader().vTableGet(buffer, rootOffset, 6, 0),
+        );
+        final eventTypeParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGet(buffer, rootOffset, 8, '');
+        final object = EventLog(
+          timestamp: timestampParam,
+          eventType: eventTypeParam,
+        )..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
 
-          return object;
-        }),
+        return object;
+      },
+    ),
     CustomSymptom: obx_int.EntityDefinition<CustomSymptom>(
-        model: _entities[1],
-        toOneRelations: (CustomSymptom object) => [],
-        toManyRelations: (CustomSymptom object) => {},
-        getId: (CustomSymptom object) => object.id,
-        setId: (CustomSymptom object, int id) {
-          object.id = id;
-        },
-        objectToFB: (CustomSymptom object, fb.Builder fbb) {
-          final nameOffset = fbb.writeString(object.name);
-          fbb.startTable(5);
-          fbb.addInt64(0, object.id);
-          fbb.addOffset(1, nameOffset);
-          fbb.addInt64(3, object.createdAt.millisecondsSinceEpoch);
-          fbb.finish(fbb.endTable());
-          return object.id;
-        },
-        objectFromFB: (obx.Store store, ByteData fbData) {
-          final buffer = fb.BufferContext(fbData);
-          final rootOffset = buffer.derefObject(0);
-          final nameParam = const fb.StringReader(asciiOptimization: true)
-              .vTableGet(buffer, rootOffset, 6, '');
-          final createdAtParam = DateTime.fromMillisecondsSinceEpoch(
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0));
-          final object = CustomSymptom(
-              name: nameParam, createdAt: createdAtParam)
-            ..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+      model: _entities[1],
+      toOneRelations: (CustomSymptom object) => [],
+      toManyRelations: (CustomSymptom object) => {},
+      getId: (CustomSymptom object) => object.id,
+      setId: (CustomSymptom object, int id) {
+        object.id = id;
+      },
+      objectToFB: (CustomSymptom object, fb.Builder fbb) {
+        final nameOffset = fbb.writeString(object.name);
+        fbb.startTable(5);
+        fbb.addInt64(0, object.id);
+        fbb.addOffset(1, nameOffset);
+        fbb.addInt64(3, object.createdAt.millisecondsSinceEpoch);
+        fbb.finish(fbb.endTable());
+        return object.id;
+      },
+      objectFromFB: (obx.Store store, ByteData fbData) {
+        final buffer = fb.BufferContext(fbData);
+        final rootOffset = buffer.derefObject(0);
+        final nameParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGet(buffer, rootOffset, 6, '');
+        final createdAtParam = DateTime.fromMillisecondsSinceEpoch(
+          const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0),
+        );
+        final object = CustomSymptom(name: nameParam, createdAt: createdAtParam)
+          ..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
 
-          return object;
-        })
+        return object;
+      },
+    ),
   };
 
   return obx_int.ModelDefinition(model, bindings);
@@ -186,29 +204,35 @@ obx_int.ModelDefinition getObjectBoxModel() {
 /// [EventLog] entity fields to define ObjectBox queries.
 class EventLog_ {
   /// See [EventLog.id].
-  static final id =
-      obx.QueryIntegerProperty<EventLog>(_entities[0].properties[0]);
+  static final id = obx.QueryIntegerProperty<EventLog>(
+    _entities[0].properties[0],
+  );
 
   /// See [EventLog.timestamp].
-  static final timestamp =
-      obx.QueryDateProperty<EventLog>(_entities[0].properties[1]);
+  static final timestamp = obx.QueryDateProperty<EventLog>(
+    _entities[0].properties[1],
+  );
 
   /// See [EventLog.eventType].
-  static final eventType =
-      obx.QueryStringProperty<EventLog>(_entities[0].properties[2]);
+  static final eventType = obx.QueryStringProperty<EventLog>(
+    _entities[0].properties[2],
+  );
 }
 
 /// [CustomSymptom] entity fields to define ObjectBox queries.
 class CustomSymptom_ {
   /// See [CustomSymptom.id].
-  static final id =
-      obx.QueryIntegerProperty<CustomSymptom>(_entities[1].properties[0]);
+  static final id = obx.QueryIntegerProperty<CustomSymptom>(
+    _entities[1].properties[0],
+  );
 
   /// See [CustomSymptom.name].
-  static final name =
-      obx.QueryStringProperty<CustomSymptom>(_entities[1].properties[1]);
+  static final name = obx.QueryStringProperty<CustomSymptom>(
+    _entities[1].properties[1],
+  );
 
   /// See [CustomSymptom.createdAt].
-  static final createdAt =
-      obx.QueryDateProperty<CustomSymptom>(_entities[1].properties[2]);
+  static final createdAt = obx.QueryDateProperty<CustomSymptom>(
+    _entities[1].properties[2],
+  );
 }

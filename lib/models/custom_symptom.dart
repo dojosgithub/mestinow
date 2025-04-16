@@ -7,12 +7,9 @@ class CustomSymptom {
 
   late String name;
 
-
   @Property(type: PropertyType.date)
   late DateTime createdAt;
 
-  CustomSymptom({
-    required this.name,
-    DateTime? createdAt,
-  }) : createdAt = createdAt ?? DateTime.now();
-} 
+  CustomSymptom({required this.name, DateTime? createdAt})
+    : createdAt = createdAt ?? DateTime.now();
+}

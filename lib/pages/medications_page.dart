@@ -5,6 +5,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../widgets/medication_search_bar.dart';
 import '../models/medication.dart';
 import '../theme/colors.dart';
+
 class MedicationsPage extends StatefulWidget {
   const MedicationsPage({super.key});
 
