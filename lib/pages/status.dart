@@ -739,9 +739,15 @@ class _StatusPageState extends State<StatusPage> {
                           vertical: 10.0,
                         ),
                         child: Text(
-                          '$formattedTime - ${displayableEvent?.getDisplayName(l10n) ?? event.eventType}',
+                          '$formattedTime - ${displayableEvent.getDisplayName(l10n)}',
                           style: TextStyle(
                             fontFamily: _fontFamily,
+                            fontWeight: displayableEvent.type == 'med'
+                                ? FontWeight.w900
+                                : FontWeight.w400,
+                            color: displayableEvent.type == 'med'
+                                ? AppColors.darkPrimary
+                                : Colors.black,
                             fontSize: getResponsiveFontSize(
                               screenHeight * 0.015,
                               textScaleFactor,
