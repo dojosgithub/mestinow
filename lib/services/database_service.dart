@@ -2,6 +2,7 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import '../objectbox.g.dart';
 import '../models/event_log.dart';
+import '../models/custom_symptom.dart';
 import 'dart:io';
 import 'package:intl/intl.dart';
 
@@ -10,11 +11,12 @@ import 'package:intl/intl.dart';
 class DatabaseService {
   late Store store;
   late Box<EventLog> eventLogBox;
+  late Box<CustomSymptom> customSymptomBox;
   late final String dbPath;
   final _dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss');
   DatabaseService._create(this.store, this.dbPath) {
-    // TODO: Initialize the database
     eventLogBox = store.box<EventLog>();
+    customSymptomBox = store.box<CustomSymptom>();
   }
 
   static Future<DatabaseService> create() async {
@@ -86,6 +88,7 @@ class DatabaseService {
     final newStore = await openStore(directory: dbPath);
     store = newStore;
     eventLogBox = store.box<EventLog>();
+    customSymptomBox = store.box<CustomSymptom>();
   }
 
   // Symptom logging methods
@@ -154,5 +157,22 @@ class DatabaseService {
 
   Future<void> deleteEvent(int id) async {
     eventLogBox.remove(id);
+  }
+
+  // Custom symptom methods
+  Future<CustomSymptom> createCustomSymptom(String name) async {
+    final symptom = CustomSymptom(
+      name: name,
+    );
+    customSymptomBox.put(symptom);
+    return symptom;
+  }
+
+  Future<List<CustomSymptom>> getAllCustomSymptoms() async {
+    return customSymptomBox.getAll();
+  }
+
+  Future<void> deleteCustomSymptom(int id) async {
+    customSymptomBox.remove(id);
   }
 }

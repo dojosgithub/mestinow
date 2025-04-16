@@ -239,7 +239,10 @@ class _StatusPageState extends State<StatusPage> {
                 onPressed: () async {
                   final note = _controller.text.trim();
                   if (note.isNotEmpty) {
-                    await db.logEvent(note);
+                    // Create a new custom symptom
+                    final customSymptom = await db.createCustomSymptom(note);
+                    // Log the event with the custom symptom's name
+                    await db.logEvent(customSymptom.name);
                     _loadEvents();
                   }
                   Navigator.of(context).pop(); // Close dialog

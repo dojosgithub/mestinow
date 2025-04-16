@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 import '../models/event.dart';
+import '../services/database_service.dart';
 import '../theme/colors.dart';
 
 class SymptomPreferencesPage extends StatefulWidget {
@@ -11,8 +13,9 @@ class SymptomPreferencesPage extends StatefulWidget {
 
 class _SymptomPreferencesPageState extends State<SymptomPreferencesPage> {
   List<String> selectedCodes = [];
-  final List<Event> allSymptoms = Event.getSymptoms();
+  List<Event> allSymptoms = [];
   SharedPreferences? _prefs;
+  late DatabaseService _db;
 
   final ScrollController _scrollController = ScrollController();
   bool _showBackToTopButton = false;
@@ -36,9 +39,24 @@ class _SymptomPreferencesPageState extends State<SymptomPreferencesPage> {
   }
 
   @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _db = Provider.of<DatabaseService>(context);
+    _loadCustomSymptoms();
+  }
+
+  Future<void> _loadCustomSymptoms() async {
+    final customSymptoms = await _db.getAllCustomSymptoms();
+    setState(() {
+      allSymptoms = [
+        ...Event.getSymptoms(),
+        ...customSymptoms.map((s) => Event(
+              code: s.name,
+              icon: 'assets/icons/custom.png',
+              type: 'sym'
+            )),
+      ];
+    });
   }
 
   Future<void> _initPrefs() async {
@@ -58,7 +76,7 @@ class _SymptomPreferencesPageState extends State<SymptomPreferencesPage> {
         } else if (selectedCodes.length >= 7) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(l10n.symptomLimitMessage), // Add to .arb
+              content: Text(l10n.symptomLimitMessage),
               duration: const Duration(seconds: 2),
             ),
           );
@@ -92,41 +110,39 @@ class _SymptomPreferencesPageState extends State<SymptomPreferencesPage> {
       ),
       body: ListView(
         controller: _scrollController,
-        children:
-            sortedSymptoms.map((symptom) {
-              final code = symptom.code;
-              return CheckboxListTile(
-                title: Row(
-                  children: [
-                    Image.asset(
-                      symptom.icon,
-                      color: AppColors.darkPrimary,
-                      width: 32,
-                      height: 32,
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(child: Text(symptom.getDisplayName(l10n))),
-                  ],
+        children: sortedSymptoms.map((symptom) {
+          final code = symptom.code;
+          return CheckboxListTile(
+            title: Row(
+              children: [
+                Image.asset(
+                  symptom.icon,
+                  color: AppColors.darkPrimary,
+                  width: 32,
+                  height: 32,
                 ),
-                value: selectedCodes.contains(code),
-                onChanged: (selected) => _toggleSymptom(code, selected),
-              );
-            }).toList(),
+                const SizedBox(width: 12),
+                Expanded(child: Text(symptom.getDisplayName(l10n))),
+              ],
+            ),
+            value: selectedCodes.contains(code),
+            onChanged: (selected) => _toggleSymptom(code, selected),
+          );
+        }).toList(),
       ),
-      floatingActionButton:
-          _showBackToTopButton
-              ? FloatingActionButton(
-                onPressed: () {
-                  _scrollController.animateTo(
-                    0,
-                    duration: const Duration(milliseconds: 500),
-                    curve: Curves.easeOut,
-                  );
-                },
-                child: const Icon(Icons.arrow_upward),
-                tooltip: 'l10n.backToTop',
-              )
-              : null,
+      floatingActionButton: _showBackToTopButton
+          ? FloatingActionButton(
+              onPressed: () {
+                _scrollController.animateTo(
+                  0,
+                  duration: const Duration(milliseconds: 500),
+                  curve: Curves.easeOut,
+                );
+              },
+              child: const Icon(Icons.arrow_upward),
+              tooltip: 'l10n.backToTop',
+            )
+          : null,
     );
   }
 }
