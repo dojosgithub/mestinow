@@ -107,9 +107,15 @@ class _StatusPageState extends State<StatusPage> {
   // Load symptoms based on preferences or default list
   Future<List<Event>> _loadSymptomsToDisplay() async {
     final prefs = await SharedPreferences.getInstance();
-    final preferredCodes = prefs.getStringList('preferred_symptoms') ?? [];
+    List<String> preferredCodes =
+        prefs.getStringList('preferred_symptoms') ?? [];
 
     final allSymptoms = Event.getSymptoms();
+
+    if (preferredCodes.isEmpty) {
+      preferredCodes = [allSymptoms[0].code];//allSymptoms.map((s) => s.code).take(7).toList();
+      prefs.setStringList('preferred_symptoms', preferredCodes);
+    }
 
     final preferredSymptoms =
         allSymptoms
@@ -130,9 +136,9 @@ class _StatusPageState extends State<StatusPage> {
 
     final loadedSymptoms = [...preferredSymptoms, ...fallbackSymptoms];
 
-    setState(() {
-      rearrangedSymptoms = [...loadedSymptoms];
-    });
+    // setState(() {
+    //   rearrangedSymptoms = [...loadedSymptoms];
+    // });
 
     return loadedSymptoms;
   }
@@ -742,12 +748,14 @@ class _StatusPageState extends State<StatusPage> {
                           '$formattedTime - ${displayableEvent.getDisplayName(l10n)}',
                           style: TextStyle(
                             fontFamily: _fontFamily,
-                            fontWeight: displayableEvent.type == 'med'
-                                ? FontWeight.w900
-                                : FontWeight.w400,
-                            color: displayableEvent.type == 'med'
-                                ? AppColors.darkPrimary
-                                : Colors.black,
+                            fontWeight:
+                                displayableEvent.type == 'med'
+                                    ? FontWeight.w900
+                                    : FontWeight.w400,
+                            color:
+                                displayableEvent.type == 'med'
+                                    ? AppColors.darkPrimary
+                                    : Colors.black,
                             fontSize: getResponsiveFontSize(
                               screenHeight * 0.015,
                               textScaleFactor,
