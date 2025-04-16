@@ -39,6 +39,8 @@ class Event {
         return l10n.symArm;
       case 'symHand':
         return l10n.symHand;
+      case 'symPhoto':
+        return l10n.symPhoto;
       default:
         return code;
     }
@@ -82,5 +84,6 @@ class Event {
     Event(code: 'symFacial', icon: 'assets/icons/facial.png', type: 'sym'),
     Event(code: 'symArm', icon: 'assets/icons/arm.png', type: 'sym'),
     Event(code: 'symHand', icon: 'assets/icons/hand.png', type: 'sym'),
+    Event(code: 'symPhoto', icon: 'assets/icons/photophobia.png', type: 'sym'),
   ];
 }
