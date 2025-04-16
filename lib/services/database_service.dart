@@ -161,9 +161,7 @@ class DatabaseService {
 
   // Custom symptom methods
   Future<CustomSymptom> createCustomSymptom(String name) async {
-    final symptom = CustomSymptom(
-      name: name,
-    );
+    final symptom = CustomSymptom(name: name);
     customSymptomBox.put(symptom);
     return symptom;
   }

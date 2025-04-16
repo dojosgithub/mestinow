@@ -325,7 +325,9 @@ class _SettingsPageState extends State<SettingsPage> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => SymptomPreferencesPage()),
+                      MaterialPageRoute(
+                        builder: (_) => SymptomPreferencesPage(),
+                      ),
                     );
                   },
                 ),
@@ -355,11 +357,15 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     const SizedBox(height: 8),
                     Row(
-                      children:[ Expanded( child: _buildActionButton(
-                        icon: Icons.backup,
-                        label: l10n.exportData,
-                        onPressed: _exportData,
-                      ),)]
+                      children: [
+                        Expanded(
+                          child: _buildActionButton(
+                            icon: Icons.backup,
+                            label: l10n.exportData,
+                            onPressed: _exportData,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -368,7 +374,10 @@ class _SettingsPageState extends State<SettingsPage> {
                 title: l10n.about,
                 child: ListTile(
                   contentPadding: EdgeInsets.zero,
-                  title: Text(l10n.aboutApp, style: const TextStyle(fontSize: 16)),
+                  title: Text(
+                    l10n.aboutApp,
+                    style: const TextStyle(fontSize: 16),
+                  ),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () {
                     Navigator.push(
@@ -385,10 +394,7 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Widget _buildSection({
-    required String title,
-    required Widget child,
-  }) {
+  Widget _buildSection({required String title, required Widget child}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -420,9 +426,7 @@ class _SettingsPageState extends State<SettingsPage> {
         backgroundColor: AppColors.lighterPrimary,
         foregroundColor: AppColors.darkPrimary,
         padding: const EdgeInsets.symmetric(vertical: 12),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
     );
   }
