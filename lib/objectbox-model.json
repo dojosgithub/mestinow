@@ -26,9 +26,33 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "2:3268872656353208659",
+      "lastPropertyId": "4:7984326825720376508",
+      "name": "CustomSymptom",
+      "properties": [
+        {
+          "id": "1:2009326365929472183",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:825968822116406319",
+          "name": "name",
+          "type": 9
+        },
+        {
+          "id": "4:7984326825720376508",
+          "name": "createdAt",
+          "type": 10
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "1:357687408149282457",
+  "lastEntityId": "2:3268872656353208659",
   "lastIndexId": "1:4767020904293015987",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
@@ -38,7 +62,9 @@
   "retiredIndexUids": [
     4767020904293015987
   ],
-  "retiredPropertyUids": [],
+  "retiredPropertyUids": [
+    8789806293339444904
+  ],
   "retiredRelationUids": [],
   "version": 1
 }
