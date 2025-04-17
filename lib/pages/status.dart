@@ -236,7 +236,7 @@ class _StatusPageState extends State<StatusPage> {
       context: context,
       builder:
           (context) => AlertDialog(
-            title: Text(AppLocalizations.of(context)!.enterNote),
+            title: Text(AppLocalizations.of(context)!.otherSymptom),
             content: TextField(
               controller: _controller,
               autofocus: true,
@@ -529,7 +529,7 @@ class _StatusPageState extends State<StatusPage> {
                         });
                       }
                     },
-                    label: Text(l10n.enterNote),
+                    label: Text(l10n.otherSymptom),
                   ),
                 ),
               ],
