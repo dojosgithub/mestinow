@@ -41,8 +41,10 @@ class _StatusPageState extends State<StatusPage> {
   final String _fontFamily = GoogleFonts.roboto().fontFamily!;
   late double textScaleFactor = 1.0;
   Timer? timer;
+  bool showOtherSymptoms = false;
 
   List<Event> symptoms = [];
+  List<Event> allSymptoms = [];
   List<Event> rearrangedSymptoms = [];
   final int maxSymptoms = 7;
 
@@ -110,10 +112,18 @@ class _StatusPageState extends State<StatusPage> {
     List<String> preferredCodes =
         prefs.getStringList('preferred_symptoms') ?? [];
 
-    final allSymptoms = Event.getSymptoms();
+    final customSymptoms = await db.getAllCustomSymptoms();
+
+    allSymptoms = [
+      ...Event.getSymptoms(),
+      ...customSymptoms.map(
+        (s) =>
+            Event(code: s.name, icon: 'assets/icons/custom.png', type: 'sym'),
+      ),
+    ];
 
     if (preferredCodes.isEmpty) {
-      preferredCodes = [allSymptoms[0].code];//allSymptoms.map((s) => s.code).take(7).toList();
+      preferredCodes = [allSymptoms[0].code];
       prefs.setStringList('preferred_symptoms', preferredCodes);
     }
 
@@ -219,10 +229,10 @@ class _StatusPageState extends State<StatusPage> {
     // );
   }
 
-  void _showOtherNoteDialog(BuildContext context) {
+  Future<bool> _showOtherNoteDialog(BuildContext context) async {
     final TextEditingController _controller = TextEditingController();
 
-    showDialog(
+    final result = await showDialog<bool>(
       context: context,
       builder:
           (context) => AlertDialog(
@@ -237,106 +247,38 @@ class _StatusPageState extends State<StatusPage> {
             actions: [
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop(); // Close the dialog
+                  Navigator.of(context).pop(false);
                 },
                 child: Text(AppLocalizations.of(context)!.cancel),
               ),
               ElevatedButton(
                 onPressed: () async {
                   final note = _controller.text.trim();
+                  await db.createCustomSymptom(note);
                   if (note.isNotEmpty) {
-                    // Create a new custom symptom
-                    final customSymptom = await db.createCustomSymptom(note);
-                    // Log the event with the custom symptom's name
-                    await db.logEvent(customSymptom.name);
+                    final formattedNote = note
+                        .split(' ')
+                        .map(
+                          (word) =>
+                              word.isNotEmpty
+                                  ? '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}'
+                                  : '',
+                        )
+                        .join(' ');
+                    await db.logEvent(formattedNote);
                     _loadEvents();
+                    Navigator.of(context).pop(true);
+                  } else {
+                    Navigator.of(context).pop(false);
                   }
-                  Navigator.of(context).pop(); // Close dialog
                 },
                 child: Text(AppLocalizations.of(context)!.save),
               ),
             ],
           ),
     );
-  }
 
-  void _showOtherSymptomDialog(
-    BuildContext context,
-    List<Event> nonDisplayedSymptoms,
-    AppLocalizations l10n,
-  ) {
-    Event? selectedSymptom;
-
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(l10n.otherSymptomSelect),
-          content: StatefulBuilder(
-            builder: (context, setState) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  DropdownButtonFormField<Event>(
-                    isExpanded: true,
-                    value: selectedSymptom,
-                    hint: Text(l10n.chooseSymptom),
-                    decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.symmetric(
-                        vertical: 10.0,
-                        horizontal: 10.0,
-                      ),
-                      border: OutlineInputBorder(),
-                    ),
-                    items: [
-                      ...nonDisplayedSymptoms.map(
-                        (sym) => DropdownMenuItem<Event>(
-                          value: sym,
-                          child: Row(
-                            children: [
-                              Image.asset(sym.icon, width: 24, height: 24),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: Text(sym.getDisplayName(l10n)),
-                              ), // Fixed this line
-                            ],
-                          ),
-                        ),
-                      ),
-
-                      DropdownMenuItem<Event>(
-                        value: null,
-                        child: Row(
-                          children: [
-                            const Icon(Icons.edit_note, size: 24),
-                            const SizedBox(width: 8),
-                            Text(l10n.other), // This opens the note dialog
-                          ],
-                        ),
-                      ),
-                    ],
-                    onChanged: (value) {
-                      Navigator.of(context).pop();
-
-                      if (value == null) {
-                        // User picked "Other" — open note dialog
-                        _showOtherNoteDialog(context);
-                      } else {
-                        // Log the selected symptom
-                        setState(() {
-                          db.logEvent(value.code);
-                          _loadEvents();
-                        });
-                      }
-                    },
-                  ),
-                ],
-              );
-            },
-          ),
-        );
-      },
-    );
+    return result ?? false;
   }
 
   Future<void> scheduleNextDoseNotification(DateTime scheduledTime) async {
@@ -470,77 +412,128 @@ class _StatusPageState extends State<StatusPage> {
         }
 
         final displayedSymptoms = snapshot.data!;
-        final allSymptoms = Event.getSymptoms();
         final displayedCodes = displayedSymptoms.map((e) => e.code).toSet();
         final nonDisplayedSymptoms =
             allSymptoms.where((s) => !displayedCodes.contains(s.code)).toList();
 
+        nonDisplayedSymptoms.sort(
+          (a, b) => a
+              .getDisplayName(l10n)
+              .toLowerCase()
+              .compareTo(b.getDisplayName(l10n).toLowerCase()),
+        );
+
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30.0),
-          child: GridView.builder(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 4,
-              crossAxisSpacing: 1,
-              mainAxisExtent: screenHeight * 0.1,
-              mainAxisSpacing: 8,
-              // childAspectRatio: 1.5,
-            ),
-            itemCount: maxSymptoms + 1,
-            itemBuilder: (context, index) {
-              if (index < displayedSymptoms.length) {
-                final symptom = displayedSymptoms[index];
-                return LongPressDraggable<Event>(
-                  data: symptom,
-                  feedback: Material(
-                    color: Colors.transparent,
-                    child: SymptomButton(
-                      size: screenHeight * 0.06,
-                      iconPath: symptom.icon,
-                      label: symptom.getDisplayName(l10n),
-                      onPressed: () {},
-                    ),
-                  ),
-                  childWhenDragging: const SizedBox.shrink(),
-                  child: DragTarget<Event>(
-                    onAccept: (draggedSymptom) {
-                      final fromIndex = rearrangedSymptoms.indexOf(
-                        draggedSymptom,
-                      );
-                      _rearrangeSymptoms(fromIndex, index);
-                      _saveReorderedSymptoms();
-                    },
-                    builder: (context, candidateData, rejectedData) {
-                      return SymptomButton(
-                        size: screenHeight * 0.06,
-                        iconPath: symptom.icon,
-                        label: symptom.getDisplayName(l10n),
-                        onPressed: () {
-                          setState(() {
-                            db.logEvent(symptom.code);
-                            _loadEvents();
-                          });
-                        },
-                      );
-                    },
-                  ),
-                );
-              } else {
-                // 8th button is "Other"
-                return SymptomButton(
-                  size: screenHeight * 0.06,
-                  iconPath: 'assets/icons/more.png',
-                  label: l10n.other,
-                  onPressed:
-                      () => _showOtherSymptomDialog(
-                        context,
-                        nonDisplayedSymptoms,
-                        l10n,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              GridView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 4,
+                  crossAxisSpacing: 1,
+                  mainAxisExtent: screenHeight * 0.1,
+                  mainAxisSpacing: 8,
+                  // childAspectRatio: 1.5,
+                ),
+                itemCount: maxSymptoms + 1,
+                itemBuilder: (context, index) {
+                  if (index < displayedSymptoms.length) {
+                    final symptom = displayedSymptoms[index];
+                    return LongPressDraggable<Event>(
+                      data: symptom,
+                      feedback: Material(
+                        color: Colors.transparent,
+                        child: SymptomButton(
+                          size: screenHeight * 0.06,
+                          iconPath: symptom.icon,
+                          label: symptom.getDisplayName(l10n),
+                          onPressed: () {},
+                        ),
                       ),
-                );
-              }
-            },
+                      childWhenDragging: const SizedBox.shrink(),
+                      child: DragTarget<Event>(
+                        onAccept: (draggedSymptom) {
+                          final fromIndex = rearrangedSymptoms.indexOf(
+                            draggedSymptom,
+                          );
+                          _rearrangeSymptoms(fromIndex, index);
+                          _saveReorderedSymptoms();
+                        },
+                        builder: (context, candidateData, rejectedData) {
+                          return SymptomButton(
+                            size: screenHeight * 0.06,
+                            iconPath: symptom.icon,
+                            label: symptom.getDisplayName(l10n),
+                            onPressed: () {
+                              setState(() {
+                                db.logEvent(symptom.code);
+                                _loadEvents();
+                              });
+                            },
+                          );
+                        },
+                      ),
+                    );
+                  } else {
+                    // 8th button is "Other"
+                    return SymptomButton(
+                      size: screenHeight * 0.06,
+                      iconPath: 'assets/icons/more.png',
+                      label: l10n.other,
+                      onPressed: () {
+                        setState(() {
+                          showOtherSymptoms = !showOtherSymptoms;
+                        });
+                      },
+                    );
+                  }
+                },
+              ),
+              if (showOtherSymptoms) ...[
+                SizedBox(
+                  height: screenHeight / 5,
+                  child: GridView.count(
+                    crossAxisCount: 4,
+                    crossAxisSpacing: 1,
+                    mainAxisSpacing: 8,
+                    padding: const EdgeInsets.only(bottom: 8),
+                    childAspectRatio: (screenWidth / 4) / (screenHeight * 0.1),
+                    children:
+                        nonDisplayedSymptoms.map((symptom) {
+                          return SymptomButton(
+                            size: screenHeight * 0.06,
+                            iconPath: symptom.icon,
+                            label: symptom.getDisplayName(l10n),
+                            onPressed: () {
+                              setState(() {
+                                db.logEvent(symptom.code);
+                                _loadEvents();
+                                showOtherSymptoms = false;
+                              });
+                            },
+                          );
+                        }).toList(),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Center(
+                  child: TextButton.icon(
+                    onPressed: () async {
+                      final shouldClose = await _showOtherNoteDialog(context);
+                      if (shouldClose) {
+                        setState(() {
+                          showOtherSymptoms = false;
+                        });
+                      }
+                    },
+                    label: Text(l10n.enterNote),
+                  ),
+                ),
+              ],
+            ],
           ),
         );
       },
@@ -704,80 +697,81 @@ class _StatusPageState extends State<StatusPage> {
                 _buildSymptomGrid(screenWidth, screenHeight, l10n),
 
                 // Fixed "Today" text and divider
-                Padding(
-                  padding: const EdgeInsets.only(top: 0, bottom: 0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Center(
-                        child: Text(
-                          'Today',
-                          style: TextStyle(
-                            fontSize: 12 / min(2.0, textScaleFactor),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 2),
-                      Divider(
-                        thickness: 1,
-                        color: AppColors.lightGrey,
-                        indent: 0,
-                        endIndent: 0,
-                      ),
-                    ],
-                  ),
-                ),
-
-                // Scrollable ListView with proper constraints
-                Expanded(
-                  child: ListView.separated(
-                    itemCount: _events.length,
-                    itemBuilder: (context, index) {
-                      final event = _events[index];
-                      final displayableEvent = Event.findByCode(
-                        event.eventType,
-                      );
-                      String formattedTime =
-                          '${DateFormat('h:mm a').format(event.timestamp)} ';
-                      return Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 16.0,
-                          vertical: 10.0,
-                        ),
-                        child: Text(
-                          '$formattedTime - ${displayableEvent.getDisplayName(l10n)}',
-                          style: TextStyle(
-                            fontFamily: _fontFamily,
-                            fontWeight:
-                                displayableEvent.type == 'med'
-                                    ? FontWeight.w900
-                                    : FontWeight.w400,
-                            color:
-                                displayableEvent.type == 'med'
-                                    ? AppColors.darkPrimary
-                                    : Colors.black,
-                            fontSize: getResponsiveFontSize(
-                              screenHeight * 0.015,
-                              textScaleFactor,
+                if (!showOtherSymptoms)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 0, bottom: 0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Center(
+                          child: Text(
+                            'Today',
+                            style: TextStyle(
+                              fontSize: 12 / min(2.0, textScaleFactor),
                             ),
                           ),
                         ),
-                      );
-                    },
-                    separatorBuilder:
-                        (context, index) => Divider(
-                          color: AppColors.lightGrey,
+                        SizedBox(height: 2),
+                        Divider(
                           thickness: 1,
-                          height: 0,
-                          indent: 16,
-                          endIndent: 16,
+                          color: AppColors.lightGrey,
+                          indent: 0,
+                          endIndent: 0,
                         ),
+                      ],
+                    ),
                   ),
-                ),
+
+                // Scrollable ListView with proper constraints
+                if (!showOtherSymptoms)
+                  Expanded(
+                    child: ListView.separated(
+                      itemCount: _events.length,
+                      itemBuilder: (context, index) {
+                        final event = _events[index];
+                        final displayableEvent = Event.findByCode(
+                          event.eventType,
+                        );
+                        String formattedTime =
+                            '${DateFormat('h:mm a').format(event.timestamp)} ';
+                        return Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16.0,
+                            vertical: 10.0,
+                          ),
+                          child: Text(
+                            '$formattedTime - ${displayableEvent.getDisplayName(l10n)}',
+                            style: TextStyle(
+                              fontFamily: _fontFamily,
+                              fontWeight:
+                                  displayableEvent.type == 'med'
+                                      ? FontWeight.w900
+                                      : FontWeight.w400,
+                              color:
+                                  displayableEvent.type == 'med'
+                                      ? AppColors.darkPrimary
+                                      : Colors.black,
+                              fontSize: getResponsiveFontSize(
+                                screenHeight * 0.015,
+                                textScaleFactor,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      separatorBuilder:
+                          (context, index) => Divider(
+                            color: AppColors.lightGrey,
+                            thickness: 1,
+                            height: 0,
+                            indent: 16,
+                            endIndent: 16,
+                          ),
+                    ),
+                  ),
               ],
             ),
           ),
-
           // Fixed bottom panel
           Align(
             alignment: Alignment.bottomCenter,
