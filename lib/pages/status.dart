@@ -109,7 +109,8 @@ class _StatusPageState extends State<StatusPage> {
   // Load symptoms based on preferences or default list
   Future<List<Event>> _loadSymptomsToDisplay() async {
     final prefs = await SharedPreferences.getInstance();
-    final preferredCodes = prefs.getStringList('preferred_symptoms') ?? [];
+    List<String> preferredCodes =
+        prefs.getStringList('preferred_symptoms') ?? [];
 
     final customSymptoms = await db.getAllCustomSymptoms();
 
@@ -120,6 +121,11 @@ class _StatusPageState extends State<StatusPage> {
             Event(code: s.name, icon: 'assets/icons/custom.png', type: 'sym'),
       ),
     ];
+
+    if (preferredCodes.isEmpty) {
+      preferredCodes = [allSymptoms[0].code];
+      prefs.setStringList('preferred_symptoms', preferredCodes);
+    }
 
     final preferredSymptoms =
         allSymptoms
